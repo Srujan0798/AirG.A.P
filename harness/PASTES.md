@@ -39,24 +39,23 @@ OUTPUT PATHS:
 ```text
 You are W2. This text is the only task.
 
-ROLE: Enterprise Product Discovery Lead.
+ROLE: Enterprise Product Discovery Lead, acting as adversarial validator — not a fresh researcher.
 
-TASK: Determine which customer segment and workflow should be the initial wedge.
+CONTEXT: A document already exists at 09_INITIAL_WEDGE_DISCOVERY.md (project root) that claims to answer this exact task (customer segment + workflow wedge selection), dated 30 October 2026, zero customer interviews completed. Your job is to validate and stress-test that document, not redo it from scratch.
 
-CANDIDATE VERTICALS: defense and aerospace suppliers; industrial/embedded software vendors; critical-infrastructure engineering teams; financial institutions; healthcare and research institutions; public-sector technology teams; other segments discovered independently.
+TASK:
+1. Read 09_INITIAL_WEDGE_DISCOVERY.md in full, and re-read 01_MASTER_VISION_AND_STRATEGY.md section 9 (Gates A-E) and section 10 (execution sequence) that it claims to satisfy.
+2. For each of the following in 09, judge SOLID / WEAK / UNSUPPORTED, with your reasoning: the role-identification matrix (section 2), the scoring rubric (section 4), the ranked segments (section 5), the contradictions/open risks list (section 6), and the recommended ICP (section 7).
+3. Independently check: does the chosen ICP (defense/aerospace isolated engineering lab, change-impact-analysis workflow) actually follow from the scoring rubric as applied, or does it look like the conclusion was picked first and the scores fitted to match? Show your own re-scoring of the top 3 segments using 09's own rubric (section 4) and say whether you land on the same rank order.
+4. Identify what evidence 09 is missing that real interviews (per its own section 1 interview guide) would be needed to confirm — list the single most load-bearing unvalidated claim.
+5. Only produce NEW segment/workflow analysis if you find 09's reasoning is unsupported and a different segment should lead instead. Do not duplicate work that already exists and holds up.
 
-METHOD:
-- Build an interview guide that asks about current process before solution pitching.
-- Identify user, champion, economic buyer, security approver and procurement path.
-- Gather evidence of task frequency, consequence, current manual effort, existing substitutes, data boundaries, hardware and deployment restrictions.
-- Score urgency, budget ownership, access, pilot feasibility, sales cycle and product repeatability.
-
-OUTPUT: Ranked segments, evidence quality, interview questions, contradictions and one recommended initial customer profile. No market-size number without a cited methodology.
+OUTPUT: A validation verdict (ACCEPT AS-IS / ACCEPT WITH FLAGGED GAPS / REJECT — redo needed), your re-scoring table, the single most load-bearing unvalidated claim, and — only if REJECT — an alternative ranked-segment analysis. No market-size number without a cited methodology.
 
 OUTPUT PATHS:
-- Write your findings to harness/w2/REPORT.md — max ~150 lines: Verdict/summary, ranked segment table, evidence log, open questions.
-- If detail runs long, put it in harness/w2/CUSTOMER_DISCOVERY.md and keep REPORT.md short.
-- Append one line to harness/STATUS.log: "YYYY-MM-DD HH:MM | W2 | WAVE1-CUSTOMER <short description> | done"
+- Write your findings to harness/w2/REPORT.md — max ~150 lines: verdict, re-scoring table, load-bearing claim, open questions.
+- If detail runs long, put it in harness/w2/CUSTOMER_DISCOVERY_VALIDATION.md and keep REPORT.md short.
+- Append one line to harness/STATUS.log: "YYYY-MM-DD HH:MM | W2 | WAVE1-CUSTOMER-VALIDATION <short description> | done"
 - End by printing: "W2 done gates=PASS blocked=<none|list>"
 ```
 
