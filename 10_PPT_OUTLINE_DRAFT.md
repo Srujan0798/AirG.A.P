@@ -1,6 +1,6 @@
 # 10 — Campus IDE Pitch: PPT Outline
 
-**Status:** All four Wave 1 windows done and reviewed — see `harness/synthesis/WAVE1_SYNTHESIS.md`. Complete except two founder calls (Slide 6 segment choice, slide-count trim).
+**Status:** All four Wave 1 windows done and reviewed — see `harness/synthesis/WAVE1_SYNTHESIS.md`. Content complete; only slide-count trim left (depends on jury's actual time limit, not yet known).
 **Framing:** Big vision up front, narrow validated first step as the proof, sharpened by W1 into a specific positioning claim (the control-plane layer, not another agent) rather than a generic "agentic workbench."
 
 ---
@@ -30,8 +30,9 @@ One line: Bringing frontier AI inside the walls that can never connect to the in
 - This is the thing we can actually demo, not just describe.
 
 ## Slide 6 — Who we go to first
-- Segment hypothesis: Defense/Aerospace suppliers' isolated engineering labs (`09` ICP) — OR Industrial/embedded vendors, which an independent re-score (W2) shows as a near-tie, not a clear #1.
-- **We say this honestly in the pitch:** two strong candidate segments, interviews will decide — this is the single most important thing we learn next.
+- **Lead segment: Defense & Aerospace suppliers' isolated engineering labs** (`09` ICP) — legacy/safety-adjacent code, a named budget owner (IRAD/contract-funded), a natural offline boundary (classification/ITAR), and a repeatable workflow across similar suppliers.
+- **Fast-follow: Industrial/embedded vendors** — an independent re-score (W2) shows this segment nearly tied with Defense/Aerospace (15 vs. 13 on `09`'s own rubric), so if defense access/clearance proves slower than expected, this is the next door, not a fallback we're hiding.
+- Founder decision, 2026-11-11 — logged in `harness/kb/decisions.csv`.
 
 ## Slide 7 — Why the honesty is the pitch
 - Every claim in this deck is sourced to a document in our repo (public, on GitHub) and was independently red-teamed by our own adversarial review process before this slide existed.
@@ -56,6 +57,7 @@ One line: Bringing frontier AI inside the walls that can never connect to the in
 ---
 
 **Open items before this is final:**
-1. Founder call: does Slide 6 name one segment, or keep both candidates honestly open as written above?
-2. Trim to fit whatever slide-count/time limit the jury actually gave (chat log never specified one).
-3. Note (W1 review flag): don't quote an exact "N competitors surveyed" number — W1's own summary counts are internally inconsistent (27 vs. 33 vs. the actual 38 table rows). Say "~38 surveyed" or point to the matrix file rather than a precise figure.
+1. Trim to fit whatever slide-count/time limit the jury actually gave (chat log never specified one).
+2. Note (W1 review flag): don't quote an exact "N competitors surveyed" number — W1's own summary counts are internally inconsistent (27 vs. 33 vs. the actual 38 table rows). Say "~38 surveyed" or point to the matrix file rather than a precise figure.
+
+**Resolved:** Slide 6 names Defense/Aerospace as lead segment, Industrial/embedded as fast-follow (founder decision, 2026-11-11).
