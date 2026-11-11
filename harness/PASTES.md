@@ -225,3 +225,56 @@ DO:
 
 TASK-ID: WAVE2-FEASIBILITY-R3
 ```
+
+## ACTIVE — Wave 3 = Phase 1 foundation (doc 03). W1, W2, W3 in parallel; W6 round 3 alongside.
+Each window may write ONLY the target paths named in its block (this overrides COMMON rule "own folder only" for these named paths). REPORT.md and STATUS line as usual.
+
+### W1 — WAVE3-POLICIES
+```
+Read /Users/srujansai/Desktop/AirG.A.P/harness/COMMON.md first and obey it. A skill does not permit training, a download, a Sarvam call, or a delete. You are W1. This text is the only task.
+
+GOAL: Write the project's root policy files from 03_IDE_AGENT_AND_STARTUP_INITIALIZATION.md §2-§3, adapted to what Waves 1-2 proved.
+READ FIRST: 03 (§2, §3, §5, §6, §10), 01_MASTER_VISION_AND_STRATEGY.md, harness/synthesis/WAVE2_SYNTHESIS.md, harness/kb/decisions.csv (all rows), harness/w6/FEASIBILITY_R2.md.
+WRITE (only these):
+1. /Users/srujansai/Desktop/AirG.A.P/AGENTS.md — 03 §3 text adapted: mission = vendor-neutral governance of competing coding agents across requirements -> code -> tests -> change impact, with signed offline intake and an accreditation evidence pack; first segment Defense & Aerospace (India); Day-1 workflow = offline test generation. Keep every ENGINEERING RULE and the IMPLEMENTATION LOOP. Add a "START HERE" block listing the files to read in order.
+2. SECURITY.md — posture, reporting process, what is out of scope today (no customer data yet).
+3. DATA_CLASSIFICATION.md — 4 classes (public / internal / customer-confidential / customer-classified), handling rule per class per environment (the 4 environments in 03 §1).
+4. MODEL_POLICY.md — accept rules (licence, provenance, pinned digest, offline-verified). Record the one model actually tested: qwen2.5-coder:7b Q4_K_M, digest from harness/w6/FEASIBILITY_R2.md, Apache-2.0 (grade C). Mark it "feasibility only, not accepted for customers".
+5. PLUGIN_POLICY.md — 03 §5 ten-step review procedure + current allowlist from decisions.csv row SKILL-STACK (ADOPT / TRIAL / REJECT with reason). No plugin is installed by you.
+RULES: no invented facts; every claim cites a file in this repo or is labelled HYPOTHESIS. Each file <= 150 lines.
+FINISH: harness/w1/REPORT.md section "Wave 3" (files written, line counts, open questions). STATUS line. Final line: "W1 done gates=PASS|FAIL blocked=…".
+TASK-ID: WAVE3-POLICIES
+```
+
+### W2 — WAVE3-THREAT-ADR
+```
+Read /Users/srujansai/Desktop/AirG.A.P/harness/COMMON.md first and obey it. A skill does not permit training, a download, a Sarvam call, or a delete. You are W2. This text is the only task.
+
+GOAL: Threat model, trust boundaries and the first ADRs, so later code has a record to check against.
+READ FIRST: 03 §1 §4 §10, 04_TRADITIONAL_SYSTEMS_ENGINEERING_BLUEPRINT.md, 01, harness/synthesis/WAVE2_SYNTHESIS.md, harness/w7/MOAT.md, harness/w6/FEASIBILITY_R2.md, harness/kb/decisions.csv.
+WRITE (only these):
+1. /Users/srujansai/Desktop/AirG.A.P/THREAT_MODEL.md — assets, actors (incl. "the agent itself as untrusted principal"), trust boundaries across the 4 environments in 03 §1, top 12 abuse cases (prompt injection via repo content, malicious model weights, poisoned update bundle, sandbox escape, evidence-log tampering, …), each with mitigation + which future module owns it (src/ names from 03 §2).
+2. docs/04-architecture/context-and-boundaries.md — one mermaid context diagram + boundary table.
+3. docs/04-architecture/adr/ADR-0001-positioning.md — decision: vendor-neutral governance layer above competing agents (options considered: own coding assistant, inference platform, governance layer; evidence = W7/W1).
+4. docs/04-architecture/adr/ADR-0002-day1-workflow.md — decision: offline test generation; evidence = W3 + W6 R1/R2 numbers verbatim; status PROPOSED until W6 round 3 lands.
+5. docs/04-architecture/adr/ADR-0003-feasibility-runtime.md — Ollama + qwen2.5-coder:7b for experiments only; status ACCEPTED-FOR-EXPERIMENTS; consequences.
+ADR format: Status, Context, Options, Decision, Rationale, Consequences, Evidence (file paths). No invented facts.
+FINISH: harness/w2/REPORT.md section "Wave 3". STATUS line. Final line: "W2 done gates=PASS|FAIL blocked=…".
+TASK-ID: WAVE3-THREAT-ADR
+```
+
+### W3 — WAVE3-LEDGER
+```
+Read /Users/srujansai/Desktop/AirG.A.P/harness/COMMON.md first and obey it. A skill does not permit training, a download, a Sarvam call, or a delete. You are W3. This text is the only task.
+
+GOAL: Turn Waves 1-2 into the canonical records 03 §7 demands: claim ledger, requirements register, vision one-pager, unknowns.
+READ FIRST: harness/w1..w8 REPORT.md files, harness/synthesis/WAVE1_SYNTHESIS.md and WAVE2_SYNTHESIS.md, 01, 09_INITIAL_WEDGE_DISCOVERY.md, harness/kb/decisions.csv.
+WRITE (only these):
+1. /Users/srujansai/Desktop/AirG.A.P/research-data/claims/claims.csv — columns: id,claim,source_file,source_url,grade(A-D),date,counterevidence,status(supported|contested|hypothesis). At least 40 atomic claims; copy grades from the worker reports, never upgrade one.
+2. docs/01-product-requirements/REGISTER.md — four sections: Founder intent / Evidence-backed / Hypotheses / Unknowns. Each row cites a claim id.
+3. docs/00-vision-and-strategy/00-vision-and-strategy.md — 1 page: problem, customer (Defense & Aerospace, India), wedge, positioning wording exactly as in decisions.csv POSITIONING-W2, Gates A-E status today.
+4. docs/02-customer-discovery/INTERVIEW_TRACKER.md — table (org, role, channel, status, date, key quote, claim ids). Seed only with organisations from harness/w5/TARGET_LIST.md; organisations and roles only, no personal names or contact details.
+End REGISTER.md with "Five most important unknowns", ranked.
+FINISH: harness/w3/REPORT.md section "Wave 3" (claim count by grade, contested claims). STATUS line. Final line: "W3 done gates=PASS|FAIL blocked=…".
+TASK-ID: WAVE3-LEDGER
+```

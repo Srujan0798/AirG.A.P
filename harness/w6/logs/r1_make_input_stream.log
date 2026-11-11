@@ -1,0 +1,92 @@
+=== ROUND1 PROMPT ===
+You are a test-generation engineer. Write pytest unit tests for the single Python function below. Output ONLY one python code block (```python ... ```). Tests must be deterministic, use no network, no secrets. Import what you need from click. Function source:
+
+def make_input_stream(
+    input: str | bytes | t.IO[t.Any] | None, charset: str
+) -> t.BinaryIO:
+    # Is already an input stream.
+    if hasattr(input, "read"):
+        rv = _find_binary_reader(t.cast("t.IO[t.Any]", input))
+
+        if rv is not None:
+            return rv
+
+        raise TypeError("Could not find binary reader for input stream.")
+
+    if input is None:
+        input = b""
+    elif isinstance(input, str):
+        input = input.encode(charset)
+
+    return io.BytesIO(input)
+
+=== RESPONSE ===
+```python
+import io
+import typing as t
+from click import make_input_stream
+
+def test_make_input_stream_with_bytes():
+    input_data = b"test bytes"
+    charset = "utf-8"
+    result = make_input_stream(input_data, charset)
+    assert isinstance(result, io.BytesIO)
+    assert result.read() == input_data
+
+def test_make_input_stream_with_str():
+    input_data = "test string"
+    charset = "utf-8"
+    result = make_input_stream(input_data, charset)
+    assert isinstance(result, io.BytesIO)
+    assert result.read() == input_data.encode(charset)
+
+def test_make_input_stream_with_none():
+    charset = "utf-8"
+    result = make_input_stream(None, charset)
+    assert isinstance(result, io.BytesIO)
+    assert result.read() == b""
+
+def test_make_input_stream_with_io():
+    input_data = io.BytesIO(b"test io")
+    result = make_input_stream(input_data, "utf-8")
+    assert result is input_data
+
+def test_make_input_stream_with_non_io():
+    input_data = "test non io"
+    charset = "utf-8"
+    with pytest.raises(TypeError):
+        make_input_stream(input_data, charset)
+```
+=== METRICS ===
+{
+ "eval_count": 256,
+ "eval_duration_s": 6.25,
+ "tokens_per_sec": 41.0,
+ "total_duration_s": 6.378,
+ "wall_s": 6.52,
+ "load_duration_s": 0.002
+}
+peak_rss_mb=4739.7
+
+=== PYTEST ===
+============================= test session starts ==============================
+platform darwin -- Python 3.14.3, pytest-9.2.0, pluggy-1.7.0 -- /Users/srujansai/Desktop/AirG.A.P/harness/w6/venv/bin/python
+rootdir: /Users/srujansai/Desktop/AirG.A.P/harness/w6/sandbox/click
+configfile: pyproject.toml
+collecting ... collected 0 items / 1 error
+
+==================================== ERRORS ====================================
+________________ ERROR collecting test_r1_make_input_stream.py _________________
+ImportError while importing test module '/Users/srujansai/Desktop/AirG.A.P/harness/w6/sandbox/click/test_r1_make_input_stream.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/Library/Frameworks/Python.framework/Versions/3.14/lib/python3.14/importlib/__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+test_r1_make_input_stream.py:3: in <module>
+    from click import make_input_stream
+E   ImportError: cannot import name 'make_input_stream' from 'click' (/Users/srujansai/Desktop/AirG.A.P/harness/w6/sandbox/click/src/click/__init__.py)
+=========================== short test summary info ============================
+ERROR test_r1_make_input_stream.py
+!!!!!!!!!!!!!!!!!!!! Interrupted: 1 error during collection !!!!!!!!!!!!!!!!!!!!
+=============================== 1 error in 0.07s ===============================

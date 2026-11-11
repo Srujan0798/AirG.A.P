@@ -1,0 +1,623 @@
+
+=== ATTEMPT 1 ===
+{
+ "tok_s": 37.3,
+ "wall_s": 5.43,
+ "peak_rss_mb": 4742.8
+}
+=== RESPONSE ===
+```python
+def test_readline(monkeypatch, input_data, expected_output):
+    """Test the readline method with different input sizes."""
+    class MockInput:
+        def __init__(self, data):
+            self.data = data
+            self.index = 0
+
+        def readline(self, n=-1):
+            if n == -1:
+                result = self.data[self.index:]
+                self.index = len(self.data)
+            else:
+                result = self.data[self.index:self.index + n]
+                self.index += n
+            return result.encode()
+
+    mock_input = MockInput(input_data)
+    monkeypatch.setattr("click.termui.visible_prompt_func", lambda _: mock_input.readline)
+    monkeypatch.setattr("click.termui.hidden_prompt_func", lambda _: mock_input.readline)
+
+    result = readline()
+    assert result == expected_output
+```
+=== PYTEST ===
+E                                                                        [100%]
+==================================== ERRORS ====================================
+_______________________ ERROR at setup of test_readline ________________________
+file /Users/srujansai/Desktop/AirG.A.P/harness/w6/sandbox/click/test_r2_readline.py, line 1
+  def test_readline(monkeypatch, input_data, expected_output):
+E       fixture 'input_data' not found
+>       available fixtures: capfd, capfdbinary, caplog, capsys, capsysbinary, capteesys, doctest_namespace, monkeypatch, pytestconfig, record_property, record_testsuite_property, record_xml_attribute, recwarn, subtests, tmp_path, tmp_path_factory, tmpdir, tmpdir_factory
+>       use 'pytest --fixtures [testpath]' for help on them.
+
+/Users/srujansai/Desktop/AirG.A.P/harness/w6/sandbox/click/test_r2_readline.py:1
+=========================== short test summary info ============================
+ERROR test_r2_readline.py::test_readline
+1 error in 0.00s
+
+=== ATTEMPT 2 ===
+{
+ "tok_s": 37.7,
+ "wall_s": 5.17,
+ "peak_rss_mb": 4719.3
+}
+=== RESPONSE ===
+```python
+def test_readline(monkeypatch, input_data, expected_output):
+    """Test the readline method with different input data and expected output."""
+    class MockInput:
+        def __init__(self, data):
+            self.data = data
+            self.index = 0
+
+        def readline(self, n=-1):
+            if self.index >= len(self.data):
+                return b""
+            result = self.data[self.index:self.index + n]
+            self.index += len(result)
+            return result
+
+    mock_input = MockInput(input_data)
+    monkeypatch.setattr("click.termui.visible_prompt_func", lambda _: mock_input.readline)
+    monkeypatch.setattr("click.termui.hidden_prompt_func", lambda _: mock_input.readline)
+
+    result = readline()
+    assert result == expected_output
+```
+=== PYTEST ===
+E                                                                        [100%]
+==================================== ERRORS ====================================
+_______________________ ERROR at setup of test_readline ________________________
+file /Users/srujansai/Desktop/AirG.A.P/harness/w6/sandbox/click/test_r2_readline.py, line 1
+  def test_readline(monkeypatch, input_data, expected_output):
+E       fixture 'input_data' not found
+>       available fixtures: capfd, capfdbinary, caplog, capsys, capsysbinary, capteesys, doctest_namespace, monkeypatch, pytestconfig, record_property, record_testsuite_property, record_xml_attribute, recwarn, subtests, tmp_path, tmp_path_factory, tmpdir, tmpdir_factory
+>       use 'pytest --fixtures [testpath]' for help on them.
+
+/Users/srujansai/Desktop/AirG.A.P/harness/w6/sandbox/click/test_r2_readline.py:1
+=========================== short test summary info ============================
+ERROR test_r2_readline.py::test_readline
+1 error in 0.01s
+
+=== ATTEMPT 3 ===
+{
+ "tok_s": 37.6,
+ "wall_s": 4.41,
+ "peak_rss_mb": 4708.0
+}
+=== RESPONSE ===
+```python
+def test_readline(monkeypatch, input_data, expected_output):
+    """Test that the readline method reads the correct number of bytes from the input."""
+    mock_input = io.BytesIO(input_data)
+    mock_echo = io.BytesIO()
+    
+    def mock_readline(n):
+        return mock_input.readline(n)
+    
+    def mock_echo_func(text):
+        mock_echo.write(text)
+        return text
+    
+    monkeypatch.setattr("click.termui.visible_prompt_func", mock_echo_func)
+    monkeypatch.setattr("click.termui.hidden_prompt_func", mock_echo_func)
+    monkeypatch.setattr("click.termui._input.readline", mock_readline)
+    
+    result = readline()
+    assert result == expected_output
+    assert mock_echo.getvalue() == expected_output
+```
+=== PYTEST ===
+E                                                                        [100%]
+==================================== ERRORS ====================================
+_______________________ ERROR at setup of test_readline ________________________
+file /Users/srujansai/Desktop/AirG.A.P/harness/w6/sandbox/click/test_r2_readline.py, line 1
+  def test_readline(monkeypatch, input_data, expected_output):
+E       fixture 'input_data' not found
+>       available fixtures: capfd, capfdbinary, caplog, capsys, capsysbinary, capteesys, doctest_namespace, monkeypatch, pytestconfig, record_property, record_testsuite_property, record_xml_attribute, recwarn, subtests, tmp_path, tmp_path_factory, tmpdir, tmpdir_factory
+>       use 'pytest --fixtures [testpath]' for help on them.
+
+/Users/srujansai/Desktop/AirG.A.P/harness/w6/sandbox/click/test_r2_readline.py:1
+=========================== short test summary info ============================
+ERROR test_r2_readline.py::test_readline
+1 error in 0.01s
+
+=== ATTEMPT 1 ===
+{
+ "tok_s": 38.0,
+ "wall_s": 6.84,
+ "peak_rss_mb": 4768.7
+}
+=== RESPONSE ===
+```python
+def test_readline(monkeypatch, input_data, expected_output):
+    """Test that the readline method correctly reads from the input stream and echoes the output."""
+    class MockInput:
+        def __init__(self, data):
+            self.data = data
+            self.index = 0
+
+        def readline(self, n=-1):
+            if self.index >= len(self.data):
+                return b""
+            if n == -1:
+                result = self.data[self.index:]
+                self.index = len(self.data)
+                return result
+            else:
+                result = self.data[self.index:self.index + n]
+                self.index += n
+                return result
+
+    class MockEcho:
+        def __init__(self):
+            self.output = b""
+
+        def __call__(self, text):
+            self.output += text
+            return text
+
+    mock_input = MockInput(input_data)
+    mock_echo = MockEcho()
+
+    monkeypatch.setattr("click.utils._input", mock_input)
+    monkeypatch.setattr("click.utils._echo", mock_echo)
+
+    result = click.utils.readline()
+    assert result == expected_output
+    assert mock_echo.output == expected_output
+```
+=== PYTEST ===
+E                                                                        [100%]
+==================================== ERRORS ====================================
+_______________________ ERROR at setup of test_readline ________________________
+file /Users/srujansai/Desktop/AirG.A.P/harness/w6/sandbox/click/test_r2_readline.py, line 1
+  def test_readline(monkeypatch, input_data, expected_output):
+E       fixture 'input_data' not found
+>       available fixtures: capfd, capfdbinary, caplog, capsys, capsysbinary, capteesys, doctest_namespace, monkeypatch, pytestconfig, record_property, record_testsuite_property, record_xml_attribute, recwarn, subtests, tmp_path, tmp_path_factory, tmpdir, tmpdir_factory
+>       use 'pytest --fixtures [testpath]' for help on them.
+
+/Users/srujansai/Desktop/AirG.A.P/harness/w6/sandbox/click/test_r2_readline.py:1
+=========================== short test summary info ============================
+ERROR test_r2_readline.py::test_readline
+1 error in 0.04s
+
+=== ATTEMPT 2 ===
+{
+ "tok_s": 38.3,
+ "wall_s": 5.12,
+ "peak_rss_mb": 4727.7
+}
+=== RESPONSE ===
+```python
+def test_readline(monkeypatch, input_data, expected_output):
+    """Test the readline method with different input data and expected output."""
+    class MockInput:
+        def __init__(self, data):
+            self.data = data
+            self.index = 0
+
+        def readline(self, n=-1):
+            if self.index >= len(self.data):
+                return b""
+            result = self.data[self.index:self.index + n]
+            self.index += len(result)
+            return result
+
+    mock_input = MockInput(input_data)
+    monkeypatch.setattr("click.utils._find_binary_reader", lambda: mock_input)
+
+    instance = utils.SomeClass()  # Replace with the actual class name
+    result = instance.readline(n=len(expected_output))
+
+    assert result == expected_output
+```
+=== PYTEST ===
+E                                                                        [100%]
+==================================== ERRORS ====================================
+_______________________ ERROR at setup of test_readline ________________________
+file /Users/srujansai/Desktop/AirG.A.P/harness/w6/sandbox/click/test_r2_readline.py, line 1
+  def test_readline(monkeypatch, input_data, expected_output):
+E       fixture 'input_data' not found
+>       available fixtures: capfd, capfdbinary, caplog, capsys, capsysbinary, capteesys, doctest_namespace, monkeypatch, pytestconfig, record_property, record_testsuite_property, record_xml_attribute, recwarn, subtests, tmp_path, tmp_path_factory, tmpdir, tmpdir_factory
+>       use 'pytest --fixtures [testpath]' for help on them.
+
+/Users/srujansai/Desktop/AirG.A.P/harness/w6/sandbox/click/test_r2_readline.py:1
+=========================== short test summary info ============================
+ERROR test_r2_readline.py::test_readline
+1 error in 0.01s
+
+=== ATTEMPT 3 ===
+{
+ "tok_s": 37.2,
+ "wall_s": 6.99,
+ "peak_rss_mb": 4715.0
+}
+=== RESPONSE ===
+```python
+import io
+import pytest
+
+class MockInput:
+    def __init__(self, data):
+        self.data = data
+        self.index = 0
+
+    def readline(self, n=-1):
+        if self.index >= len(self.data):
+            return b""
+        if n == -1:
+            result = self.data[self.index:]
+            self.index = len(self.data)
+            return result
+        result = self.data[self.index:self.index + n]
+        self.index += n
+        return result
+
+class MockEcho:
+    def __init__(self):
+        self.output = b""
+
+    def __call__(self, data):
+        self.output += data
+        return data
+
+def test_readline(monkeypatch, input_data, expected_output):
+    mock_input = MockInput(input_data)
+    mock_echo = MockEcho()
+
+    monkeypatch.setattr("click.termui.visible_prompt_func", mock_input.readline)
+    monkeypatch.setattr("click.termui.hidden_prompt_func", mock_input.readline)
+    monkeypatch.setattr("click.termui.echo", mock_echo)
+
+    readline_result = mock_echo(mock_input.readline())
+
+    assert readline_result == expected_output
+    assert mock_echo.output == expected_output
+```
+=== PYTEST ===
+E                                                                        [100%]
+==================================== ERRORS ====================================
+_______________________ ERROR at setup of test_readline ________________________
+file /Users/srujansai/Desktop/AirG.A.P/harness/w6/sandbox/click/test_r2_readline.py, line 28
+  def test_readline(monkeypatch, input_data, expected_output):
+E       fixture 'input_data' not found
+>       available fixtures: capfd, capfdbinary, caplog, capsys, capsysbinary, capteesys, doctest_namespace, monkeypatch, pytestconfig, record_property, record_testsuite_property, record_xml_attribute, recwarn, subtests, tmp_path, tmp_path_factory, tmpdir, tmpdir_factory
+>       use 'pytest --fixtures [testpath]' for help on them.
+
+/Users/srujansai/Desktop/AirG.A.P/harness/w6/sandbox/click/test_r2_readline.py:28
+=========================== short test summary info ============================
+ERROR test_r2_readline.py::test_readline
+1 error in 0.00s
+
+=== ATTEMPT 1 ===
+{
+ "tok_s": 40.8,
+ "wall_s": 4.98,
+ "peak_rss_mb": 4749.7
+}
+=== RESPONSE ===
+```python
+import io
+import unittest
+from unittest.mock import patch
+
+class TestReadline(unittest.TestCase):
+    def test_readline_with_default_n(self):
+        input_data = io.BytesIO(b"test\n")
+        output_data = io.BytesIO()
+        with patch("sys.stdin", input_data), patch("sys.stdout", output_data):
+            readline_func = _compat.readline
+            result = readline_func()
+            self.assertEqual(result, b"test\n")
+
+    def test_readline_with_custom_n(self):
+        input_data = io.BytesIO(b"test\n")
+        output_data = io.BytesIO()
+        with patch("sys.stdin", input_data), patch("sys.stdout", output_data):
+            readline_func = _compat.readline
+            result = readline_func(3)
+            self.assertEqual(result, b"tes")
+```
+=== PYTEST ===
+============================= test session starts ==============================
+platform darwin -- Python 3.14.3, pytest-9.2.0, pluggy-1.7.0 -- /Users/srujansai/Desktop/AirG.A.P/harness/w6/venv/bin/python
+rootdir: /Users/srujansai/Desktop/AirG.A.P/harness/w6/sandbox/click
+configfile: pyproject.toml
+collecting ... collected 2 items
+
+test_r2_readline.py::TestReadline::test_readline_with_custom_n FAILED    [ 50%]
+test_r2_readline.py::TestReadline::test_readline_with_default_n FAILED   [100%]
+
+=================================== FAILURES ===================================
+___________________ TestReadline.test_readline_with_custom_n ___________________
+
+self = <test_r2_readline.TestReadline testMethod=test_readline_with_custom_n>
+
+    def test_readline_with_custom_n(self):
+        input_data = io.BytesIO(b"test\n")
+        output_data = io.BytesIO()
+        with patch("sys.stdin", input_data), patch("sys.stdout", output_data):
+>           readline_func = _compat.readline
+                            ^^^^^^^
+E           NameError: name '_compat' is not defined
+
+test_r2_readline.py:18: NameError
+__________________ TestReadline.test_readline_with_default_n ___________________
+
+self = <test_r2_readline.TestReadline testMethod=test_readline_with_default_n>
+
+    def test_readline_with_default_n(self):
+        input_data = io.BytesIO(b"test\n")
+        output_data = io.BytesIO()
+        with patch("sys.stdin", input_data), patch("sys.stdout", output_data):
+>           readline_func = _compat.readline
+                            ^^^^^^^
+E           NameError: name '_compat' is not defined
+
+test_r2_readline.py:10: NameError
+=========================== short test summary info ============================
+FAILED test_r2_readline.py::TestReadline::test_readline_with_custom_n - NameE...
+FAILED test_r2_readline.py::TestReadline::test_readline_with_default_n - Name...
+============================== 2 failed in 0.02s ===============================
+
+=== ATTEMPT 2 ===
+{
+ "tok_s": 39.6,
+ "wall_s": 5.22,
+ "peak_rss_mb": 4746.5
+}
+=== RESPONSE ===
+```python
+from unittest.mock import patch
+import io
+import pytest
+
+class TestReadline:
+    def test_readline_with_custom_n(self):
+        input_data = io.BytesIO(b"test\n")
+        output_data = io.BytesIO()
+        with patch("sys.stdin", input_data), patch("sys.stdout", output_data):
+            readline_func = _compat.readline
+            result = readline_func(4)
+            assert result == b"test"
+
+    def test_readline_with_default_n(self):
+        input_data = io.BytesIO(b"test\n")
+        output_data = io.BytesIO()
+        with patch("sys.stdin", input_data), patch("sys.stdout", output_data):
+            readline_func = _compat.readline
+            result = readline_func()
+            assert result == b"test"
+```
+=== PYTEST ===
+============================= test session starts ==============================
+platform darwin -- Python 3.14.3, pytest-9.2.0, pluggy-1.7.0 -- /Users/srujansai/Desktop/AirG.A.P/harness/w6/venv/bin/python
+rootdir: /Users/srujansai/Desktop/AirG.A.P/harness/w6/sandbox/click
+configfile: pyproject.toml
+collecting ... collected 2 items
+
+test_r2_readline.py::TestReadline::test_readline_with_custom_n FAILED    [ 50%]
+test_r2_readline.py::TestReadline::test_readline_with_default_n FAILED   [100%]
+
+=================================== FAILURES ===================================
+___________________ TestReadline.test_readline_with_custom_n ___________________
+
+self = <test_r2_readline.TestReadline object at 0x10695aad0>
+
+    def test_readline_with_custom_n(self):
+        input_data = io.BytesIO(b"test\n")
+        output_data = io.BytesIO()
+        with patch("sys.stdin", input_data), patch("sys.stdout", output_data):
+>           readline_func = _compat.readline
+                            ^^^^^^^
+E           NameError: name '_compat' is not defined
+
+test_r2_readline.py:10: NameError
+__________________ TestReadline.test_readline_with_default_n ___________________
+
+self = <test_r2_readline.TestReadline object at 0x10695bc50>
+
+    def test_readline_with_default_n(self):
+        input_data = io.BytesIO(b"test\n")
+        output_data = io.BytesIO()
+        with patch("sys.stdin", input_data), patch("sys.stdout", output_data):
+>           readline_func = _compat.readline
+                            ^^^^^^^
+E           NameError: name '_compat' is not defined
+
+test_r2_readline.py:18: NameError
+=========================== short test summary info ============================
+FAILED test_r2_readline.py::TestReadline::test_readline_with_custom_n - NameE...
+FAILED test_r2_readline.py::TestReadline::test_readline_with_default_n - Name...
+============================== 2 failed in 0.02s ===============================
+
+=== ATTEMPT 3 ===
+{
+ "tok_s": 39.7,
+ "wall_s": 5.6,
+ "peak_rss_mb": 4769.8
+}
+=== RESPONSE ===
+```python
+import io
+from unittest.mock import patch
+from .readline import Readline  # Assuming the class is in a module named readline
+
+class TestReadline:
+    def test_readline_with_default_n(self):
+        input_data = io.BytesIO(b"test\n")
+        output_data = io.BytesIO()
+        with patch("sys.stdin", input_data), patch("sys.stdout", output_data):
+            readline_func = Readline()
+            result = readline_func.readline()
+            assert result == b"test\n"
+
+    def test_readline_with_custom_n(self):
+        input_data = io.BytesIO(b"test\n")
+        output_data = io.BytesIO()
+        with patch("sys.stdin", input_data), patch("sys.stdout", output_data):
+            readline_func = Readline()
+            result = readline_func.readline(4)
+            assert result == b"test\n"
+```
+=== PYTEST ===
+============================= test session starts ==============================
+platform darwin -- Python 3.14.3, pytest-9.2.0, pluggy-1.7.0 -- /Users/srujansai/Desktop/AirG.A.P/harness/w6/venv/bin/python
+rootdir: /Users/srujansai/Desktop/AirG.A.P/harness/w6/sandbox/click
+configfile: pyproject.toml
+collecting ... collected 0 items / 1 error
+
+==================================== ERRORS ====================================
+_____________________ ERROR collecting test_r2_readline.py _____________________
+ImportError while importing test module '/Users/srujansai/Desktop/AirG.A.P/harness/w6/sandbox/click/test_r2_readline.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/Library/Frameworks/Python.framework/Versions/3.14/lib/python3.14/importlib/__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+test_r2_readline.py:3: in <module>
+    from .readline import Readline  # Assuming the class is in a module named readline
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ImportError: attempted relative import with no known parent package
+=========================== short test summary info ============================
+ERROR test_r2_readline.py
+!!!!!!!!!!!!!!!!!!!! Interrupted: 1 error during collection !!!!!!!!!!!!!!!!!!!!
+=============================== 1 error in 0.06s ===============================
+
+=== ATTEMPT 1 ===
+{
+ "tok_s": 38.7,
+ "wall_s": 3.72,
+ "peak_rss_mb": 4718.7
+}
+=== RESPONSE ===
+```python
+from click.testing import EchoingStdin
+
+def test_readline(monkeypatch, echo_stdin):
+    """Test that readline reads from the input and echoes it."""
+    input_data = b"test\n"
+    expected_output = b"test\n"
+
+    def mock_readline(n: int = -1) -> bytes:
+        return input_data
+
+    monkeypatch.setattr(echo_stdin._input, "readline", mock_readline)
+    output = echo_stdin.readline()
+    assert output == expected_output
+```
+=== PYTEST ===
+============================= test session starts ==============================
+platform darwin -- Python 3.14.3, pytest-9.2.0, pluggy-1.7.0 -- /Users/srujansai/Desktop/AirG.A.P/harness/w6/venv/bin/python
+rootdir: /Users/srujansai/Desktop/AirG.A.P/harness/w6/sandbox/click
+configfile: pyproject.toml
+collecting ... collected 1 item
+
+test_r2_readline.py::test_readline ERROR                                 [100%]
+
+==================================== ERRORS ====================================
+_______________________ ERROR at setup of test_readline ________________________
+file /Users/srujansai/Desktop/AirG.A.P/harness/w6/sandbox/click/test_r2_readline.py, line 3
+  def test_readline(monkeypatch, echo_stdin):
+E       fixture 'echo_stdin' not found
+>       available fixtures: capfd, capfdbinary, caplog, capsys, capsysbinary, capteesys, doctest_namespace, monkeypatch, pytestconfig, record_property, record_testsuite_property, record_xml_attribute, recwarn, subtests, tmp_path, tmp_path_factory, tmpdir, tmpdir_factory
+>       use 'pytest --fixtures [testpath]' for help on them.
+
+/Users/srujansai/Desktop/AirG.A.P/harness/w6/sandbox/click/test_r2_readline.py:3
+=========================== short test summary info ============================
+ERROR test_r2_readline.py::test_readline
+=============================== 1 error in 0.01s ===============================
+
+=== ATTEMPT 2 ===
+{
+ "tok_s": 42.0,
+ "wall_s": 2.91,
+ "peak_rss_mb": 4718.9
+}
+=== RESPONSE ===
+```python
+from click.testing import EchoingStdin
+
+def test_readline(monkeypatch, echo_stdin):
+    """Test that the readline method correctly reads from the input stream."""
+    input_data = b"test input\n"
+    with echo_stdin(input_data):
+        result = readline(10)
+    assert result == input_data
+```
+=== PYTEST ===
+============================= test session starts ==============================
+platform darwin -- Python 3.14.3, pytest-9.2.0, pluggy-1.7.0 -- /Users/srujansai/Desktop/AirG.A.P/harness/w6/venv/bin/python
+rootdir: /Users/srujansai/Desktop/AirG.A.P/harness/w6/sandbox/click
+configfile: pyproject.toml
+collecting ... collected 1 item
+
+test_r2_readline.py::test_readline ERROR                                 [100%]
+
+==================================== ERRORS ====================================
+_______________________ ERROR at setup of test_readline ________________________
+file /Users/srujansai/Desktop/AirG.A.P/harness/w6/sandbox/click/test_r2_readline.py, line 3
+  def test_readline(monkeypatch, echo_stdin):
+E       fixture 'echo_stdin' not found
+>       available fixtures: capfd, capfdbinary, caplog, capsys, capsysbinary, capteesys, doctest_namespace, monkeypatch, pytestconfig, record_property, record_testsuite_property, record_xml_attribute, recwarn, subtests, tmp_path, tmp_path_factory, tmpdir, tmpdir_factory
+>       use 'pytest --fixtures [testpath]' for help on them.
+
+/Users/srujansai/Desktop/AirG.A.P/harness/w6/sandbox/click/test_r2_readline.py:3
+=========================== short test summary info ============================
+ERROR test_r2_readline.py::test_readline
+=============================== 1 error in 0.01s ===============================
+
+=== ATTEMPT 3 ===
+{
+ "tok_s": 41.0,
+ "wall_s": 2.7,
+ "peak_rss_mb": 4706.0
+}
+=== RESPONSE ===
+```python
+from click.testing import EchoingStdin
+
+def test_readline(monkeypatch, echo_stdin):
+    """Test that the readline method correctly reads input and echoes it."""
+    input_data = b"test input\n"
+    expected_output = b"test input\n"
+
+    def mock_readline(n):
+        return input_data
+
+    monkeypatch.setattr(echo_stdin, "readline", mock_readline)
+    result = echo_stdin.readline()
+    assert result == expected_output
+```
+=== PYTEST ===
+============================= test session starts ==============================
+platform darwin -- Python 3.14.3, pytest-9.2.0, pluggy-1.7.0 -- /Users/srujansai/Desktop/AirG.A.P/harness/w6/venv/bin/python
+rootdir: /Users/srujansai/Desktop/AirG.A.P/harness/w6/sandbox/click
+configfile: pyproject.toml
+collecting ... collected 1 item
+
+test_r2_readline.py::test_readline ERROR                                 [100%]
+
+==================================== ERRORS ====================================
+_______________________ ERROR at setup of test_readline ________________________
+file /Users/srujansai/Desktop/AirG.A.P/harness/w6/sandbox/click/test_r2_readline.py, line 3
+  def test_readline(monkeypatch, echo_stdin):
+E       fixture 'echo_stdin' not found
+>       available fixtures: capfd, capfdbinary, caplog, capsys, capsysbinary, capteesys, doctest_namespace, monkeypatch, pytestconfig, record_property, record_testsuite_property, record_xml_attribute, recwarn, subtests, tmp_path, tmp_path_factory, tmpdir, tmpdir_factory
+>       use 'pytest --fixtures [testpath]' for help on them.
+
+/Users/srujansai/Desktop/AirG.A.P/harness/w6/sandbox/click/test_r2_readline.py:3
+=========================== short test summary info ============================
+ERROR test_r2_readline.py::test_readline
+=============================== 1 error in 0.02s ===============================

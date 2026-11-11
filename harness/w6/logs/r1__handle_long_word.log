@@ -1,0 +1,94 @@
+=== ROUND1 PROMPT ===
+You are a test-generation engineer. Write pytest unit tests for the single Python function below. Output ONLY one python code block (```python ... ```). Tests must be deterministic, use no network, no secrets. Import what you need from click. Function source:
+
+    def _handle_long_word(
+        self,
+        reversed_chunks: list[str],
+        cur_line: list[str],
+        cur_len: int,
+        width: int,
+    ) -> None:
+        space_left = max(width - cur_len, 1)
+
+        if self.break_long_words:
+            last = reversed_chunks[-1]
+            cut = _truncate_visible(last, space_left)
+            res = last[len(cut) :]
+            cur_line.append(cut)
+            reversed_chunks[-1] = res
+        elif not cur_line:
+            cur_line.append(reversed_chunks.pop())
+
+=== RESPONSE ===
+```python
+from click import echo
+from unittest.mock import patch
+
+def test_handle_long_word_break_long_words_true():
+    instance = YourClass()  # Replace YourClass with the actual class name
+    instance.break_long_words = True
+    reversed_chunks = ["hello", "world"]
+    cur_line = []
+    cur_len = 5
+    width = 10
+
+    instance._handle_long_word(reversed_chunks, cur_line, cur_len, width)
+
+    assert reversed_chunks == ["hello", "world"]
+    assert cur_line == ["hello"]
+
+def test_handle_long_word_break_long_words_false():
+    instance = YourClass()  # Replace YourClass with the actual class name
+    instance.break_long_words = False
+    reversed_chunks = ["hello", "world"]
+    cur_line = []
+    cur_len = 5
+    width = 10
+
+    instance._handle_long_word(reversed_chunks, cur_line, cur_len, width)
+
+    assert reversed_chunks == ["world"]
+    assert cur_line == ["hello"]
+```
+=== METRICS ===
+{
+ "eval_count": 215,
+ "eval_duration_s": 5.289,
+ "tokens_per_sec": 40.6,
+ "total_duration_s": 5.461,
+ "wall_s": 5.54,
+ "load_duration_s": 0.002
+}
+peak_rss_mb=4761.2
+
+=== PYTEST ===
+============================= test session starts ==============================
+platform darwin -- Python 3.14.3, pytest-9.2.0, pluggy-1.7.0 -- /Users/srujansai/Desktop/AirG.A.P/harness/w6/venv/bin/python
+rootdir: /Users/srujansai/Desktop/AirG.A.P/harness/w6/sandbox/click
+configfile: pyproject.toml
+collecting ... collected 2 items
+
+test_r1__handle_long_word.py::test_handle_long_word_break_long_words_true FAILED [ 50%]
+test_r1__handle_long_word.py::test_handle_long_word_break_long_words_false FAILED [100%]
+
+=================================== FAILURES ===================================
+_________________ test_handle_long_word_break_long_words_true __________________
+
+    def test_handle_long_word_break_long_words_true():
+>       instance = YourClass()  # Replace YourClass with the actual class name
+                   ^^^^^^^^^
+E       NameError: name 'YourClass' is not defined
+
+test_r1__handle_long_word.py:5: NameError
+_________________ test_handle_long_word_break_long_words_false _________________
+
+    def test_handle_long_word_break_long_words_false():
+>       instance = YourClass()  # Replace YourClass with the actual class name
+                   ^^^^^^^^^
+E       NameError: name 'YourClass' is not defined
+
+test_r1__handle_long_word.py:18: NameError
+=========================== short test summary info ============================
+FAILED test_r1__handle_long_word.py::test_handle_long_word_break_long_words_true
+FAILED test_r1__handle_long_word.py::test_handle_long_word_break_long_words_false
+============================== 2 failed in 0.02s ===============================

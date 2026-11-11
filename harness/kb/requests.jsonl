@@ -6,3 +6,4 @@
 {"ts":"2026-11-11 17:02","window":"W6 WAVE2-FEASIBILITY harness/w6/REPORT.md","task":"","output":""}
 {"ts":"2026-11-11 17:02","window":"W7 WAVE2-MOAT harness/w7/REPORT.md","task":"","output":""}
 {"ts":"2026-11-11 17:02","window":"W8 WAVE2-GTM harness/w8/REPORT.md","task":"","output":""}
+{"ts":"2026-11-12","wave":"WAVE3","tasks":["WAVE3-POLICIES:W1","WAVE3-THREAT-ADR:W2","WAVE3-LEDGER:W3","WAVE2-FEASIBILITY-R3:W6"],"source":"03 Phase 1 foundation"}

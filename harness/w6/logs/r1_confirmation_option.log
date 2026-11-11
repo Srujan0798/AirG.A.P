@@ -1,0 +1,82 @@
+=== ROUND1 PROMPT ===
+You are a test-generation engineer. Write pytest unit tests for the single Python function below. Output ONLY one python code block (```python ... ```). Tests must be deterministic, use no network, no secrets. Import what you need from click. Function source:
+
+def confirmation_option(*param_decls: str, **kwargs: t.Any) -> t.Callable[[FC], FC]:
+    """Add a ``--yes`` option which shows a prompt before continuing if
+    not passed. If the prompt is declined, the program will exit.
+
+    :param param_decls: One or more option names. Defaults to the single
+        value ``"--yes"``.
+    :param kwargs: Extra arguments are passed to :func:`option`.
+    """
+
+    def callback(ctx: Context, param: Parameter, value: bool) -> None:
+        if not value:
+            ctx.abort()
+
+    if not param_decls:
+        param_decls = ("--yes",)
+
+    kwargs.setdefault("is_flag", True)
+    kwargs.setdefault("callback", callback)
+    kwargs.setdefault("expose_value", False)
+    kwargs.setdefault("prompt", _("Do you want to continue?"))
+    kwargs.setdefault("help", _("Confirm the action without prompting."))
+    return option(*param_decls, **kwargs)
+
+=== RESPONSE ===
+```python
+import pytest
+from click import Context, Parameter, option
+from click.testing import CliRunner
+from click.types import BOOL
+
+def test_confirmation_option():
+    runner = CliRunner()
+
+    @confirmation_option()
+    def my_command(ctx):
+        return "Confirmed"
+
+    result = runner.invoke(my_command, ["--yes"])
+    assert result.exit_code == 0
+    assert result.output == "Confirmed\n"
+
+    result = runner.invoke(my_command)
+    assert result.exit_code == 1
+    assert "Do you want to continue?" in result.output
+```
+=== METRICS ===
+{
+ "eval_count": 117,
+ "eval_duration_s": 3.941,
+ "tokens_per_sec": 29.7,
+ "total_duration_s": 4.344,
+ "wall_s": 4.55,
+ "load_duration_s": 0.002
+}
+peak_rss_mb=4739.9
+
+=== PYTEST ===
+============================= test session starts ==============================
+platform darwin -- Python 3.14.3, pytest-9.2.0, pluggy-1.7.0 -- /Users/srujansai/Desktop/AirG.A.P/harness/w6/venv/bin/python
+rootdir: /Users/srujansai/Desktop/AirG.A.P/harness/w6/sandbox/click
+configfile: pyproject.toml
+collecting ... collected 1 item
+
+test_r1_confirmation_option.py::test_confirmation_option FAILED          [100%]
+
+=================================== FAILURES ===================================
+___________________________ test_confirmation_option ___________________________
+
+    def test_confirmation_option():
+        runner = CliRunner()
+    
+>       @confirmation_option()
+         ^^^^^^^^^^^^^^^^^^^
+E       NameError: name 'confirmation_option' is not defined
+
+test_r1_confirmation_option.py:9: NameError
+=========================== short test summary info ============================
+FAILED test_r1_confirmation_option.py::test_confirmation_option - NameError: ...
+============================== 1 failed in 0.04s ===============================

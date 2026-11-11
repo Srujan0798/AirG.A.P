@@ -1,0 +1,140 @@
+=== ROUND1 PROMPT ===
+You are a test-generation engineer. Write pytest unit tests for the single Python function below. Output ONLY one python code block (```python ... ```). Tests must be deterministic, use no network, no secrets. Import what you need from click. Function source:
+
+def wrap_text(
+    text: str,
+    width: int = 78,
+    initial_indent: str = "",
+    subsequent_indent: str = "",
+    preserve_paragraphs: bool = False,
+) -> str:
+    """A helper function that intelligently wraps text.  By default, it
+    assumes that it operates on a single paragraph of text but if the
+    `preserve_paragraphs` parameter is provided it will intelligently
+    handle paragraphs (defined by two empty lines).
+
+    If paragraphs are handled, a paragraph can be prefixed with an empty
+    line containing the ``\\b`` character (``\\x08``) to indicate that
+    no rewrapping should happen in that block.
+
+    :param text: the text that should be rewrapped.
+    :param width: the maximum width for the text.
+    :param initial_indent: the initial indent that should be placed on the
+                           first line as a string.
+    :param subsequent_indent: the indent string that should be placed on
+                              each consecutive line.
+    :param preserve_paragraphs: if this flag is set then the wrapping will
+                                intelligently handle paragraphs.
+
+    .. versionchanged:: 8.4.0
+        Width is measured in visible characters. ANSI escape sequences in
+        ``text``, ``initial_indent``, or ``subsequent_indent`` no longer
+        count toward the width budget, so styled input wraps based on what
+        the user sees instead of raw byte length.
+    """
+    from ._textwrap import TextWrapper
+
+    text = text.expandtabs()
+    wrapper = TextWrapper(
+        width,
+        initial_indent=initial_indent,
+        subsequent_indent=subsequent_indent,
+        replace_whitespace=False,
+    )
+    if not preserve_paragraphs:
+        return wrapper.fill(text)
+
+    p: list[tuple[int, bool, str]] = []
+    buf: list[str] = []
+    indent = None
+
+    def _flush_par() -> None:
+        if not buf:
+            return
+        if buf[0].strip() == "\b":
+            p.append((indent or 0, True, "\n".join(buf[1:])))
+        else:
+            p.append((indent or 0, False, " ".join(buf)))
+        del buf[:]
+
+    for line in text.splitlines():
+        if not line:
+            _flush_par()
+            indent = None
+        else:
+            if indent is None:
+                orig_len = term_len(line)
+                line = line.lstrip()
+                indent = orig_len - term_len(line)
+            buf.append(line)
+    _flush_par()
+
+    rv = []
+    for indent, raw, text in p:
+        with wrapper.extra_indent(" " * indent):
+            if raw:
+                rv.append(wrapper.indent_only(text))
+            else:
+                rv.append(wrapper.fill(text))
+
+    return "\n\n".join(rv)
+
+=== RESPONSE ===
+```python
+import pytest
+from click._textwrap import TextWrapper
+from click.utils import term_len
+
+def test_wrap_text_single_paragraph():
+    result = wrap_text("This is a single paragraph of text that should be wrapped.")
+    assert result == "This is a single paragraph of text that should be\nwrapped."
+
+def test_wrap_text_preserve_paragraphs():
+    result = wrap_text("This is the first paragraph.\n\nThis is the second paragraph.", preserve_paragraphs=True)
+    assert result == "This is the first paragraph.\n\nThis is the second\nparagraph."
+
+def test_wrap_text_initial_indent():
+    result = wrap_text("This is a single paragraph of text that should be wrapped.", initial_indent="    ")
+    assert result == "    This is a single paragraph of text that\n    should be wrapped."
+
+def test_wrap_text_subsequent_indent():
+    result = wrap_text("This is a single paragraph of text that should be wrapped.", subsequent_indent="    ")
+    assert result == "This is a single paragraph of text that\n    should be wrapped."
+
+def test_wrap_text_no_rewrap():
+    result = wrap_text("This is a single paragraph of text that should be wrapped.\n\n\bThis is a block that should not be rewrapped.", preserve_paragraphs=True)
+    assert result == "This is a single paragraph of text that\n    should be wrapped.\n\nThis is a block that should not be rewrapped."
+```
+=== METRICS ===
+{
+ "eval_count": 298,
+ "eval_duration_s": 7.455,
+ "tokens_per_sec": 40.0,
+ "total_duration_s": 7.762,
+ "wall_s": 7.81,
+ "load_duration_s": 0.001
+}
+peak_rss_mb=4811.2
+
+=== PYTEST ===
+============================= test session starts ==============================
+platform darwin -- Python 3.14.3, pytest-9.2.0, pluggy-1.7.0 -- /Users/srujansai/Desktop/AirG.A.P/harness/w6/venv/bin/python
+rootdir: /Users/srujansai/Desktop/AirG.A.P/harness/w6/sandbox/click
+configfile: pyproject.toml
+collecting ... collected 0 items / 1 error
+
+==================================== ERRORS ====================================
+____________________ ERROR collecting test_r1_wrap_text.py _____________________
+ImportError while importing test module '/Users/srujansai/Desktop/AirG.A.P/harness/w6/sandbox/click/test_r1_wrap_text.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/Library/Frameworks/Python.framework/Versions/3.14/lib/python3.14/importlib/__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+test_r1_wrap_text.py:3: in <module>
+    from click.utils import term_len
+E   ImportError: cannot import name 'term_len' from 'click.utils' (/Users/srujansai/Desktop/AirG.A.P/harness/w6/sandbox/click/src/click/utils.py)
+=========================== short test summary info ============================
+ERROR test_r1_wrap_text.py
+!!!!!!!!!!!!!!!!!!!! Interrupted: 1 error during collection !!!!!!!!!!!!!!!!!!!!
+=============================== 1 error in 0.05s ===============================

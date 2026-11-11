@@ -1,0 +1,598 @@
+
+=== ATTEMPT 1 ===
+{
+ "tok_s": 37.1,
+ "wall_s": 3.83,
+ "peak_rss_mb": 4701.3
+}
+=== RESPONSE ===
+```python
+import pytest
+from .utils import _join_param_hints
+
+def test_join_param_hints_with_sequence():
+    param_hint = ["int", "str", "float"]
+    expected = "int / 'str' / float"
+    assert _join_param_hints(param_hint) == expected
+
+def test_join_param_hints_with_single_str():
+    param_hint = "int"
+    assert _join_param_hints(param_hint) == param_hint
+
+def test_join_param_hints_with_none():
+    param_hint = None
+    assert _join_param_hints(param_hint) is None
+```
+=== PYTEST ===
+
+==================================== ERRORS ====================================
+________________ ERROR collecting test_r2__join_param_hints.py _________________
+ImportError while importing test module '/Users/srujansai/Desktop/AirG.A.P/harness/w6/sandbox/click/test_r2__join_param_hints.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/Library/Frameworks/Python.framework/Versions/3.14/lib/python3.14/importlib/__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+test_r2__join_param_hints.py:2: in <module>
+    from .utils import _join_param_hints
+E   ImportError: attempted relative import with no known parent package
+=========================== short test summary info ============================
+ERROR test_r2__join_param_hints.py
+!!!!!!!!!!!!!!!!!!!! Interrupted: 1 error during collection !!!!!!!!!!!!!!!!!!!!
+1 error in 0.05s
+
+=== ATTEMPT 2 ===
+{
+ "tok_s": 34.6,
+ "wall_s": 3.65,
+ "peak_rss_mb": 4706.6
+}
+=== RESPONSE ===
+```python
+from click.utils import _join_param_hints
+
+def test_join_param_hints_none():
+    assert _join_param_hints(None) is None
+
+def test_join_param_hints_string():
+    assert _join_param_hints("single") == "single"
+
+def test_join_param_hints_sequence():
+    assert _join_param_hints(["item1", "item2", "item3"]) == "'item1' / 'item2' / 'item3'"
+```
+=== PYTEST ===
+
+==================================== ERRORS ====================================
+________________ ERROR collecting test_r2__join_param_hints.py _________________
+ImportError while importing test module '/Users/srujansai/Desktop/AirG.A.P/harness/w6/sandbox/click/test_r2__join_param_hints.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/Library/Frameworks/Python.framework/Versions/3.14/lib/python3.14/importlib/__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+test_r2__join_param_hints.py:1: in <module>
+    from click.utils import _join_param_hints
+E   ImportError: cannot import name '_join_param_hints' from 'click.utils' (/Users/srujansai/Desktop/AirG.A.P/harness/w6/sandbox/click/src/click/utils.py)
+=========================== short test summary info ============================
+ERROR test_r2__join_param_hints.py
+!!!!!!!!!!!!!!!!!!!! Interrupted: 1 error during collection !!!!!!!!!!!!!!!!!!!!
+1 error in 0.05s
+
+=== ATTEMPT 3 ===
+{
+ "tok_s": 38.1,
+ "wall_s": 3.41,
+ "peak_rss_mb": 4705.7
+}
+=== RESPONSE ===
+```python
+from click.utils import _join_param_hints
+
+def test_join_param_hints_with_sequence():
+    param_hint = ["int", "str"]
+    expected = "int / str"
+    assert _join_param_hints(param_hint) == expected
+
+def test_join_param_hints_with_string():
+    param_hint = "int"
+    assert _join_param_hints(param_hint) == param_hint
+
+def test_join_param_hints_with_none():
+    param_hint = None
+    assert _join_param_hints(param_hint) is None
+```
+=== PYTEST ===
+
+==================================== ERRORS ====================================
+________________ ERROR collecting test_r2__join_param_hints.py _________________
+ImportError while importing test module '/Users/srujansai/Desktop/AirG.A.P/harness/w6/sandbox/click/test_r2__join_param_hints.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/Library/Frameworks/Python.framework/Versions/3.14/lib/python3.14/importlib/__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+test_r2__join_param_hints.py:1: in <module>
+    from click.utils import _join_param_hints
+E   ImportError: cannot import name '_join_param_hints' from 'click.utils' (/Users/srujansai/Desktop/AirG.A.P/harness/w6/sandbox/click/src/click/utils.py)
+=========================== short test summary info ============================
+ERROR test_r2__join_param_hints.py
+!!!!!!!!!!!!!!!!!!!! Interrupted: 1 error during collection !!!!!!!!!!!!!!!!!!!!
+1 error in 0.05s
+
+=== ATTEMPT 1 ===
+{
+ "tok_s": 36.7,
+ "wall_s": 4.96,
+ "peak_rss_mb": 4752.8
+}
+=== RESPONSE ===
+```python
+import pytest
+from typing import Sequence
+
+def _join_param_hints(param_hint: Sequence[str] | str | None) -> str | None:
+    if param_hint is not None and not isinstance(param_hint, str):
+        return " / ".join(repr(x) for x in param_hint)
+    return param_hint
+
+def test_join_param_hints_with_sequence():
+    param_hint = ["int", "str", "float"]
+    expected = "int / 'str' / 'float'"
+    assert _join_param_hints(param_hint) == expected
+
+def test_join_param_hints_with_string():
+    param_hint = "int"
+    assert _join_param_hints(param_hint) == param_hint
+
+def test_join_param_hints_with_none():
+    assert _join_param_hints(None) is None
+```
+=== PYTEST ===
+F..                                                                      [100%]
+=================================== FAILURES ===================================
+_____________________ test_join_param_hints_with_sequence ______________________
+
+    def test_join_param_hints_with_sequence():
+        param_hint = ["int", "str", "float"]
+        expected = "int / 'str' / 'float'"
+>       assert _join_param_hints(param_hint) == expected
+E       assert "'int' / 'str' / 'float'" == "int / 'str' / 'float'"
+E         
+E         - int / 'str' / 'float'
+E         + 'int' / 'str' / 'float'
+E         ? +   +
+
+test_r2__join_param_hints.py:12: AssertionError
+=========================== short test summary info ============================
+FAILED test_r2__join_param_hints.py::test_join_param_hints_with_sequence - as...
+1 failed, 2 passed in 0.01s
+
+=== ATTEMPT 2 ===
+{
+ "tok_s": 39.3,
+ "wall_s": 3.82,
+ "peak_rss_mb": 4723.0
+}
+=== RESPONSE ===
+```python
+def test_join_param_hints_with_sequence():
+    param_hint = ["int", "str", "float"]
+    expected = "int / 'str' / 'float'"
+    assert _join_param_hints(param_hint) == expected
+
+def test_join_param_hints_with_string():
+    param_hint = "int"
+    expected = "int"
+    assert _join_param_hints(param_hint) == expected
+
+def test_join_param_hints_with_none():
+    param_hint = None
+    expected = None
+    assert _join_param_hints(param_hint) == expected
+```
+=== PYTEST ===
+FFF                                                                      [100%]
+=================================== FAILURES ===================================
+_____________________ test_join_param_hints_with_sequence ______________________
+
+    def test_join_param_hints_with_sequence():
+        param_hint = ["int", "str", "float"]
+        expected = "int / 'str' / 'float'"
+>       assert _join_param_hints(param_hint) == expected
+               ^^^^^^^^^^^^^^^^^
+E       NameError: name '_join_param_hints' is not defined
+
+test_r2__join_param_hints.py:4: NameError
+______________________ test_join_param_hints_with_string _______________________
+
+    def test_join_param_hints_with_string():
+        param_hint = "int"
+        expected = "int"
+>       assert _join_param_hints(param_hint) == expected
+               ^^^^^^^^^^^^^^^^^
+E       NameError: name '_join_param_hints' is not defined
+
+test_r2__join_param_hints.py:9: NameError
+_______________________ test_join_param_hints_with_none ________________________
+
+    def test_join_param_hints_with_none():
+        param_hint = None
+        expected = None
+>       assert _join_param_hints(param_hint) == expected
+               ^^^^^^^^^^^^^^^^^
+E       NameError: name '_join_param_hints' is not defined
+
+test_r2__join_param_hints.py:14: NameError
+=========================== short test summary info ============================
+FAILED test_r2__join_param_hints.py::test_join_param_hints_with_sequence - Na...
+FAILED test_r2__join_param_hints.py::test_join_param_hints_with_string - Name...
+FAILED test_r2__join_param_hints.py::test_join_param_hints_with_none - NameEr...
+3 failed in 0.02s
+
+=== ATTEMPT 3 ===
+{
+ "tok_s": 39.1,
+ "wall_s": 4.21,
+ "peak_rss_mb": 4753.8
+}
+=== RESPONSE ===
+```python
+def test_join_param_hints_with_sequence():
+    param_hint = ["int", "str", "float"]
+    expected = "int / 'str' / 'float'"
+    assert _join_param_hints(param_hint) == expected
+
+def test_join_param_hints_with_string():
+    param_hint = "int"
+    expected = "int"
+    assert _join_param_hints(param_hint) == expected
+
+def test_join_param_hints_with_none():
+    param_hint = None
+    expected = None
+    assert _join_param_hints(param_hint) == expected
+```
+=== PYTEST ===
+FFF                                                                      [100%]
+=================================== FAILURES ===================================
+_____________________ test_join_param_hints_with_sequence ______________________
+
+    def test_join_param_hints_with_sequence():
+        param_hint = ["int", "str", "float"]
+        expected = "int / 'str' / 'float'"
+>       assert _join_param_hints(param_hint) == expected
+               ^^^^^^^^^^^^^^^^^
+E       NameError: name '_join_param_hints' is not defined
+
+test_r2__join_param_hints.py:4: NameError
+______________________ test_join_param_hints_with_string _______________________
+
+    def test_join_param_hints_with_string():
+        param_hint = "int"
+        expected = "int"
+>       assert _join_param_hints(param_hint) == expected
+               ^^^^^^^^^^^^^^^^^
+E       NameError: name '_join_param_hints' is not defined
+
+test_r2__join_param_hints.py:9: NameError
+_______________________ test_join_param_hints_with_none ________________________
+
+    def test_join_param_hints_with_none():
+        param_hint = None
+        expected = None
+>       assert _join_param_hints(param_hint) == expected
+               ^^^^^^^^^^^^^^^^^
+E       NameError: name '_join_param_hints' is not defined
+
+test_r2__join_param_hints.py:14: NameError
+=========================== short test summary info ============================
+FAILED test_r2__join_param_hints.py::test_join_param_hints_with_sequence - Na...
+FAILED test_r2__join_param_hints.py::test_join_param_hints_with_string - Name...
+FAILED test_r2__join_param_hints.py::test_join_param_hints_with_none - NameEr...
+3 failed in 0.01s
+
+=== ATTEMPT 1 ===
+{
+ "tok_s": 41.9,
+ "wall_s": 3.58,
+ "peak_rss_mb": 4729.6
+}
+=== RESPONSE ===
+```python
+import pytest
+from click.utils import _join_param_hints
+
+def test_join_param_hints_with_sequence():
+    param_hint = ["int", "str", "float"]
+    expected = "int / 'str' / float"
+    assert _join_param_hints(param_hint) == expected
+
+def test_join_param_hints_with_string():
+    param_hint = "int"
+    assert _join_param_hints(param_hint) == param_hint
+
+def test_join_param_hints_with_none():
+    param_hint = None
+    assert _join_param_hints(param_hint) is None
+```
+=== PYTEST ===
+============================= test session starts ==============================
+platform darwin -- Python 3.14.3, pytest-9.2.0, pluggy-1.7.0 -- /Users/srujansai/Desktop/AirG.A.P/harness/w6/venv/bin/python
+rootdir: /Users/srujansai/Desktop/AirG.A.P/harness/w6/sandbox/click
+configfile: pyproject.toml
+collecting ... collected 0 items / 1 error
+
+==================================== ERRORS ====================================
+________________ ERROR collecting test_r2__join_param_hints.py _________________
+ImportError while importing test module '/Users/srujansai/Desktop/AirG.A.P/harness/w6/sandbox/click/test_r2__join_param_hints.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/Library/Frameworks/Python.framework/Versions/3.14/lib/python3.14/importlib/__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+test_r2__join_param_hints.py:2: in <module>
+    from click.utils import _join_param_hints
+E   ImportError: cannot import name '_join_param_hints' from 'click.utils' (/Users/srujansai/Desktop/AirG.A.P/harness/w6/sandbox/click/src/click/utils.py)
+=========================== short test summary info ============================
+ERROR test_r2__join_param_hints.py
+!!!!!!!!!!!!!!!!!!!! Interrupted: 1 error during collection !!!!!!!!!!!!!!!!!!!!
+=============================== 1 error in 0.05s ===============================
+
+=== ATTEMPT 2 ===
+{
+ "tok_s": 41.2,
+ "wall_s": 4.71,
+ "peak_rss_mb": 4770.8
+}
+=== RESPONSE ===
+```python
+import pytest
+from click.utils import _join_param_hints
+
+def test_join_param_hints_with_sequence():
+    param_hint = ["arg1", "arg2", "arg3"]
+    expected_output = "'arg1' / 'arg2' / 'arg3'"
+    assert _join_param_hints(param_hint) == expected_output
+
+def test_join_param_hints_with_single_string():
+    param_hint = "arg1"
+    expected_output = "arg1"
+    assert _join_param_hints(param_hint) == expected_output
+
+def test_join_param_hints_with_none():
+    param_hint = None
+    expected_output = None
+    assert _join_param_hints(param_hint) == expected_output
+```
+=== PYTEST ===
+============================= test session starts ==============================
+platform darwin -- Python 3.14.3, pytest-9.2.0, pluggy-1.7.0 -- /Users/srujansai/Desktop/AirG.A.P/harness/w6/venv/bin/python
+rootdir: /Users/srujansai/Desktop/AirG.A.P/harness/w6/sandbox/click
+configfile: pyproject.toml
+collecting ... collected 0 items / 1 error
+
+==================================== ERRORS ====================================
+________________ ERROR collecting test_r2__join_param_hints.py _________________
+ImportError while importing test module '/Users/srujansai/Desktop/AirG.A.P/harness/w6/sandbox/click/test_r2__join_param_hints.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/Library/Frameworks/Python.framework/Versions/3.14/lib/python3.14/importlib/__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+test_r2__join_param_hints.py:2: in <module>
+    from click.utils import _join_param_hints
+E   ImportError: cannot import name '_join_param_hints' from 'click.utils' (/Users/srujansai/Desktop/AirG.A.P/harness/w6/sandbox/click/src/click/utils.py)
+=========================== short test summary info ============================
+ERROR test_r2__join_param_hints.py
+!!!!!!!!!!!!!!!!!!!! Interrupted: 1 error during collection !!!!!!!!!!!!!!!!!!!!
+=============================== 1 error in 0.06s ===============================
+
+=== ATTEMPT 3 ===
+{
+ "tok_s": 41.2,
+ "wall_s": 3.85,
+ "peak_rss_mb": 4722.6
+}
+=== RESPONSE ===
+```python
+from click.utils import _join_param_hints
+
+def test_join_param_hints_with_sequence():
+    param_hint = ["arg1", "arg2", "arg3"]
+    expected = "arg1 / arg2 / arg3"
+    assert _join_param_hints(param_hint) == expected
+
+def test_join_param_hints_with_single_string():
+    param_hint = "arg1"
+    expected = "arg1"
+    assert _join_param_hints(param_hint) == expected
+
+def test_join_param_hints_with_none():
+    param_hint = None
+    expected = None
+    assert _join_param_hints(param_hint) == expected
+```
+=== PYTEST ===
+============================= test session starts ==============================
+platform darwin -- Python 3.14.3, pytest-9.2.0, pluggy-1.7.0 -- /Users/srujansai/Desktop/AirG.A.P/harness/w6/venv/bin/python
+rootdir: /Users/srujansai/Desktop/AirG.A.P/harness/w6/sandbox/click
+configfile: pyproject.toml
+collecting ... collected 0 items / 1 error
+
+==================================== ERRORS ====================================
+________________ ERROR collecting test_r2__join_param_hints.py _________________
+ImportError while importing test module '/Users/srujansai/Desktop/AirG.A.P/harness/w6/sandbox/click/test_r2__join_param_hints.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/Library/Frameworks/Python.framework/Versions/3.14/lib/python3.14/importlib/__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+test_r2__join_param_hints.py:1: in <module>
+    from click.utils import _join_param_hints
+E   ImportError: cannot import name '_join_param_hints' from 'click.utils' (/Users/srujansai/Desktop/AirG.A.P/harness/w6/sandbox/click/src/click/utils.py)
+=========================== short test summary info ============================
+ERROR test_r2__join_param_hints.py
+!!!!!!!!!!!!!!!!!!!! Interrupted: 1 error during collection !!!!!!!!!!!!!!!!!!!!
+=============================== 1 error in 0.05s ===============================
+
+=== ATTEMPT 1 ===
+{
+ "tok_s": 41.9,
+ "wall_s": 3.44,
+ "peak_rss_mb": 4750.6
+}
+=== RESPONSE ===
+```python
+import pytest
+from click.exceptions import _join_param_hints
+
+def test_join_param_hints_with_sequence():
+    param_hint = ["arg1", "arg2", "arg3"]
+    expected = "arg1 / arg2 / arg3"
+    assert _join_param_hints(param_hint) == expected
+
+def test_join_param_hints_with_string():
+    param_hint = "arg1"
+    assert _join_param_hints(param_hint) == param_hint
+
+def test_join_param_hints_with_none():
+    param_hint = None
+    assert _join_param_hints(param_hint) is None
+```
+=== PYTEST ===
+============================= test session starts ==============================
+platform darwin -- Python 3.14.3, pytest-9.2.0, pluggy-1.7.0 -- /Users/srujansai/Desktop/AirG.A.P/harness/w6/venv/bin/python
+rootdir: /Users/srujansai/Desktop/AirG.A.P/harness/w6/sandbox/click
+configfile: pyproject.toml
+collecting ... collected 3 items
+
+test_r2__join_param_hints.py::test_join_param_hints_with_sequence FAILED [ 33%]
+test_r2__join_param_hints.py::test_join_param_hints_with_string PASSED   [ 66%]
+test_r2__join_param_hints.py::test_join_param_hints_with_none PASSED     [100%]
+
+=================================== FAILURES ===================================
+_____________________ test_join_param_hints_with_sequence ______________________
+
+    def test_join_param_hints_with_sequence():
+        param_hint = ["arg1", "arg2", "arg3"]
+        expected = "arg1 / arg2 / arg3"
+>       assert _join_param_hints(param_hint) == expected
+E       assert "'arg1' / 'arg2' / 'arg3'" == 'arg1 / arg2 / arg3'
+E         
+E         - arg1 / arg2 / arg3
+E         + 'arg1' / 'arg2' / 'arg3'
+E         ? +    +   +    +   +    +
+
+test_r2__join_param_hints.py:7: AssertionError
+=========================== short test summary info ============================
+FAILED test_r2__join_param_hints.py::test_join_param_hints_with_sequence - as...
+========================= 1 failed, 2 passed in 0.02s ==========================
+
+=== ATTEMPT 2 ===
+{
+ "tok_s": 42.5,
+ "wall_s": 4.54,
+ "peak_rss_mb": 4761.5
+}
+=== RESPONSE ===
+```python
+import pytest
+from click.exceptions import _join_param_hints
+
+def test_join_param_hints_with_sequence():
+    param_hint = ["arg1", "arg2", "arg3"]
+    expected = "arg1 / arg2 / arg3"
+    assert _join_param_hints(param_hint) == expected
+
+def test_join_param_hints_with_string():
+    param_hint = "arg1"
+    expected = "arg1"
+    assert _join_param_hints(param_hint) == expected
+
+def test_join_param_hints_with_none():
+    param_hint = None
+    expected = None
+    assert _join_param_hints(param_hint) == expected
+```
+=== PYTEST ===
+============================= test session starts ==============================
+platform darwin -- Python 3.14.3, pytest-9.2.0, pluggy-1.7.0 -- /Users/srujansai/Desktop/AirG.A.P/harness/w6/venv/bin/python
+rootdir: /Users/srujansai/Desktop/AirG.A.P/harness/w6/sandbox/click
+configfile: pyproject.toml
+collecting ... collected 3 items
+
+test_r2__join_param_hints.py::test_join_param_hints_with_sequence FAILED [ 33%]
+test_r2__join_param_hints.py::test_join_param_hints_with_string PASSED   [ 66%]
+test_r2__join_param_hints.py::test_join_param_hints_with_none PASSED     [100%]
+
+=================================== FAILURES ===================================
+_____________________ test_join_param_hints_with_sequence ______________________
+
+    def test_join_param_hints_with_sequence():
+        param_hint = ["arg1", "arg2", "arg3"]
+        expected = "arg1 / arg2 / arg3"
+>       assert _join_param_hints(param_hint) == expected
+E       assert "'arg1' / 'arg2' / 'arg3'" == 'arg1 / arg2 / arg3'
+E         
+E         - arg1 / arg2 / arg3
+E         + 'arg1' / 'arg2' / 'arg3'
+E         ? +    +   +    +   +    +
+
+test_r2__join_param_hints.py:7: AssertionError
+=========================== short test summary info ============================
+FAILED test_r2__join_param_hints.py::test_join_param_hints_with_sequence - as...
+========================= 1 failed, 2 passed in 0.02s ==========================
+
+=== ATTEMPT 3 ===
+{
+ "tok_s": 41.9,
+ "wall_s": 3.41,
+ "peak_rss_mb": 4710.7
+}
+=== RESPONSE ===
+```python
+from click.exceptions import _join_param_hints
+
+def test_join_param_hints_with_sequence():
+    param_hint = ["arg1", "arg2", "arg3"]
+    expected = "arg1 / arg2 / arg3"
+    assert _join_param_hints(param_hint) == expected
+
+def test_join_param_hints_with_string():
+    param_hint = "arg1"
+    expected = "arg1"
+    assert _join_param_hints(param_hint) == expected
+
+def test_join_param_hints_with_none():
+    param_hint = None
+    expected = None
+    assert _join_param_hints(param_hint) == expected
+```
+=== PYTEST ===
+============================= test session starts ==============================
+platform darwin -- Python 3.14.3, pytest-9.2.0, pluggy-1.7.0 -- /Users/srujansai/Desktop/AirG.A.P/harness/w6/venv/bin/python
+rootdir: /Users/srujansai/Desktop/AirG.A.P/harness/w6/sandbox/click
+configfile: pyproject.toml
+collecting ... collected 3 items
+
+test_r2__join_param_hints.py::test_join_param_hints_with_sequence FAILED [ 33%]
+test_r2__join_param_hints.py::test_join_param_hints_with_string PASSED   [ 66%]
+test_r2__join_param_hints.py::test_join_param_hints_with_none PASSED     [100%]
+
+=================================== FAILURES ===================================
+_____________________ test_join_param_hints_with_sequence ______________________
+
+    def test_join_param_hints_with_sequence():
+        param_hint = ["arg1", "arg2", "arg3"]
+        expected = "arg1 / arg2 / arg3"
+>       assert _join_param_hints(param_hint) == expected
+E       assert "'arg1' / 'arg2' / 'arg3'" == 'arg1 / arg2 / arg3'
+E         
+E         - arg1 / arg2 / arg3
+E         + 'arg1' / 'arg2' / 'arg3'
+E         ? +    +   +    +   +    +
+
+test_r2__join_param_hints.py:6: AssertionError
+=========================== short test summary info ============================
+FAILED test_r2__join_param_hints.py::test_join_param_hints_with_sequence - as...
+========================= 1 failed, 2 passed in 0.02s ==========================

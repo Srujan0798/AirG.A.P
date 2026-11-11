@@ -1,0 +1,1344 @@
+
+=== ATTEMPT 1 ===
+{
+ "tok_s": 36.7,
+ "wall_s": 12.71,
+ "peak_rss_mb": 4791.5
+}
+=== RESPONSE ===
+```python
+import pytest
+from .parser import wrap_text
+
+def test_wrap_text_single_paragraph():
+    text = "This is a single paragraph of text that should be wrapped."
+    width = 20
+    expected = "This is a single\nparagraph of text that\nshould be wrapped."
+    assert wrap_text(text, width) == expected
+
+def test_wrap_text_preserve_paragraphs():
+    text = "This is the first paragraph.\n\nThis is the second paragraph.\n\nThis is the third paragraph."
+    width = 20
+    expected = "This is the first\nparagraph.\n\nThis is the second\nparagraph.\n\nThis is the third\nparagraph."
+    assert wrap_text(text, width, preserve_paragraphs=True) == expected
+
+def test_wrap_text_initial_indent():
+    text = "This is a single paragraph of text that should be wrapped."
+    width = 20
+    initial_indent = "    "
+    expected = "    This is a\n    single paragraph\n    of text that\n    should be\n    wrapped."
+    assert wrap_text(text, width, initial_indent=initial_indent) == expected
+
+def test_wrap_text_subsequent_indent():
+    text = "This is a single paragraph of text that should be wrapped."
+    width = 20
+    subsequent_indent = "    "
+    expected = "This is a\n    single paragraph\n    of text that\n    should be\n    wrapped."
+    assert wrap_text(text, width, subsequent_indent=subsequent_indent) == expected
+
+def test_wrap_text_no_rewrap_in_block():
+    text = "\bThis is a single paragraph of text that should not be rewrapped."
+    width = 20
+    expected = "This is a single\nparagraph of text that\nshould not be rewrapped."
+    assert wrap_text(text, width, preserve_paragraphs=True) == expected
+```
+=== PYTEST ===
+
+==================================== ERRORS ====================================
+____________________ ERROR collecting test_r2_wrap_text.py _____________________
+ImportError while importing test module '/Users/srujansai/Desktop/AirG.A.P/harness/w6/sandbox/click/test_r2_wrap_text.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/Library/Frameworks/Python.framework/Versions/3.14/lib/python3.14/importlib/__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+test_r2_wrap_text.py:2: in <module>
+    from .parser import wrap_text
+E   ImportError: attempted relative import with no known parent package
+=========================== short test summary info ============================
+ERROR test_r2_wrap_text.py
+!!!!!!!!!!!!!!!!!!!! Interrupted: 1 error during collection !!!!!!!!!!!!!!!!!!!!
+1 error in 0.07s
+
+=== ATTEMPT 2 ===
+{
+ "tok_s": 36.7,
+ "wall_s": 10.81,
+ "peak_rss_mb": 4716.6
+}
+=== RESPONSE ===
+```python
+from click import wrap_text
+
+def test_wrap_text_single_paragraph():
+    """Wrap text in a single paragraph."""
+    text = "This is a single paragraph that should be wrapped."
+    expected = "This is a single paragraph that should be\nwrapped."
+    assert wrap_text(text, width=20) == expected
+
+def test_wrap_text_preserve_paragraphs():
+    """Wrap text while preserving paragraphs."""
+    text = "This is the first paragraph.\n\nThis is the second paragraph."
+    expected = "This is the first paragraph.\n\nThis is the second\nparagraph."
+    assert wrap_text(text, width=20, preserve_paragraphs=True) == expected
+
+def test_wrap_text_initial_indent():
+    """Wrap text with initial indent."""
+    text = "This is a single paragraph that should be wrapped."
+    expected = "    This is a single paragraph\n    that should be wrapped."
+    assert wrap_text(text, width=20, initial_indent="    ") == expected
+
+def test_wrap_text_subsequent_indent():
+    """Wrap text with subsequent indent."""
+    text = "This is a single paragraph that should be wrapped."
+    expected = "This is a single paragraph\n    that should be wrapped."
+    assert wrap_text(text, width=20, subsequent_indent="    ") == expected
+
+def test_wrap_text_no_rewrap():
+    """Wrap text with no rewrap."""
+    text = "This is a single paragraph that should be wrapped.\n\n\\bThis is a block that should not be rewrapped."
+    expected = "This is a single paragraph\n    that should be wrapped.\n\nThis is a block that should not be rewrapped."
+    assert wrap_text(text, width=20, preserve_paragraphs=True) == expected
+```
+=== PYTEST ===
+FFFFF                                                                    [100%]
+=================================== FAILURES ===================================
+_______________________ test_wrap_text_single_paragraph ________________________
+
+    def test_wrap_text_single_paragraph():
+        """Wrap text in a single paragraph."""
+        text = "This is a single paragraph that should be wrapped."
+        expected = "This is a single paragraph that should be\nwrapped."
+>       assert wrap_text(text, width=20) == expected
+E       AssertionError: assert 'This is a si...d be wrapped.' == 'This is a si... be\nwrapped.'
+E         
+E         - This is a single paragraph that should be
+E         - wrapped.
+E         + This is a single
+E         + paragraph that
+E         + should be wrapped.
+
+test_r2_wrap_text.py:7: AssertionError
+______________________ test_wrap_text_preserve_paragraphs ______________________
+
+    def test_wrap_text_preserve_paragraphs():
+        """Wrap text while preserving paragraphs."""
+        text = "This is the first paragraph.\n\nThis is the second paragraph."
+        expected = "This is the first paragraph.\n\nThis is the second\nparagraph."
+>       assert wrap_text(text, width=20, preserve_paragraphs=True) == expected
+E       AssertionError: assert 'This is the ...d\nparagraph.' == 'This is the ...d\nparagraph.'
+E         
+E         - This is the first paragraph.
+E         ?                  -----------
+E         + This is the first
+E         + paragraph.
+E           
+E           This is the second
+E           paragraph.
+
+test_r2_wrap_text.py:13: AssertionError
+________________________ test_wrap_text_initial_indent _________________________
+
+    def test_wrap_text_initial_indent():
+        """Wrap text with initial indent."""
+        text = "This is a single paragraph that should be wrapped."
+        expected = "    This is a single paragraph\n    that should be wrapped."
+>       assert wrap_text(text, width=20, initial_indent="    ") == expected
+E       AssertionError: assert '    This is ...d be wrapped.' == '    This is ...d be wrapped.'
+E         
+E         -     This is a single paragraph
+E         ?                     ----------
+E         +     This is a single
+E         + paragraph that
+E         -     that should be wrapped.
+E         ? ---------
+E         + should be wrapped.
+
+test_r2_wrap_text.py:19: AssertionError
+_______________________ test_wrap_text_subsequent_indent _______________________
+
+    def test_wrap_text_subsequent_indent():
+        """Wrap text with subsequent indent."""
+        text = "This is a single paragraph that should be wrapped."
+        expected = "This is a single paragraph\n    that should be wrapped."
+>       assert wrap_text(text, width=20, subsequent_indent="    ") == expected
+E       AssertionError: assert 'This is a si...n    wrapped.' == 'This is a si...d be wrapped.'
+E         
+E         - This is a single paragraph
+E         ?                 ----------
+E         + This is a single
+E         -     that should be wrapped.
+E         +     paragraph that
+E         +     should be
+E         +     wrapped.
+
+test_r2_wrap_text.py:25: AssertionError
+___________________________ test_wrap_text_no_rewrap ___________________________
+
+    def test_wrap_text_no_rewrap():
+        """Wrap text with no rewrap."""
+        text = "This is a single paragraph that should be wrapped.\n\n\\bThis is a block that should not be rewrapped."
+        expected = "This is a single paragraph\n    that should be wrapped.\n\nThis is a block that should not be rewrapped."
+>       assert wrap_text(text, width=20, preserve_paragraphs=True) == expected
+E       AssertionError: assert 'This is a si...e\nrewrapped.' == 'This is a si...be rewrapped.'
+E         
+E         - This is a single paragraph
+E         ?                 ----------
+E         + This is a single
+E         + paragraph that
+E         -     that should be wrapped.
+E         ? ---------...
+E         
+E         ...Full output truncated, use '-vv' to show
+
+test_r2_wrap_text.py:31: AssertionError
+=========================== short test summary info ============================
+FAILED test_r2_wrap_text.py::test_wrap_text_single_paragraph - AssertionError...
+FAILED test_r2_wrap_text.py::test_wrap_text_preserve_paragraphs - AssertionEr...
+FAILED test_r2_wrap_text.py::test_wrap_text_initial_indent - AssertionError: ...
+FAILED test_r2_wrap_text.py::test_wrap_text_subsequent_indent - AssertionErro...
+FAILED test_r2_wrap_text.py::test_wrap_text_no_rewrap - AssertionError: asser...
+5 failed in 0.03s
+
+=== ATTEMPT 3 ===
+{
+ "tok_s": 37.1,
+ "wall_s": 11.56,
+ "peak_rss_mb": 4720.7
+}
+=== RESPONSE ===
+```python
+def test_wrap_text_single_paragraph():
+    """Wrap text with a single paragraph."""
+    text = "This is a single paragraph that should be wrapped."
+    expected = "This is a single\nparagraph that should be\nwrapped."
+    assert wrap_text(text, width=20) == expected
+
+def test_wrap_text_preserve_paragraphs():
+    """Wrap text with preserved paragraphs."""
+    text = "This is a single paragraph that should be wrapped.\n\n\\bThis is a block that should not be rewrapped."
+    expected = "This is a single\nparagraph that should be\nwrapped.\n\nThis is a block that should not be rewrapped."
+    assert wrap_text(text, width=20, preserve_paragraphs=True) == expected
+
+def test_wrap_text_initial_indent():
+    """Wrap text with initial indent."""
+    text = "This is a single paragraph that should be wrapped."
+    expected = "    This is a single\n    paragraph that should be\n    wrapped."
+    assert wrap_text(text, width=20, initial_indent="    ") == expected
+
+def test_wrap_text_subsequent_indent():
+    """Wrap text with subsequent indent."""
+    text = "This is a single paragraph that should be wrapped."
+    expected = "This is a single\n    paragraph that should be\n    wrapped."
+    assert wrap_text(text, width=20, initial_indent="    ", subsequent_indent="    ") == expected
+
+def test_wrap_text_no_rewrap():
+    """Wrap text with no rewrap."""
+    text = "This is a single paragraph that should be wrapped.\n\n\\bThis is a block that should not be rewrapped."
+    expected = "This is a single\nparagraph that should be\nwrapped.\n\nThis is a block that should not be rewrapped."
+    assert wrap_text(text, width=20, preserve_paragraphs=True) == expected
+```
+=== PYTEST ===
+FFFFF                                                                    [100%]
+=================================== FAILURES ===================================
+_______________________ test_wrap_text_single_paragraph ________________________
+
+    def test_wrap_text_single_paragraph():
+        """Wrap text with a single paragraph."""
+        text = "This is a single paragraph that should be wrapped."
+        expected = "This is a single\nparagraph that should be\nwrapped."
+>       assert wrap_text(text, width=20) == expected
+               ^^^^^^^^^
+E       NameError: name 'wrap_text' is not defined
+
+test_r2_wrap_text.py:5: NameError
+______________________ test_wrap_text_preserve_paragraphs ______________________
+
+    def test_wrap_text_preserve_paragraphs():
+        """Wrap text with preserved paragraphs."""
+        text = "This is a single paragraph that should be wrapped.\n\n\\bThis is a block that should not be rewrapped."
+        expected = "This is a single\nparagraph that should be\nwrapped.\n\nThis is a block that should not be rewrapped."
+>       assert wrap_text(text, width=20, preserve_paragraphs=True) == expected
+               ^^^^^^^^^
+E       NameError: name 'wrap_text' is not defined
+
+test_r2_wrap_text.py:11: NameError
+________________________ test_wrap_text_initial_indent _________________________
+
+    def test_wrap_text_initial_indent():
+        """Wrap text with initial indent."""
+        text = "This is a single paragraph that should be wrapped."
+        expected = "    This is a single\n    paragraph that should be\n    wrapped."
+>       assert wrap_text(text, width=20, initial_indent="    ") == expected
+               ^^^^^^^^^
+E       NameError: name 'wrap_text' is not defined
+
+test_r2_wrap_text.py:17: NameError
+_______________________ test_wrap_text_subsequent_indent _______________________
+
+    def test_wrap_text_subsequent_indent():
+        """Wrap text with subsequent indent."""
+        text = "This is a single paragraph that should be wrapped."
+        expected = "This is a single\n    paragraph that should be\n    wrapped."
+>       assert wrap_text(text, width=20, initial_indent="    ", subsequent_indent="    ") == expected
+               ^^^^^^^^^
+E       NameError: name 'wrap_text' is not defined
+
+test_r2_wrap_text.py:23: NameError
+___________________________ test_wrap_text_no_rewrap ___________________________
+
+    def test_wrap_text_no_rewrap():
+        """Wrap text with no rewrap."""
+        text = "This is a single paragraph that should be wrapped.\n\n\\bThis is a block that should not be rewrapped."
+        expected = "This is a single\nparagraph that should be\nwrapped.\n\nThis is a block that should not be rewrapped."
+>       assert wrap_text(text, width=20, preserve_paragraphs=True) == expected
+               ^^^^^^^^^
+E       NameError: name 'wrap_text' is not defined
+
+test_r2_wrap_text.py:29: NameError
+=========================== short test summary info ============================
+FAILED test_r2_wrap_text.py::test_wrap_text_single_paragraph - NameError: nam...
+FAILED test_r2_wrap_text.py::test_wrap_text_preserve_paragraphs - NameError: ...
+FAILED test_r2_wrap_text.py::test_wrap_text_initial_indent - NameError: name ...
+FAILED test_r2_wrap_text.py::test_wrap_text_subsequent_indent - NameError: na...
+FAILED test_r2_wrap_text.py::test_wrap_text_no_rewrap - NameError: name 'wrap...
+5 failed in 0.02s
+
+=== ATTEMPT 1 ===
+{
+ "tok_s": 38.5,
+ "wall_s": 9.61,
+ "peak_rss_mb": 4855.6
+}
+=== RESPONSE ===
+```python
+from click import wrap_text
+
+def test_wrap_text_single_paragraph():
+    text = "This is a single paragraph of text that should be wrapped."
+    width = 20
+    expected = "This is a single\nparagraph of text that\nshould be wrapped."
+    assert wrap_text(text, width) == expected
+
+def test_wrap_text_preserve_paragraphs():
+    text = "This is a paragraph.\n\nThis is another paragraph.\n\n\\b This should not be rewrapped."
+    width = 20
+    expected = "This is a\nparagraph.\n\nThis is\nanother\nparagraph.\n\nThis should\nnot be\nrewrapped."
+    assert wrap_text(text, width, preserve_paragraphs=True) == expected
+
+def test_wrap_text_initial_indent():
+    text = "This is a paragraph."
+    width = 20
+    initial_indent = "    "
+    expected = "    This is a\n    paragraph."
+    assert wrap_text(text, width, initial_indent=initial_indent) == expected
+
+def test_wrap_text_subsequent_indent():
+    text = "This is a paragraph.\nThis is another paragraph."
+    width = 20
+    subsequent_indent = "    "
+    expected = "This is a\n    paragraph.\nThis is\n    another\n    paragraph."
+    assert wrap_text(text, width, subsequent_indent=subsequent_indent) == expected
+
+def test_wrap_text_tab_expansion():
+    text = "This is a\ttabbed paragraph."
+    width = 20
+    expected = "This is a\ntabbed paragraph."
+    assert wrap_text(text, width) == expected
+```
+=== PYTEST ===
+FFFF.                                                                    [100%]
+=================================== FAILURES ===================================
+_______________________ test_wrap_text_single_paragraph ________________________
+
+    def test_wrap_text_single_paragraph():
+        text = "This is a single paragraph of text that should be wrapped."
+        width = 20
+        expected = "This is a single\nparagraph of text that\nshould be wrapped."
+>       assert wrap_text(text, width) == expected
+E       AssertionError: assert 'This is a si... be\nwrapped.' == 'This is a si...d be wrapped.'
+E         
+E           This is a single
+E         - paragraph of text that
+E         ?                  -----
+E         + paragraph of text
+E         - should be wrapped.
+E         + that should be
+E         + wrapped.
+
+test_r2_wrap_text.py:7: AssertionError
+______________________ test_wrap_text_preserve_paragraphs ______________________
+
+    def test_wrap_text_preserve_paragraphs():
+        text = "This is a paragraph.\n\nThis is another paragraph.\n\n\\b This should not be rewrapped."
+        width = 20
+        expected = "This is a\nparagraph.\n\nThis is\nanother\nparagraph.\n\nThis should\nnot be\nrewrapped."
+>       assert wrap_text(text, width, preserve_paragraphs=True) == expected
+E       AssertionError: assert 'This is a pa...be rewrapped.' == 'This is a\np...e\nrewrapped.'
+E         
+E         + This is a paragraph.
+E         + 
+E         - This is a
+E         + This is another
+E         ?          ++++++
+E           paragraph....
+E         
+E         ...Full output truncated, use '-vv' to show
+
+test_r2_wrap_text.py:13: AssertionError
+________________________ test_wrap_text_initial_indent _________________________
+
+    def test_wrap_text_initial_indent():
+        text = "This is a paragraph."
+        width = 20
+        initial_indent = "    "
+        expected = "    This is a\n    paragraph."
+>       assert wrap_text(text, width, initial_indent=initial_indent) == expected
+E       AssertionError: assert '    This is a\nparagraph.' == '    This is ...   paragraph.'
+E         
+E               This is a
+E         -     paragraph.
+E         ? ----
+E         + paragraph.
+
+test_r2_wrap_text.py:20: AssertionError
+_______________________ test_wrap_text_subsequent_indent _______________________
+
+    def test_wrap_text_subsequent_indent():
+        text = "This is a paragraph.\nThis is another paragraph."
+        width = 20
+        subsequent_indent = "    "
+        expected = "This is a\n    paragraph.\nThis is\n    another\n    paragraph."
+>       assert wrap_text(text, width, subsequent_indent=subsequent_indent) == expected
+E       AssertionError: assert 'This is a pa...   paragraph.' == 'This is a\n ...   paragraph.'
+E         
+E         + This is a paragraph.
+E         - This is a
+E         -     paragraph.
+E         - This is
+E         -     another
+E         +     This is another
+E         ?    ++++++++
+E               paragraph.
+
+test_r2_wrap_text.py:27: AssertionError
+=========================== short test summary info ============================
+FAILED test_r2_wrap_text.py::test_wrap_text_single_paragraph - AssertionError...
+FAILED test_r2_wrap_text.py::test_wrap_text_preserve_paragraphs - AssertionEr...
+FAILED test_r2_wrap_text.py::test_wrap_text_initial_indent - AssertionError: ...
+FAILED test_r2_wrap_text.py::test_wrap_text_subsequent_indent - AssertionErro...
+4 failed, 1 passed in 0.02s
+
+=== ATTEMPT 2 ===
+{
+ "tok_s": 36.6,
+ "wall_s": 7.83,
+ "peak_rss_mb": 4711.6
+}
+=== RESPONSE ===
+```python
+def test_wrap_text_single_paragraph():
+    text = "This is a paragraph."
+    width = 20
+    expected = "This is a\nparagraph."
+    assert wrap_text(text, width) == expected
+
+def test_wrap_text_preserve_paragraphs():
+    text = "This is a paragraph.\n\nThis is another paragraph."
+    width = 20
+    expected = "This is a\nparagraph.\n\nThis is\nanother\nparagraph."
+    assert wrap_text(text, width, preserve_paragraphs=True) == expected
+
+def test_wrap_text_initial_indent():
+    text = "This is a paragraph."
+    width = 20
+    initial_indent = "    "
+    expected = "    This is a\n    paragraph."
+    assert wrap_text(text, width, initial_indent=initial_indent) == expected
+
+def test_wrap_text_subsequent_indent():
+    text = "This is a paragraph.\nThis is another paragraph."
+    width = 20
+    subsequent_indent = "    "
+    expected = "This is a\n    paragraph.\nThis is\n    another\n    paragraph."
+    assert wrap_text(text, width, subsequent_indent=subsequent_indent) == expected
+```
+=== PYTEST ===
+FFFF                                                                     [100%]
+=================================== FAILURES ===================================
+_______________________ test_wrap_text_single_paragraph ________________________
+
+    def test_wrap_text_single_paragraph():
+        text = "This is a paragraph."
+        width = 20
+        expected = "This is a\nparagraph."
+>       assert wrap_text(text, width) == expected
+               ^^^^^^^^^
+E       NameError: name 'wrap_text' is not defined
+
+test_r2_wrap_text.py:5: NameError
+______________________ test_wrap_text_preserve_paragraphs ______________________
+
+    def test_wrap_text_preserve_paragraphs():
+        text = "This is a paragraph.\n\nThis is another paragraph."
+        width = 20
+        expected = "This is a\nparagraph.\n\nThis is\nanother\nparagraph."
+>       assert wrap_text(text, width, preserve_paragraphs=True) == expected
+               ^^^^^^^^^
+E       NameError: name 'wrap_text' is not defined
+
+test_r2_wrap_text.py:11: NameError
+________________________ test_wrap_text_initial_indent _________________________
+
+    def test_wrap_text_initial_indent():
+        text = "This is a paragraph."
+        width = 20
+        initial_indent = "    "
+        expected = "    This is a\n    paragraph."
+>       assert wrap_text(text, width, initial_indent=initial_indent) == expected
+               ^^^^^^^^^
+E       NameError: name 'wrap_text' is not defined
+
+test_r2_wrap_text.py:18: NameError
+_______________________ test_wrap_text_subsequent_indent _______________________
+
+    def test_wrap_text_subsequent_indent():
+        text = "This is a paragraph.\nThis is another paragraph."
+        width = 20
+        subsequent_indent = "    "
+        expected = "This is a\n    paragraph.\nThis is\n    another\n    paragraph."
+>       assert wrap_text(text, width, subsequent_indent=subsequent_indent) == expected
+               ^^^^^^^^^
+E       NameError: name 'wrap_text' is not defined
+
+test_r2_wrap_text.py:25: NameError
+=========================== short test summary info ============================
+FAILED test_r2_wrap_text.py::test_wrap_text_single_paragraph - NameError: nam...
+FAILED test_r2_wrap_text.py::test_wrap_text_preserve_paragraphs - NameError: ...
+FAILED test_r2_wrap_text.py::test_wrap_text_initial_indent - NameError: name ...
+FAILED test_r2_wrap_text.py::test_wrap_text_subsequent_indent - NameError: na...
+4 failed in 0.20s
+
+=== ATTEMPT 3 ===
+{
+ "tok_s": 37.5,
+ "wall_s": 8.01,
+ "peak_rss_mb": 4723.9
+}
+=== RESPONSE ===
+```python
+import pytest
+from .parser import wrap_text
+
+def test_wrap_text_single_paragraph():
+    text = "This is a paragraph."
+    width = 20
+    expected = "This is a\nparagraph."
+    assert wrap_text(text, width) == expected
+
+def test_wrap_text_preserve_paragraphs():
+    text = "This is a paragraph.\n\nThis is another paragraph."
+    width = 20
+    expected = "This is a\nparagraph.\n\nThis is\nanother\nparagraph."
+    assert wrap_text(text, width, preserve_paragraphs=True) == expected
+
+def test_wrap_text_initial_indent():
+    text = "This is a paragraph."
+    width = 20
+    initial_indent = "    "
+    expected = "    This is a\n    paragraph."
+    assert wrap_text(text, width, initial_indent=initial_indent) == expected
+
+def test_wrap_text_subsequent_indent():
+    text = "This is a paragraph.\nThis is another paragraph."
+    width = 20
+    subsequent_indent = "    "
+    expected = "This is a\n    paragraph.\nThis is\n    another\n    paragraph."
+    assert wrap_text(text, width, subsequent_indent=subsequent_indent) == expected
+```
+=== PYTEST ===
+
+==================================== ERRORS ====================================
+____________________ ERROR collecting test_r2_wrap_text.py _____________________
+ImportError while importing test module '/Users/srujansai/Desktop/AirG.A.P/harness/w6/sandbox/click/test_r2_wrap_text.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/Library/Frameworks/Python.framework/Versions/3.14/lib/python3.14/importlib/__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+test_r2_wrap_text.py:2: in <module>
+    from .parser import wrap_text
+E   ImportError: attempted relative import with no known parent package
+=========================== short test summary info ============================
+ERROR test_r2_wrap_text.py
+!!!!!!!!!!!!!!!!!!!! Interrupted: 1 error during collection !!!!!!!!!!!!!!!!!!!!
+1 error in 0.10s
+
+=== ATTEMPT 1 ===
+{
+ "tok_s": 40.1,
+ "wall_s": 12.72,
+ "peak_rss_mb": 4785.3
+}
+=== RESPONSE ===
+```python
+import click
+from click._textwrap import TextWrapper
+from click._compat import term_len
+
+def test_wrap_text_single_paragraph():
+    text = "This is a single paragraph of text that should be wrapped."
+    expected = "This is a single paragraph of text that should\nbe wrapped."
+    assert click.formatting.wrap_text(text) == expected
+
+def test_wrap_text_preserve_paragraphs():
+    text = "This is the first paragraph.\n\nThis is the second paragraph."
+    expected = "This is the first paragraph.\n\nThis is the second paragraph."
+    assert click.formatting.wrap_text(text, preserve_paragraphs=True) == expected
+
+def test_wrap_text_initial_indent():
+    text = "This is a single paragraph of text that should be wrapped."
+    expected = "    This is a single paragraph of text that should\n    be wrapped."
+    assert click.formatting.wrap_text(text, initial_indent="    ") == expected
+
+def test_wrap_text_subsequent_indent():
+    text = "This is a single paragraph of text that should be wrapped."
+    expected = "This is a single paragraph of text that should\nbe wrapped."
+    assert click.formatting.wrap_text(text, subsequent_indent=" ") == expected
+
+def test_wrap_text_width():
+    text = "This is a single paragraph of text that should be wrapped."
+    expected = "This is a single paragraph of text that should\nbe wrapped."
+    assert click.formatting.wrap_text(text, width=20) == expected
+
+def test_wrap_text_empty_paragraph():
+    text = "This is the first paragraph.\n\nThis is the second paragraph."
+    expected = "This is the first paragraph.\n\nThis is the second paragraph."
+    assert click.formatting.wrap_text(text, preserve_paragraphs=True) == expected
+
+def test_wrap_text_raw_paragraph():
+    text = "\bThis is a raw paragraph that should not be wrapped."
+    expected = "\bThis is a raw paragraph that should not be wrapped."
+    assert click.formatting.wrap_text(text, preserve_paragraphs=True) == expected
+```
+=== PYTEST ===
+============================= test session starts ==============================
+platform darwin -- Python 3.14.3, pytest-9.2.0, pluggy-1.7.0 -- /Users/srujansai/Desktop/AirG.A.P/harness/w6/venv/bin/python
+rootdir: /Users/srujansai/Desktop/AirG.A.P/harness/w6/sandbox/click
+configfile: pyproject.toml
+collecting ... collected 7 items
+
+test_r2_wrap_text.py::test_wrap_text_single_paragraph FAILED             [ 14%]
+test_r2_wrap_text.py::test_wrap_text_preserve_paragraphs PASSED          [ 28%]
+test_r2_wrap_text.py::test_wrap_text_initial_indent FAILED               [ 42%]
+test_r2_wrap_text.py::test_wrap_text_subsequent_indent FAILED            [ 57%]
+test_r2_wrap_text.py::test_wrap_text_width FAILED                        [ 71%]
+test_r2_wrap_text.py::test_wrap_text_empty_paragraph PASSED              [ 85%]
+test_r2_wrap_text.py::test_wrap_text_raw_paragraph PASSED                [100%]
+
+=================================== FAILURES ===================================
+_______________________ test_wrap_text_single_paragraph ________________________
+
+    def test_wrap_text_single_paragraph():
+        text = "This is a single paragraph of text that should be wrapped."
+        expected = "This is a single paragraph of text that should\nbe wrapped."
+>       assert click.formatting.wrap_text(text) == expected
+E       AssertionError: assert 'This is a si...d be wrapped.' == 'This is a si...\nbe wrapped.'
+E         
+E         - This is a single paragraph of text that should
+E         ?                                               ^
+E         + This is a single paragraph of text that should be wrapped.
+E         ?                                               ^^^^^^^^^^^^
+E         - be wrapped.
+
+test_r2_wrap_text.py:8: AssertionError
+________________________ test_wrap_text_initial_indent _________________________
+
+    def test_wrap_text_initial_indent():
+        text = "This is a single paragraph of text that should be wrapped."
+        expected = "    This is a single paragraph of text that should\n    be wrapped."
+>       assert click.formatting.wrap_text(text, initial_indent="    ") == expected
+E       AssertionError: assert '    This is ...d be wrapped.' == '    This is ...  be wrapped.'
+E         
+E         -     This is a single paragraph of text that should
+E         ?                                                   ^
+E         +     This is a single paragraph of text that should be wrapped.
+E         ?                                                   ^^^^^^^^^^^^
+E         -     be wrapped.
+
+test_r2_wrap_text.py:18: AssertionError
+_______________________ test_wrap_text_subsequent_indent _______________________
+
+    def test_wrap_text_subsequent_indent():
+        text = "This is a single paragraph of text that should be wrapped."
+        expected = "This is a single paragraph of text that should\nbe wrapped."
+>       assert click.formatting.wrap_text(text, subsequent_indent=" ") == expected
+E       AssertionError: assert 'This is a si...d be wrapped.' == 'This is a si...\nbe wrapped.'
+E         
+E         - This is a single paragraph of text that should
+E         ?                                               ^
+E         + This is a single paragraph of text that should be wrapped.
+E         ?                                               ^^^^^^^^^^^^
+E         - be wrapped.
+
+test_r2_wrap_text.py:23: AssertionError
+_____________________________ test_wrap_text_width _____________________________
+
+    def test_wrap_text_width():
+        text = "This is a single paragraph of text that should be wrapped."
+        expected = "This is a single paragraph of text that should\nbe wrapped."
+>       assert click.formatting.wrap_text(text, width=20) == expected
+E       AssertionError: assert 'This is a si... be\nwrapped.' == 'This is a si...\nbe wrapped.'
+E         
+E         - This is a single paragraph of text that should
+E         + This is a single
+E         + paragraph of text
+E         + that should be
+E         - be wrapped.
+E         ? ---
+E         + wrapped.
+
+test_r2_wrap_text.py:28: AssertionError
+=========================== short test summary info ============================
+FAILED test_r2_wrap_text.py::test_wrap_text_single_paragraph - AssertionError...
+FAILED test_r2_wrap_text.py::test_wrap_text_initial_indent - AssertionError: ...
+FAILED test_r2_wrap_text.py::test_wrap_text_subsequent_indent - AssertionErro...
+FAILED test_r2_wrap_text.py::test_wrap_text_width - AssertionError: assert 'T...
+========================= 4 failed, 3 passed in 0.04s ==========================
+
+=== ATTEMPT 2 ===
+{
+ "tok_s": 39.3,
+ "wall_s": 11.47,
+ "peak_rss_mb": 4804.1
+}
+=== RESPONSE ===
+```python
+import click
+from click._compat import term_len
+
+def test_wrap_text_single_paragraph():
+    text = "This is a single paragraph of text that should be wrapped."
+    expected = "This is a single paragraph of text that should\nbe wrapped."
+    assert click.formatting.wrap_text(text, width=20) == expected
+
+def test_wrap_text_initial_indent():
+    text = "This is a single paragraph of text that should be wrapped."
+    expected = "    This is a single\n    paragraph of text that should\n    be wrapped."
+    assert click.formatting.wrap_text(text, width=20, initial_indent="    ") == expected
+
+def test_wrap_text_subsequent_indent():
+    text = "This is a single paragraph of text that should be wrapped."
+    expected = "This is a single\nparagraph of text that should\nbe wrapped."
+    assert click.formatting.wrap_text(text, width=20, subsequent_indent="") == expected
+
+def test_wrap_text_preserve_paragraphs():
+    text = "This is a single paragraph of text that should be wrapped.\n\nThis is another paragraph."
+    expected = "This is a single paragraph of text that should\nbe wrapped.\n\nThis is another paragraph."
+    assert click.formatting.wrap_text(text, width=20, preserve_paragraphs=True) == expected
+
+def test_wrap_text_preserve_paragraphs_with_raw_block():
+    text = "This is a single paragraph of text that should be wrapped.\n\n\bThis is another paragraph."
+    expected = "This is a single paragraph of text that should\nbe wrapped.\n\nThis is another paragraph."
+    assert click.formatting.wrap_text(text, width=20, preserve_paragraphs=True) == expected
+```
+=== PYTEST ===
+============================= test session starts ==============================
+platform darwin -- Python 3.14.3, pytest-9.2.0, pluggy-1.7.0 -- /Users/srujansai/Desktop/AirG.A.P/harness/w6/venv/bin/python
+rootdir: /Users/srujansai/Desktop/AirG.A.P/harness/w6/sandbox/click
+configfile: pyproject.toml
+collecting ... collected 5 items
+
+test_r2_wrap_text.py::test_wrap_text_single_paragraph FAILED             [ 20%]
+test_r2_wrap_text.py::test_wrap_text_initial_indent FAILED               [ 40%]
+test_r2_wrap_text.py::test_wrap_text_subsequent_indent FAILED            [ 60%]
+test_r2_wrap_text.py::test_wrap_text_preserve_paragraphs FAILED          [ 80%]
+test_r2_wrap_text.py::test_wrap_text_preserve_paragraphs_with_raw_block FAILED [100%]
+
+=================================== FAILURES ===================================
+_______________________ test_wrap_text_single_paragraph ________________________
+
+    def test_wrap_text_single_paragraph():
+        text = "This is a single paragraph of text that should be wrapped."
+        expected = "This is a single paragraph of text that should\nbe wrapped."
+>       assert click.formatting.wrap_text(text, width=20) == expected
+E       AssertionError: assert 'This is a si... be\nwrapped.' == 'This is a si...\nbe wrapped.'
+E         
+E         - This is a single paragraph of text that should
+E         + This is a single
+E         + paragraph of text
+E         + that should be
+E         - be wrapped.
+E         ? ---
+E         + wrapped.
+
+test_r2_wrap_text.py:7: AssertionError
+________________________ test_wrap_text_initial_indent _________________________
+
+    def test_wrap_text_initial_indent():
+        text = "This is a single paragraph of text that should be wrapped."
+        expected = "    This is a single\n    paragraph of text that should\n    be wrapped."
+>       assert click.formatting.wrap_text(text, width=20, initial_indent="    ") == expected
+E       AssertionError: assert '    This is ... be\nwrapped.' == '    This is ...  be wrapped.'
+E         
+E               This is a single
+E         -     paragraph of text that should
+E         -     be wrapped.
+E         + paragraph of text
+E         + that should be
+E         + wrapped.
+
+test_r2_wrap_text.py:12: AssertionError
+_______________________ test_wrap_text_subsequent_indent _______________________
+
+    def test_wrap_text_subsequent_indent():
+        text = "This is a single paragraph of text that should be wrapped."
+        expected = "This is a single\nparagraph of text that should\nbe wrapped."
+>       assert click.formatting.wrap_text(text, width=20, subsequent_indent="") == expected
+E       AssertionError: assert 'This is a si... be\nwrapped.' == 'This is a si...\nbe wrapped.'
+E         
+E           This is a single
+E         - paragraph of text that should
+E         ?                  ------------
+E         + paragraph of text
+E         + that should be
+E         - be wrapped.
+E         ? ---
+E         + wrapped.
+
+test_r2_wrap_text.py:17: AssertionError
+______________________ test_wrap_text_preserve_paragraphs ______________________
+
+    def test_wrap_text_preserve_paragraphs():
+        text = "This is a single paragraph of text that should be wrapped.\n\nThis is another paragraph."
+        expected = "This is a single paragraph of text that should\nbe wrapped.\n\nThis is another paragraph."
+>       assert click.formatting.wrap_text(text, width=20, preserve_paragraphs=True) == expected
+E       AssertionError: assert 'This is a si...r\nparagraph.' == 'This is a si...er paragraph.'
+E         
+E         - This is a single paragraph of text that should
+E         + This is a single
+E         + paragraph of text
+E         + that should be
+E         - be wrapped.
+E         ? ---...
+E         
+E         ...Full output truncated, use '-vv' to show
+
+test_r2_wrap_text.py:22: AssertionError
+______________ test_wrap_text_preserve_paragraphs_with_raw_block _______________
+
+    def test_wrap_text_preserve_paragraphs_with_raw_block():
+        text = "This is a single paragraph of text that should be wrapped.\n\n\bThis is another paragraph."
+        expected = "This is a single paragraph of text that should\nbe wrapped.\n\nThis is another paragraph."
+>       assert click.formatting.wrap_text(text, width=20, preserve_paragraphs=True) == expected
+E       AssertionError: assert 'This is a si...r\nparagraph.' == 'This is a si...er paragraph.'
+E         
+E         - This is a single paragraph of text that should
+E         + This is a single
+E         + paragraph of text
+E         + that should be
+E         - be wrapped.
+E         ? ---...
+E         
+E         ...Full output truncated, use '-vv' to show
+
+test_r2_wrap_text.py:27: AssertionError
+=========================== short test summary info ============================
+FAILED test_r2_wrap_text.py::test_wrap_text_single_paragraph - AssertionError...
+FAILED test_r2_wrap_text.py::test_wrap_text_initial_indent - AssertionError: ...
+FAILED test_r2_wrap_text.py::test_wrap_text_subsequent_indent - AssertionErro...
+FAILED test_r2_wrap_text.py::test_wrap_text_preserve_paragraphs - AssertionEr...
+FAILED test_r2_wrap_text.py::test_wrap_text_preserve_paragraphs_with_raw_block
+============================== 5 failed in 0.03s ===============================
+
+=== ATTEMPT 3 ===
+{
+ "tok_s": 40.3,
+ "wall_s": 11.11,
+ "peak_rss_mb": 4818.7
+}
+=== RESPONSE ===
+```python
+import click
+from click.formatting import wrap_text
+
+def test_wrap_text_single_paragraph():
+    text = "This is a single paragraph of text that should be wrapped."
+    expected = "This is a single paragraph of text that should\nbe wrapped."
+    assert wrap_text(text, width=20) == expected
+
+def test_wrap_text_initial_indent():
+    text = "This is a single paragraph of text that should be wrapped."
+    expected = "    This is a single\n    paragraph of text\n    that should be\n    wrapped."
+    assert wrap_text(text, width=20, initial_indent="    ") == expected
+
+def test_wrap_text_subsequent_indent():
+    text = "This is a single paragraph of text that should be wrapped."
+    expected = "This is a single\nparagraph of text\nthat should be\nwrapped."
+    assert wrap_text(text, width=20, subsequent_indent="paragraph ") == expected
+
+def test_wrap_text_preserve_paragraphs():
+    text = "This is a single paragraph of text that should be wrapped.\n\nThis is another paragraph."
+    expected = "This is a single paragraph of text that should\nbe wrapped.\n\nThis is another paragraph."
+    assert wrap_text(text, width=20, preserve_paragraphs=True) == expected
+
+def test_wrap_text_preserve_paragraphs_with_raw_block():
+    text = "This is a single paragraph of text that should be wrapped.\n\n\bThis is another paragraph."
+    expected = "This is a single paragraph of text that should\nbe wrapped.\n\nThis is another paragraph."
+    assert wrap_text(text, width=20, preserve_paragraphs=True) == expected
+```
+=== PYTEST ===
+============================= test session starts ==============================
+platform darwin -- Python 3.14.3, pytest-9.2.0, pluggy-1.7.0 -- /Users/srujansai/Desktop/AirG.A.P/harness/w6/venv/bin/python
+rootdir: /Users/srujansai/Desktop/AirG.A.P/harness/w6/sandbox/click
+configfile: pyproject.toml
+collecting ... collected 5 items
+
+test_r2_wrap_text.py::test_wrap_text_single_paragraph FAILED             [ 20%]
+test_r2_wrap_text.py::test_wrap_text_initial_indent FAILED               [ 40%]
+test_r2_wrap_text.py::test_wrap_text_subsequent_indent FAILED            [ 60%]
+test_r2_wrap_text.py::test_wrap_text_preserve_paragraphs FAILED          [ 80%]
+test_r2_wrap_text.py::test_wrap_text_preserve_paragraphs_with_raw_block FAILED [100%]
+
+=================================== FAILURES ===================================
+_______________________ test_wrap_text_single_paragraph ________________________
+
+    def test_wrap_text_single_paragraph():
+        text = "This is a single paragraph of text that should be wrapped."
+        expected = "This is a single paragraph of text that should\nbe wrapped."
+>       assert wrap_text(text, width=20) == expected
+E       AssertionError: assert 'This is a si... be\nwrapped.' == 'This is a si...\nbe wrapped.'
+E         
+E         - This is a single paragraph of text that should
+E         + This is a single
+E         + paragraph of text
+E         + that should be
+E         - be wrapped.
+E         ? ---
+E         + wrapped.
+
+test_r2_wrap_text.py:7: AssertionError
+________________________ test_wrap_text_initial_indent _________________________
+
+    def test_wrap_text_initial_indent():
+        text = "This is a single paragraph of text that should be wrapped."
+        expected = "    This is a single\n    paragraph of text\n    that should be\n    wrapped."
+>       assert wrap_text(text, width=20, initial_indent="    ") == expected
+E       AssertionError: assert '    This is ... be\nwrapped.' == '    This is ...n    wrapped.'
+E         
+E               This is a single
+E         -     paragraph of text
+E         ? ----
+E         + paragraph of text
+E         -     that should be
+E         ? ----...
+E         
+E         ...Full output truncated, use '-vv' to show
+
+test_r2_wrap_text.py:12: AssertionError
+_______________________ test_wrap_text_subsequent_indent _______________________
+
+    def test_wrap_text_subsequent_indent():
+        text = "This is a single paragraph of text that should be wrapped."
+        expected = "This is a single\nparagraph of text\nthat should be\nwrapped."
+>       assert wrap_text(text, width=20, subsequent_indent="paragraph ") == expected
+E       AssertionError: assert 'This is a si...raph wrapped.' == 'This is a si... be\nwrapped.'
+E         
+E           This is a single
+E         + paragraph paragraph
+E           paragraph of text
+E         - that should be
+E         - wrapped.
+E         + paragraph that
+E         + paragraph should be
+E         + paragraph wrapped.
+
+test_r2_wrap_text.py:17: AssertionError
+______________________ test_wrap_text_preserve_paragraphs ______________________
+
+    def test_wrap_text_preserve_paragraphs():
+        text = "This is a single paragraph of text that should be wrapped.\n\nThis is another paragraph."
+        expected = "This is a single paragraph of text that should\nbe wrapped.\n\nThis is another paragraph."
+>       assert wrap_text(text, width=20, preserve_paragraphs=True) == expected
+E       AssertionError: assert 'This is a si...r\nparagraph.' == 'This is a si...er paragraph.'
+E         
+E         - This is a single paragraph of text that should
+E         + This is a single
+E         + paragraph of text
+E         + that should be
+E         - be wrapped.
+E         ? ---...
+E         
+E         ...Full output truncated, use '-vv' to show
+
+test_r2_wrap_text.py:22: AssertionError
+______________ test_wrap_text_preserve_paragraphs_with_raw_block _______________
+
+    def test_wrap_text_preserve_paragraphs_with_raw_block():
+        text = "This is a single paragraph of text that should be wrapped.\n\n\bThis is another paragraph."
+        expected = "This is a single paragraph of text that should\nbe wrapped.\n\nThis is another paragraph."
+>       assert wrap_text(text, width=20, preserve_paragraphs=True) == expected
+E       AssertionError: assert 'This is a si...r\nparagraph.' == 'This is a si...er paragraph.'
+E         
+E         - This is a single paragraph of text that should
+E         + This is a single
+E         + paragraph of text
+E         + that should be
+E         - be wrapped.
+E         ? ---...
+E         
+E         ...Full output truncated, use '-vv' to show
+
+test_r2_wrap_text.py:27: AssertionError
+=========================== short test summary info ============================
+FAILED test_r2_wrap_text.py::test_wrap_text_single_paragraph - AssertionError...
+FAILED test_r2_wrap_text.py::test_wrap_text_initial_indent - AssertionError: ...
+FAILED test_r2_wrap_text.py::test_wrap_text_subsequent_indent - AssertionErro...
+FAILED test_r2_wrap_text.py::test_wrap_text_preserve_paragraphs - AssertionEr...
+FAILED test_r2_wrap_text.py::test_wrap_text_preserve_paragraphs_with_raw_block
+============================== 5 failed in 0.03s ===============================
+
+=== ATTEMPT 1 ===
+{
+ "tok_s": 39.2,
+ "wall_s": 9.5,
+ "peak_rss_mb": 4784.7
+}
+=== RESPONSE ===
+```python
+from click.formatting import wrap_text
+
+def test_wrap_text_basic():
+    """Basic wrapping without indentation or paragraphs."""
+    result = wrap_text("This is a simple sentence that should be wrapped.")
+    assert result == "This is a simple sentence that should be\nwrapped."
+
+def test_wrap_text_initial_indent():
+    """Wrapping with an initial indent."""
+    result = wrap_text("This is a simple sentence that should be wrapped.", initial_indent="    ")
+    assert result == "    This is a simple sentence that\n    should be wrapped."
+
+def test_wrap_text_subsequent_indent():
+    """Wrapping with a subsequent indent."""
+    result = wrap_text("This is a simple sentence that should be wrapped.", subsequent_indent="    ")
+    assert result == "This is a simple sentence that\n    should be wrapped."
+
+def test_wrap_text_preserve_paragraphs():
+    """Wrapping with paragraph preservation."""
+    result = wrap_text("This is the first paragraph.\n\nThis is the second paragraph.", preserve_paragraphs=True)
+    assert result == "This is the first paragraph.\n\nThis is the second paragraph."
+
+def test_wrap_text_raw_paragraph():
+    """Wrapping with a raw paragraph."""
+    result = wrap_text("This is the first paragraph.\n\n\bThis is the second paragraph.", preserve_paragraphs=True)
+    assert result == "This is the first paragraph.\n\nThis is the second paragraph."
+```
+=== PYTEST ===
+============================= test session starts ==============================
+platform darwin -- Python 3.14.3, pytest-9.2.0, pluggy-1.7.0 -- /Users/srujansai/Desktop/AirG.A.P/harness/w6/venv/bin/python
+rootdir: /Users/srujansai/Desktop/AirG.A.P/harness/w6/sandbox/click
+configfile: pyproject.toml
+collecting ... collected 5 items
+
+test_r2_wrap_text.py::test_wrap_text_basic FAILED                        [ 20%]
+test_r2_wrap_text.py::test_wrap_text_initial_indent FAILED               [ 40%]
+test_r2_wrap_text.py::test_wrap_text_subsequent_indent FAILED            [ 60%]
+test_r2_wrap_text.py::test_wrap_text_preserve_paragraphs PASSED          [ 80%]
+test_r2_wrap_text.py::test_wrap_text_raw_paragraph FAILED                [100%]
+
+=================================== FAILURES ===================================
+_____________________________ test_wrap_text_basic _____________________________
+
+    def test_wrap_text_basic():
+        """Basic wrapping without indentation or paragraphs."""
+        result = wrap_text("This is a simple sentence that should be wrapped.")
+>       assert result == "This is a simple sentence that should be\nwrapped."
+E       AssertionError: assert 'This is a si...d be wrapped.' == 'This is a si... be\nwrapped.'
+E         
+E         - This is a simple sentence that should be
+E         ?                                         ^
+E         + This is a simple sentence that should be wrapped.
+E         ?                                         ^^^^^^^^^
+E         - wrapped.
+
+test_r2_wrap_text.py:6: AssertionError
+________________________ test_wrap_text_initial_indent _________________________
+
+    def test_wrap_text_initial_indent():
+        """Wrapping with an initial indent."""
+        result = wrap_text("This is a simple sentence that should be wrapped.", initial_indent="    ")
+>       assert result == "    This is a simple sentence that\n    should be wrapped."
+E       AssertionError: assert '    This is ...d be wrapped.' == '    This is ...d be wrapped.'
+E         
+E         -     This is a simple sentence that
+E         ?                                   ^
+E         +     This is a simple sentence that should be wrapped.
+E         ?                                   ^^^^^^^^^^^^^^^^^^^
+E         -     should be wrapped.
+
+test_r2_wrap_text.py:11: AssertionError
+_______________________ test_wrap_text_subsequent_indent _______________________
+
+    def test_wrap_text_subsequent_indent():
+        """Wrapping with a subsequent indent."""
+        result = wrap_text("This is a simple sentence that should be wrapped.", subsequent_indent="    ")
+>       assert result == "This is a simple sentence that\n    should be wrapped."
+E       AssertionError: assert 'This is a si...d be wrapped.' == 'This is a si...d be wrapped.'
+E         
+E         - This is a simple sentence that
+E         ?                               ^
+E         + This is a simple sentence that should be wrapped.
+E         ?                               ^^^^^^^^^^^^^^^^^^^
+E         -     should be wrapped.
+
+test_r2_wrap_text.py:16: AssertionError
+_________________________ test_wrap_text_raw_paragraph _________________________
+
+    def test_wrap_text_raw_paragraph():
+        """Wrapping with a raw paragraph."""
+        result = wrap_text("This is the first paragraph.\n\n\bThis is the second paragraph.", preserve_paragraphs=True)
+>       assert result == "This is the first paragraph.\n\nThis is the second paragraph."
+E       AssertionError: assert 'This is the ...nd paragraph.' == 'This is the ...nd paragraph.'
+E         
+E           This is the first paragraph.
+E           
+E         - This is the second paragraph.
+E         + This is the second paragraph.
+E         ? +
+
+test_r2_wrap_text.py:26: AssertionError
+=========================== short test summary info ============================
+FAILED test_r2_wrap_text.py::test_wrap_text_basic - AssertionError: assert 'T...
+FAILED test_r2_wrap_text.py::test_wrap_text_initial_indent - AssertionError: ...
+FAILED test_r2_wrap_text.py::test_wrap_text_subsequent_indent - AssertionErro...
+FAILED test_r2_wrap_text.py::test_wrap_text_raw_paragraph - AssertionError: a...
+========================= 4 failed, 1 passed in 0.03s ==========================
+
+=== ATTEMPT 2 ===
+{
+ "tok_s": 40.1,
+ "wall_s": 9.87,
+ "peak_rss_mb": 4794.7
+}
+=== RESPONSE ===
+```python
+from click.formatting import wrap_text
+
+def test_wrap_text_basic():
+    """Basic wrapping without paragraphs."""
+    result = wrap_text("This is a simple sentence that should be wrapped.", width=20)
+    assert result == "This is a simple\nsentence that should be\nwrapped."
+
+def test_wrap_text_initial_indent():
+    """Wrapping with initial indent."""
+    result = wrap_text("This is a simple sentence that should be wrapped.", width=20, initial_indent="    ")
+    assert result == "    This is a simple\n    sentence that should\n    be wrapped."
+
+def test_wrap_text_subsequent_indent():
+    """Wrapping with subsequent indent."""
+    result = wrap_text("This is a simple sentence that should be wrapped.", width=20, subsequent_indent="    ")
+    assert result == "This is a simple\nsentence that should\nbe wrapped."
+
+def test_wrap_text_raw_paragraph():
+    """Wrapping with a raw paragraph."""
+    result = wrap_text("This is the first paragraph.\n\n\bThis is the second paragraph.", preserve_paragraphs=True)
+    assert result == "This is the first paragraph.\n\nThis is the second paragraph."
+
+def test_wrap_text_preserve_paragraphs():
+    """Wrapping with preserve_paragraphs."""
+    result = wrap_text("This is the first paragraph.\n\nThis is the second paragraph.", preserve_paragraphs=True)
+    assert result == "This is the first paragraph.\n\nThis is the second paragraph."
+```
+=== PYTEST ===
+============================= test session starts ==============================
+platform darwin -- Python 3.14.3, pytest-9.2.0, pluggy-1.7.0 -- /Users/srujansai/Desktop/AirG.A.P/harness/w6/venv/bin/python
+rootdir: /Users/srujansai/Desktop/AirG.A.P/harness/w6/sandbox/click
+configfile: pyproject.toml
+collecting ... collected 5 items
+
+test_r2_wrap_text.py::test_wrap_text_basic FAILED                        [ 20%]
+test_r2_wrap_text.py::test_wrap_text_initial_indent FAILED               [ 40%]
+test_r2_wrap_text.py::test_wrap_text_subsequent_indent FAILED            [ 60%]
+test_r2_wrap_text.py::test_wrap_text_raw_paragraph FAILED                [ 80%]
+test_r2_wrap_text.py::test_wrap_text_preserve_paragraphs PASSED          [100%]
+
+=================================== FAILURES ===================================
+_____________________________ test_wrap_text_basic _____________________________
+
+    def test_wrap_text_basic():
+        """Basic wrapping without paragraphs."""
+        result = wrap_text("This is a simple sentence that should be wrapped.", width=20)
+>       assert result == "This is a simple\nsentence that should be\nwrapped."
+E       AssertionError: assert 'This is a si...\nbe wrapped.' == 'This is a si... be\nwrapped.'
+E         
+E           This is a simple
+E         - sentence that should be
+E         ?                     ---
+E         + sentence that should
+E         - wrapped.
+E         + be wrapped.
+E         ? +++
+
+test_r2_wrap_text.py:6: AssertionError
+________________________ test_wrap_text_initial_indent _________________________
+
+    def test_wrap_text_initial_indent():
+        """Wrapping with initial indent."""
+        result = wrap_text("This is a simple sentence that should be wrapped.", width=20, initial_indent="    ")
+>       assert result == "    This is a simple\n    sentence that should\n    be wrapped."
+E       AssertionError: assert '    This is ...\nbe wrapped.' == '    This is ...  be wrapped.'
+E         
+E               This is a simple
+E         -     sentence that should
+E         ? ----
+E         + sentence that should
+E         -     be wrapped.
+E         ? ----
+E         + be wrapped.
+
+test_r2_wrap_text.py:11: AssertionError
+_______________________ test_wrap_text_subsequent_indent _______________________
+
+    def test_wrap_text_subsequent_indent():
+        """Wrapping with subsequent indent."""
+        result = wrap_text("This is a simple sentence that should be wrapped.", width=20, subsequent_indent="    ")
+>       assert result == "This is a simple\nsentence that should\nbe wrapped."
+E       AssertionError: assert 'This is a si...n    wrapped.' == 'This is a si...\nbe wrapped.'
+E         
+E           This is a simple
+E         - sentence that should
+E         +     sentence that
+E         +     should be
+E         - be wrapped.
+E         ? ^^
+E         +     wrapped.
+E         ? ^^^
+
+test_r2_wrap_text.py:16: AssertionError
+_________________________ test_wrap_text_raw_paragraph _________________________
+
+    def test_wrap_text_raw_paragraph():
+        """Wrapping with a raw paragraph."""
+        result = wrap_text("This is the first paragraph.\n\n\bThis is the second paragraph.", preserve_paragraphs=True)
+>       assert result == "This is the first paragraph.\n\nThis is the second paragraph."
+E       AssertionError: assert 'This is the ...nd paragraph.' == 'This is the ...nd paragraph.'
+E         
+E           This is the first paragraph.
+E           
+E         - This is the second paragraph.
+E         + This is the second paragraph.
+E         ? +
+
+test_r2_wrap_text.py:21: AssertionError
+=========================== short test summary info ============================
+FAILED test_r2_wrap_text.py::test_wrap_text_basic - AssertionError: assert 'T...
+FAILED test_r2_wrap_text.py::test_wrap_text_initial_indent - AssertionError: ...
+FAILED test_r2_wrap_text.py::test_wrap_text_subsequent_indent - AssertionErro...
+FAILED test_r2_wrap_text.py::test_wrap_text_raw_paragraph - AssertionError: a...
+========================= 4 failed, 1 passed in 0.03s ==========================
+
+=== ATTEMPT 3 ===
+{
+ "tok_s": 40.2,
+ "wall_s": 10.04,
+ "peak_rss_mb": 4819.8
+}
+=== RESPONSE ===
+```python
+from click.formatting import wrap_text
+
+def test_wrap_text_basic():
+    """Basic wrapping without initial or subsequent indent."""
+    result = wrap_text("This is a simple sentence that should be wrapped.", width=20)
+    assert result == "This is a simple\nsentence that should\nbe wrapped."
+
+def test_wrap_text_initial_indent():
+    """Wrapping with an initial indent."""
+    result = wrap_text("This is a simple sentence that should be wrapped.", width=20, initial_indent="    ")
+    assert result == "    This is a\n    simple sentence\n    that should\n    be wrapped."
+
+def test_wrap_text_subsequent_indent():
+    """Wrapping with a subsequent indent."""
+    result = wrap_text("This is a simple sentence that should be wrapped.", width=20, subsequent_indent="    ")
+    assert result == "This is a simple\nsentence that should\nbe wrapped."
+
+def test_wrap_text_raw_paragraph():
+    """Wrapping with a raw paragraph."""
+    result = wrap_text("This is the first paragraph.\n\n\bThis is the second paragraph.", preserve_paragraphs=True)
+    assert result == "This is the first paragraph.\n\nThis is the second paragraph."
+
+def test_wrap_text_preserve_paragraphs():
+    """Wrapping with preserve_paragraphs enabled."""
+    result = wrap_text("This is the first paragraph.\n\nThis is the second paragraph.", preserve_paragraphs=True)
+    assert result == "This is the first paragraph.\n\nThis is the second paragraph."
+```
+=== PYTEST ===
+============================= test session starts ==============================
+platform darwin -- Python 3.14.3, pytest-9.2.0, pluggy-1.7.0 -- /Users/srujansai/Desktop/AirG.A.P/harness/w6/venv/bin/python
+rootdir: /Users/srujansai/Desktop/AirG.A.P/harness/w6/sandbox/click
+configfile: pyproject.toml
+collecting ... collected 5 items
+
+test_r2_wrap_text.py::test_wrap_text_basic PASSED                        [ 20%]
+test_r2_wrap_text.py::test_wrap_text_initial_indent FAILED               [ 40%]
+test_r2_wrap_text.py::test_wrap_text_subsequent_indent FAILED            [ 60%]
+test_r2_wrap_text.py::test_wrap_text_raw_paragraph FAILED                [ 80%]
+test_r2_wrap_text.py::test_wrap_text_preserve_paragraphs PASSED          [100%]
+
+=================================== FAILURES ===================================
+________________________ test_wrap_text_initial_indent _________________________
+
+    def test_wrap_text_initial_indent():
+        """Wrapping with an initial indent."""
+        result = wrap_text("This is a simple sentence that should be wrapped.", width=20, initial_indent="    ")
+>       assert result == "    This is a\n    simple sentence\n    that should\n    be wrapped."
+E       AssertionError: assert '    This is ...\nbe wrapped.' == '    This is ...  be wrapped.'
+E         
+E         -     This is a
+E         +     This is a simple
+E         ?              +++++++
+E         + sentence that should
+E         -     simple sentence
+E         -     that should...
+E         
+E         ...Full output truncated, use '-vv' to show
+
+test_r2_wrap_text.py:11: AssertionError
+_______________________ test_wrap_text_subsequent_indent _______________________
+
+    def test_wrap_text_subsequent_indent():
+        """Wrapping with a subsequent indent."""
+        result = wrap_text("This is a simple sentence that should be wrapped.", width=20, subsequent_indent="    ")
+>       assert result == "This is a simple\nsentence that should\nbe wrapped."
+E       AssertionError: assert 'This is a si...n    wrapped.' == 'This is a si...\nbe wrapped.'
+E         
+E           This is a simple
+E         - sentence that should
+E         +     sentence that
+E         +     should be
+E         - be wrapped.
+E         ? ^^
+E         +     wrapped.
+E         ? ^^^
+
+test_r2_wrap_text.py:16: AssertionError
+_________________________ test_wrap_text_raw_paragraph _________________________
+
+    def test_wrap_text_raw_paragraph():
+        """Wrapping with a raw paragraph."""
+        result = wrap_text("This is the first paragraph.\n\n\bThis is the second paragraph.", preserve_paragraphs=True)
+>       assert result == "This is the first paragraph.\n\nThis is the second paragraph."
+E       AssertionError: assert 'This is the ...nd paragraph.' == 'This is the ...nd paragraph.'
+E         
+E           This is the first paragraph.
+E           
+E         - This is the second paragraph.
+E         + This is the second paragraph.
+E         ? +
+
+test_r2_wrap_text.py:21: AssertionError
+=========================== short test summary info ============================
+FAILED test_r2_wrap_text.py::test_wrap_text_initial_indent - AssertionError: ...
+FAILED test_r2_wrap_text.py::test_wrap_text_subsequent_indent - AssertionErro...
+FAILED test_r2_wrap_text.py::test_wrap_text_raw_paragraph - AssertionError: a...
+========================= 3 failed, 2 passed in 0.03s ==========================

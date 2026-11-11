@@ -1,0 +1,724 @@
+
+=== ATTEMPT 1 ===
+{
+ "tok_s": 36.9,
+ "wall_s": 4.07,
+ "peak_rss_mb": 4740.9
+}
+=== RESPONSE ===
+```python
+def test_custom_version_option(runner, args):
+    def version_callback(ctx: Context) -> str:
+        return "custom 9.9.9"
+
+    @click.command()
+    @custom_version_option(version_callback, "-V", "--version")
+    def cli():
+        pass
+
+    result = runner.invoke(cli, args)
+    assert result.exit_code == 0
+    assert result.output == "custom 9.9.9\n"
+```
+=== PYTEST ===
+E                                                                        [100%]
+==================================== ERRORS ====================================
+_________________ ERROR at setup of test_custom_version_option _________________
+file /Users/srujansai/Desktop/AirG.A.P/harness/w6/sandbox/click/test_r2_custom_version_option.py, line 1
+  def test_custom_version_option(runner, args):
+E       fixture 'runner' not found
+>       available fixtures: capfd, capfdbinary, caplog, capsys, capsysbinary, capteesys, doctest_namespace, monkeypatch, pytestconfig, record_property, record_testsuite_property, record_xml_attribute, recwarn, subtests, tmp_path, tmp_path_factory, tmpdir, tmpdir_factory
+>       use 'pytest --fixtures [testpath]' for help on them.
+
+/Users/srujansai/Desktop/AirG.A.P/harness/w6/sandbox/click/test_r2_custom_version_option.py:1
+=========================== short test summary info ============================
+ERROR test_r2_custom_version_option.py::test_custom_version_option
+1 error in 0.06s
+
+=== ATTEMPT 2 ===
+{
+ "tok_s": 36.7,
+ "wall_s": 5.42,
+ "peak_rss_mb": 4712.8
+}
+=== RESPONSE ===
+```python
+import click
+from click.testing import CliRunner
+from click.core import command, option
+
+def test_custom_version_option():
+    @click.command()
+    @click.custom_version_option(lambda ctx: "custom 9.9.9", "-V", "--version")
+    def cli():
+        pass
+
+    runner = CliRunner()
+    result = runner.invoke(cli, ["-V"])
+    assert result.exit_code == 0
+    assert result.output == "custom 9.9.9\n"
+
+    result = runner.invoke(cli, ["--version"])
+    assert result.exit_code == 0
+    assert result.output == "custom 9.9.9\n"
+
+    result = runner.invoke(cli, ["--help"])
+    assert result.exit_code == 0
+    assert "--version" in result.output
+```
+=== PYTEST ===
+
+==================================== ERRORS ====================================
+______________ ERROR collecting test_r2_custom_version_option.py _______________
+ImportError while importing test module '/Users/srujansai/Desktop/AirG.A.P/harness/w6/sandbox/click/test_r2_custom_version_option.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/Library/Frameworks/Python.framework/Versions/3.14/lib/python3.14/importlib/__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+test_r2_custom_version_option.py:3: in <module>
+    from click.core import command, option
+E   ImportError: cannot import name 'command' from 'click.core' (/Users/srujansai/Desktop/AirG.A.P/harness/w6/sandbox/click/src/click/core.py). Did you mean: 'Command'?
+=========================== short test summary info ============================
+ERROR test_r2_custom_version_option.py
+!!!!!!!!!!!!!!!!!!!! Interrupted: 1 error during collection !!!!!!!!!!!!!!!!!!!!
+1 error in 0.11s
+
+=== ATTEMPT 3 ===
+{
+ "tok_s": 37.4,
+ "wall_s": 4.63,
+ "peak_rss_mb": 4716.5
+}
+=== RESPONSE ===
+```python
+from click import command, option
+from click.testing import CliRunner
+from click.core import Context
+
+def test_custom_version_option(runner):
+    @command()
+    @option('--version', is_flag=True, expose_value=False, is_eager=True, help="Show the version and exit.")
+    def cli(ctx):
+        pass
+
+    @custom_version_option(lambda ctx: "custom 9.9.9", "--version")
+    def cli_with_custom_version(ctx):
+        pass
+
+    result = runner.invoke(cli_with_custom_version, ['--version'])
+    assert result.exit_code == 0
+    assert result.output == "custom 9.9.9\n"
+```
+=== PYTEST ===
+E                                                                        [100%]
+==================================== ERRORS ====================================
+_________________ ERROR at setup of test_custom_version_option _________________
+file /Users/srujansai/Desktop/AirG.A.P/harness/w6/sandbox/click/test_r2_custom_version_option.py, line 5
+  def test_custom_version_option(runner):
+E       fixture 'runner' not found
+>       available fixtures: capfd, capfdbinary, caplog, capsys, capsysbinary, capteesys, doctest_namespace, monkeypatch, pytestconfig, record_property, record_testsuite_property, record_xml_attribute, recwarn, subtests, tmp_path, tmp_path_factory, tmpdir, tmpdir_factory
+>       use 'pytest --fixtures [testpath]' for help on them.
+
+/Users/srujansai/Desktop/AirG.A.P/harness/w6/sandbox/click/test_r2_custom_version_option.py:5
+=========================== short test summary info ============================
+ERROR test_r2_custom_version_option.py::test_custom_version_option
+1 error in 0.02s
+
+=== ATTEMPT 1 ===
+{
+ "tok_s": 37.6,
+ "wall_s": 2.95,
+ "peak_rss_mb": 4770.3
+}
+=== RESPONSE ===
+```python
+def test_custom_version_option(runner, args):
+    def version_callback(ctx):
+        return "custom 9.9.9"
+
+    @click.command()
+    @custom_version_option(version_callback, "-V", "--version")
+    def cli():
+        pass
+
+    result = runner.invoke(cli, args)
+    assert result.exit_code == 0
+    assert result.output == "custom 9.9.9\n"
+```
+=== PYTEST ===
+E                                                                        [100%]
+==================================== ERRORS ====================================
+_________________ ERROR at setup of test_custom_version_option _________________
+file /Users/srujansai/Desktop/AirG.A.P/harness/w6/sandbox/click/test_r2_custom_version_option.py, line 1
+  def test_custom_version_option(runner, args):
+E       fixture 'runner' not found
+>       available fixtures: capfd, capfdbinary, caplog, capsys, capsysbinary, capteesys, doctest_namespace, monkeypatch, pytestconfig, record_property, record_testsuite_property, record_xml_attribute, recwarn, subtests, tmp_path, tmp_path_factory, tmpdir, tmpdir_factory
+>       use 'pytest --fixtures [testpath]' for help on them.
+
+/Users/srujansai/Desktop/AirG.A.P/harness/w6/sandbox/click/test_r2_custom_version_option.py:1
+=========================== short test summary info ============================
+ERROR test_r2_custom_version_option.py::test_custom_version_option
+1 error in 0.01s
+
+=== ATTEMPT 2 ===
+{
+ "tok_s": 38.2,
+ "wall_s": 4.45,
+ "peak_rss_mb": 4723.9
+}
+=== RESPONSE ===
+```python
+import pytest
+from click import command, option, Context, echo
+from click.testing import CliRunner
+
+def test_custom_version_option():
+    @command()
+    @option('--version', is_flag=True, expose_value=False, is_eager=True, help="Show the version and exit.")
+    def cli():
+        pass
+
+    def version_callback(ctx: Context) -> str:
+        return "custom 9.9.9"
+
+    custom_version_option(version_callback, '--version')(cli)
+
+    runner = CliRunner()
+    result = runner.invoke(cli, ['--version'])
+    assert result.exit_code == 0
+    assert result.output == "custom 9.9.9\n"
+```
+=== PYTEST ===
+F                                                                        [100%]
+=================================== FAILURES ===================================
+__________________________ test_custom_version_option __________________________
+
+    def test_custom_version_option():
+        @command()
+        @option('--version', is_flag=True, expose_value=False, is_eager=True, help="Show the version and exit.")
+        def cli():
+            pass
+    
+        def version_callback(ctx: Context) -> str:
+            return "custom 9.9.9"
+    
+>       custom_version_option(version_callback, '--version')(cli)
+        ^^^^^^^^^^^^^^^^^^^^^
+E       NameError: name 'custom_version_option' is not defined
+
+test_r2_custom_version_option.py:14: NameError
+=========================== short test summary info ============================
+FAILED test_r2_custom_version_option.py::test_custom_version_option - NameErr...
+1 failed in 0.05s
+
+=== ATTEMPT 3 ===
+{
+ "tok_s": 35.9,
+ "wall_s": 4.8,
+ "peak_rss_mb": 4722.1
+}
+=== RESPONSE ===
+```python
+from click import command, option
+from click.testing import CliRunner
+from .custom_version_option import custom_version_option
+
+def test_custom_version_option():
+    @command()
+    @option('--version', is_flag=True, expose_value=False, is_eager=True, help="Show the version and exit.")
+    def cli():
+        pass
+
+    def version_callback(ctx: Context) -> str:
+        return "custom 9.9.9"
+
+    cli = custom_version_option(version_callback, '--version')(cli)
+    runner = CliRunner()
+    result = runner.invoke(cli, ['--version'])
+    assert result.exit_code == 0
+    assert result.output == "custom 9.9.9\n"
+```
+=== PYTEST ===
+
+==================================== ERRORS ====================================
+______________ ERROR collecting test_r2_custom_version_option.py _______________
+ImportError while importing test module '/Users/srujansai/Desktop/AirG.A.P/harness/w6/sandbox/click/test_r2_custom_version_option.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/Library/Frameworks/Python.framework/Versions/3.14/lib/python3.14/importlib/__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+test_r2_custom_version_option.py:3: in <module>
+    from .custom_version_option import custom_version_option
+E   ImportError: attempted relative import with no known parent package
+=========================== short test summary info ============================
+ERROR test_r2_custom_version_option.py
+!!!!!!!!!!!!!!!!!!!! Interrupted: 1 error during collection !!!!!!!!!!!!!!!!!!!!
+1 error in 0.11s
+
+=== ATTEMPT 1 ===
+{
+ "tok_s": 38.8,
+ "wall_s": 6.1,
+ "peak_rss_mb": 4776.4
+}
+=== RESPONSE ===
+```python
+from click import command, option, Context, echo
+from click.testing import CliRunner
+
+def test_custom_version_option(runner):
+    @command()
+    @option('--version', is_flag=True, expose_value=False, is_eager=True, help="Show the version and exit.")
+    def cli():
+        pass
+
+    @command()
+    @custom_version_option(lambda ctx: "custom 9.9.9", "--version")
+    def custom_cli():
+        pass
+
+    result = runner.invoke(custom_cli, ['--version'])
+    assert result.exit_code == 0
+    assert result.output == "custom 9.9.9\n"
+
+    result = runner.invoke(cli, ['--version'])
+    assert result.exit_code == 0
+    assert result.output == "custom 9.9.9\n"
+```
+=== PYTEST ===
+============================= test session starts ==============================
+platform darwin -- Python 3.14.3, pytest-9.2.0, pluggy-1.7.0 -- /Users/srujansai/Desktop/AirG.A.P/harness/w6/venv/bin/python
+rootdir: /Users/srujansai/Desktop/AirG.A.P/harness/w6/sandbox/click
+configfile: pyproject.toml
+collecting ... collected 1 item
+
+test_r2_custom_version_option.py::test_custom_version_option ERROR       [100%]
+
+==================================== ERRORS ====================================
+_________________ ERROR at setup of test_custom_version_option _________________
+file /Users/srujansai/Desktop/AirG.A.P/harness/w6/sandbox/click/test_r2_custom_version_option.py, line 4
+  def test_custom_version_option(runner):
+E       fixture 'runner' not found
+>       available fixtures: capfd, capfdbinary, caplog, capsys, capsysbinary, capteesys, doctest_namespace, monkeypatch, pytestconfig, record_property, record_testsuite_property, record_xml_attribute, recwarn, subtests, tmp_path, tmp_path_factory, tmpdir, tmpdir_factory
+>       use 'pytest --fixtures [testpath]' for help on them.
+
+/Users/srujansai/Desktop/AirG.A.P/harness/w6/sandbox/click/test_r2_custom_version_option.py:4
+=========================== short test summary info ============================
+ERROR test_r2_custom_version_option.py::test_custom_version_option
+=============================== 1 error in 0.02s ===============================
+
+=== ATTEMPT 2 ===
+{
+ "tok_s": 39.4,
+ "wall_s": 10.82,
+ "peak_rss_mb": 4777.8
+}
+=== RESPONSE ===
+```python
+import click
+from click.testing import CliRunner
+from click.core import option
+from click.core import Context
+from click.utils import echo
+
+def test_custom_version_option(runner):
+    @click.command()
+    @click.custom_version_option(lambda ctx: "custom 9.9.9", "-V", "--version")
+    def cli():
+        pass
+
+    result = runner.invoke(cli, ["-V"])
+    assert result.exit_code == 0
+    assert result.output == "custom 9.9.9\n"
+
+def test_custom_version_option_default(runner):
+    @click.command()
+    @click.custom_version_option(lambda ctx: "custom 9.9.9")
+    def cli():
+        pass
+
+    result = runner.invoke(cli, ["--version"])
+    assert result.exit_code == 0
+    assert result.output == "custom 9.9.9\n"
+
+def test_custom_version_option_no_version_option(runner):
+    @click.command()
+    @click.custom_version_option(lambda ctx: "custom 9.9.9", param_decls=())
+    def cli():
+        pass
+
+    result = runner.invoke(cli, ["--version"])
+    assert result.exit_code == 0
+    assert result.output == "custom 9.9.9\n"
+
+def test_custom_version_option_with_custom_help(runner):
+    @click.command()
+    @click.custom_version_option(lambda ctx: "custom 9.9.9", help="Display custom version")
+    def cli():
+        pass
+
+    result = runner.invoke(cli, ["--version"])
+    assert result.exit_code == 0
+    assert result.output == "custom 9.9.9\n"
+```
+=== PYTEST ===
+============================= test session starts ==============================
+platform darwin -- Python 3.14.3, pytest-9.2.0, pluggy-1.7.0 -- /Users/srujansai/Desktop/AirG.A.P/harness/w6/venv/bin/python
+rootdir: /Users/srujansai/Desktop/AirG.A.P/harness/w6/sandbox/click
+configfile: pyproject.toml
+collecting ... collected 0 items / 1 error
+
+==================================== ERRORS ====================================
+______________ ERROR collecting test_r2_custom_version_option.py _______________
+ImportError while importing test module '/Users/srujansai/Desktop/AirG.A.P/harness/w6/sandbox/click/test_r2_custom_version_option.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/Library/Frameworks/Python.framework/Versions/3.14/lib/python3.14/importlib/__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+test_r2_custom_version_option.py:3: in <module>
+    from click.core import option
+E   ImportError: cannot import name 'option' from 'click.core' (/Users/srujansai/Desktop/AirG.A.P/harness/w6/sandbox/click/src/click/core.py). Did you mean: 'Option'?
+=========================== short test summary info ============================
+ERROR test_r2_custom_version_option.py
+!!!!!!!!!!!!!!!!!!!! Interrupted: 1 error during collection !!!!!!!!!!!!!!!!!!!!
+=============================== 1 error in 0.19s ===============================
+
+=== ATTEMPT 3 ===
+{
+ "tok_s": 40.4,
+ "wall_s": 5.45,
+ "peak_rss_mb": 4801.8
+}
+=== RESPONSE ===
+```python
+from click import command, option, Context, echo
+from click.testing import CliRunner
+
+def test_custom_version_option(runner):
+    @command()
+    @option('--version', is_flag=True, expose_value=False, is_eager=True, help="Show the version and exit.")
+    def cli(version):
+        if version:
+            echo("custom 9.9.9")
+            return 0
+
+    result = runner.invoke(cli, ['--version'])
+    assert result.exit_code == 0
+    assert result.output == "custom 9.9.9\n"
+
+    result = runner.invoke(cli, [])
+    assert result.exit_code == 0
+    assert result.output == ""
+```
+=== PYTEST ===
+============================= test session starts ==============================
+platform darwin -- Python 3.14.3, pytest-9.2.0, pluggy-1.7.0 -- /Users/srujansai/Desktop/AirG.A.P/harness/w6/venv/bin/python
+rootdir: /Users/srujansai/Desktop/AirG.A.P/harness/w6/sandbox/click
+configfile: pyproject.toml
+collecting ... collected 1 item
+
+test_r2_custom_version_option.py::test_custom_version_option ERROR       [100%]
+
+==================================== ERRORS ====================================
+_________________ ERROR at setup of test_custom_version_option _________________
+file /Users/srujansai/Desktop/AirG.A.P/harness/w6/sandbox/click/test_r2_custom_version_option.py, line 4
+  def test_custom_version_option(runner):
+E       fixture 'runner' not found
+>       available fixtures: capfd, capfdbinary, caplog, capsys, capsysbinary, capteesys, doctest_namespace, monkeypatch, pytestconfig, record_property, record_testsuite_property, record_xml_attribute, recwarn, subtests, tmp_path, tmp_path_factory, tmpdir, tmpdir_factory
+>       use 'pytest --fixtures [testpath]' for help on them.
+
+/Users/srujansai/Desktop/AirG.A.P/harness/w6/sandbox/click/test_r2_custom_version_option.py:4
+=========================== short test summary info ============================
+ERROR test_r2_custom_version_option.py::test_custom_version_option
+=============================== 1 error in 0.02s ===============================
+
+=== ATTEMPT 1 ===
+{
+ "tok_s": 40.2,
+ "wall_s": 6.2,
+ "peak_rss_mb": 4783.2
+}
+=== RESPONSE ===
+```python
+from click import Context, echo
+from click.decorators import custom_version_option
+from click.testing import CliRunner
+
+def test_custom_version_option(runner):
+    def version_callback(ctx: Context) -> str:
+        return "custom 9.9.9"
+
+    @click.command()
+    @custom_version_option(version_callback, "-V", "--version")
+    def cli():
+        pass
+
+    result = runner.invoke(cli, ["-V"])
+    assert result.exit_code == 0
+    assert result.output == "custom 9.9.9\n"
+
+    result = runner.invoke(cli, ["--version"])
+    assert result.exit_code == 0
+    assert result.output == "custom 9.9.9\n"
+
+    result = runner.invoke(cli, ["--help"])
+    assert result.exit_code == 0
+    assert "--version" in result.output
+    assert "-V" in result.output
+```
+=== PYTEST ===
+============================= test session starts ==============================
+platform darwin -- Python 3.14.3, pytest-9.2.0, pluggy-1.7.0 -- /Users/srujansai/Desktop/AirG.A.P/harness/w6/venv/bin/python
+rootdir: /Users/srujansai/Desktop/AirG.A.P/harness/w6/sandbox/click
+configfile: pyproject.toml
+collecting ... collected 1 item
+
+test_r2_custom_version_option.py::test_custom_version_option ERROR       [100%]
+
+==================================== ERRORS ====================================
+_________________ ERROR at setup of test_custom_version_option _________________
+file /Users/srujansai/Desktop/AirG.A.P/harness/w6/sandbox/click/test_r2_custom_version_option.py, line 5
+  def test_custom_version_option(runner):
+E       fixture 'runner' not found
+>       available fixtures: capfd, capfdbinary, caplog, capsys, capsysbinary, capteesys, doctest_namespace, monkeypatch, pytestconfig, record_property, record_testsuite_property, record_xml_attribute, recwarn, subtests, tmp_path, tmp_path_factory, tmpdir, tmpdir_factory
+>       use 'pytest --fixtures [testpath]' for help on them.
+
+/Users/srujansai/Desktop/AirG.A.P/harness/w6/sandbox/click/test_r2_custom_version_option.py:5
+=========================== short test summary info ============================
+ERROR test_r2_custom_version_option.py::test_custom_version_option
+=============================== 1 error in 0.02s ===============================
+
+=== ATTEMPT 2 ===
+{
+ "tok_s": 38.6,
+ "wall_s": 6.09,
+ "peak_rss_mb": 4772.2
+}
+=== RESPONSE ===
+```python
+from click import Context, echo, option
+from click.decorators import custom_version_option
+
+def test_custom_version_option(runner):
+    @click.command()
+    @custom_version_option(lambda ctx: "custom 9.9.9", "-V", "--version")
+    def cli():
+        pass
+
+    result = runner.invoke(cli, ["-V"])
+    assert result.exit_code == 0
+    assert result.output == "custom 9.9.9\n"
+
+    result = runner.invoke(cli, ["--version"])
+    assert result.exit_code == 0
+    assert result.output == "custom 9.9.9\n"
+
+    result = runner.invoke(cli, ["--help"])
+    assert result.exit_code == 0
+    assert "--version" in result.output
+```
+=== PYTEST ===
+============================= test session starts ==============================
+platform darwin -- Python 3.14.3, pytest-9.2.0, pluggy-1.7.0 -- /Users/srujansai/Desktop/AirG.A.P/harness/w6/venv/bin/python
+rootdir: /Users/srujansai/Desktop/AirG.A.P/harness/w6/sandbox/click
+configfile: pyproject.toml
+collecting ... collected 1 item
+
+test_r2_custom_version_option.py::test_custom_version_option ERROR       [100%]
+
+==================================== ERRORS ====================================
+_________________ ERROR at setup of test_custom_version_option _________________
+file /Users/srujansai/Desktop/AirG.A.P/harness/w6/sandbox/click/test_r2_custom_version_option.py, line 4
+  def test_custom_version_option(runner):
+E       fixture 'runner' not found
+>       available fixtures: capfd, capfdbinary, caplog, capsys, capsysbinary, capteesys, doctest_namespace, monkeypatch, pytestconfig, record_property, record_testsuite_property, record_xml_attribute, recwarn, subtests, tmp_path, tmp_path_factory, tmpdir, tmpdir_factory
+>       use 'pytest --fixtures [testpath]' for help on them.
+
+/Users/srujansai/Desktop/AirG.A.P/harness/w6/sandbox/click/test_r2_custom_version_option.py:4
+=========================== short test summary info ============================
+ERROR test_r2_custom_version_option.py::test_custom_version_option
+=============================== 1 error in 0.02s ===============================
+
+=== ATTEMPT 3 ===
+{
+ "tok_s": 40.2,
+ "wall_s": 4.18,
+ "peak_rss_mb": 4798.4
+}
+=== RESPONSE ===
+```python
+from click import Context, echo
+from click.decorators import custom_version_option
+from click.testing import CliRunner
+
+def test_custom_version_option():
+    def version_callback(ctx: Context) -> str:
+        return "custom 9.9.9"
+
+    @custom_version_option(version_callback, "--version")
+    def cli():
+        pass
+
+    runner = CliRunner()
+    result = runner.invoke(cli, ["--version"])
+    assert result.exit_code == 0
+    assert result.output == "custom 9.9.9\n"
+```
+=== PYTEST ===
+============================= test session starts ==============================
+platform darwin -- Python 3.14.3, pytest-9.2.0, pluggy-1.7.0 -- /Users/srujansai/Desktop/AirG.A.P/harness/w6/venv/bin/python
+rootdir: /Users/srujansai/Desktop/AirG.A.P/harness/w6/sandbox/click
+configfile: pyproject.toml
+collecting ... collected 1 item
+
+test_r2_custom_version_option.py::test_custom_version_option FAILED      [100%]
+
+=================================== FAILURES ===================================
+__________________________ test_custom_version_option __________________________
+
+self = <click.testing.CliRunner object at 0x10ba5d400>
+cli = <function test_custom_version_option.<locals>.cli at 0x10bab2350>
+args = ['--version'], input = None, env = None, catch_exceptions = True
+color = False, context_settings = None, extra = {}
+
+    def invoke(
+        self,
+        cli: Command,
+        args: str | cabc.Sequence[str] | None = None,
+        input: str | bytes | t.IO[t.Any] | None = None,
+        env: cabc.Mapping[str, str | None] | None = None,
+        catch_exceptions: bool | None = None,
+        color: bool = False,
+        context_settings: cabc.Mapping[str, t.Any] | None = None,
+        **extra: t.Any,
+    ) -> Result:
+        """Invokes a command in an isolated environment.  The arguments are
+        forwarded directly to the command line script, the `extra` keyword
+        arguments are passed to the :meth:`~clickpkg.Command.main` function of
+        the command.
+    
+        This returns a :class:`Result` object.
+    
+        :param cli: the command to invoke
+        :param args: the arguments to invoke. It may be given as an iterable
+                     or a string. When given as string it will be interpreted
+                     as a Unix shell command. More details at
+                     :func:`shlex.split`.
+        :param input: the input data for `sys.stdin`.
+        :param env: the environment overrides.
+        :param catch_exceptions: Whether to catch any other exceptions than
+                                 ``SystemExit``. If :data:`None`, the value
+                                 from :class:`CliRunner` is used.
+        :param extra: the keyword arguments to pass to :meth:`main`.
+        :param color: whether the output should contain color codes. The
+                      application can still override this explicitly.
+        :param context_settings: settings to pass to the
+            :class:`~click.Context` of the command. They take precedence
+            over the ``context_settings`` of the command. Unlike ``extra``,
+            they can hold a setting named like a parameter of this method,
+            such as ``color``.
+    
+        .. versionchanged:: 8.6.0
+            Added the ``context_settings`` parameter.
+    
+        .. versionadded:: 8.2
+            The result object has the ``output_bytes`` attribute with
+            the mix of ``stdout_bytes`` and ``stderr_bytes``, as the user would
+            see it in its terminal.
+    
+        .. versionchanged:: 8.2
+            The result object always returns the ``stderr_bytes`` stream.
+    
+        .. versionchanged:: 8.0
+            The result object has the ``return_value`` attribute with
+            the value returned from the invoked command.
+    
+        .. versionchanged:: 4.0
+            Added the ``color`` parameter.
+    
+        .. versionchanged:: 3.0
+            Added the ``catch_exceptions`` parameter.
+    
+        .. versionchanged:: 3.0
+            The result object has the ``exc_info`` attribute with the
+            traceback if available.
+        """
+        exc_info = None
+        if catch_exceptions is None:
+            catch_exceptions = self.catch_exceptions
+    
+        # Set up fd capture before isolation replaces sys.stdout and sys.stderr.
+        cap_out: _FDCapture | None = None
+        cap_err: _FDCapture | None = None
+    
+        if self.capture == "fd":
+            cap_out = _FDCapture(1)
+            cap_err = _FDCapture(2)
+            try:
+                cap_out.start()
+                cap_err.start()
+            except OSError:
+                cap_out = cap_err = None
+    
+        with self.isolation(input=input, env=env, color=color) as outstreams:
+            # Point the captured streams' fileno() at the saved (original)
+            # fd so that C-level consumers like faulthandler keep working
+            # while fd 1/2 are redirected to the capture tmpfile.
+            if cap_out is not None and cap_err is not None:
+                sys.stdout._original_fd = cap_out.saved_fd  # type: ignore[union-attr]
+                sys.stderr._original_fd = cap_err.saved_fd  # type: ignore[union-attr]
+    
+            return_value = None
+            exception: BaseException | None = None
+            exit_code = 0
+    
+            if isinstance(args, str):
+                args = shlex.split(args)
+    
+            try:
+>               prog_name = extra.pop("prog_name")
+                            ^^^^^^^^^^^^^^^^^^^^^^
+E               KeyError: 'prog_name'
+
+src/click/testing.py:720: KeyError
+
+During handling of the above exception, another exception occurred:
+
+    def test_custom_version_option():
+        def version_callback(ctx: Context) -> str:
+            return "custom 9.9.9"
+    
+        @custom_version_option(version_callback, "--version")
+        def cli():
+            pass
+    
+        runner = CliRunner()
+>       result = runner.invoke(cli, ["--version"])
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+test_r2_custom_version_option.py:14: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/click/testing.py:722: in invoke
+    prog_name = self.get_default_prog_name(cli)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <click.testing.CliRunner object at 0x10ba5d400>
+cli = <function test_custom_version_option.<locals>.cli at 0x10bab2350>
+
+    def get_default_prog_name(self, cli: Command) -> str:
+        """Given a command object it will return the default program name
+        for it.  The default is the `name` attribute or ``"root"`` if not
+        set.
+        """
+>       return cli.name or "root"
+               ^^^^^^^^
+E       AttributeError: 'function' object has no attribute 'name'
+
+src/click/testing.py:416: AttributeError
+=========================== short test summary info ============================
+FAILED test_r2_custom_version_option.py::test_custom_version_option - Attribu...
+============================== 1 failed in 0.07s ===============================

@@ -46,3 +46,40 @@
 1. Does a larger/quantised-differently coding model (e.g. Qwen2.5-Coder-7B) materially improve pass rate at acceptable tok/s on this hardware? (Gate B in `01 §9`)
 2. What human-review-effort threshold makes test generation economic? (`03 §5` Gate D)
 3. Can retrieval over the repo (symbols, docstrings) improve test correctness enough to pass Gate A?
+
+---
+
+## Round 2 — context + repair loop (qwen2.5-coder:7b) (grade A — measured)
+
+**Round-2 verdict: marginally better, still not useful unsupervised.** Adding module imports, the correct import hint, one existing repo test as a style example, and a 3-attempt repair loop lifted generated tests from 0 pass (round 1, measured generated-only) to 14 passing / 14 kept tests across 5 of 10 functions; collection errors dropped 6→2. Coverage delta stayed ≈0.0 (only `BadParameter.format_message` +0.9), because the existing suite already covers these lines. Output still requires human review — consistent with the human-approval design in `01 §5` / `04 §12`. Not useful unsupervised; marginal as a Day-1 wedge without review gating. Full table and every command: `harness/w6/FEASIBILITY_R2.md`.
+
+### Round 1 vs Round 2 (same 10 functions, same hardware, generated tests only)
+
+| Measure | Round 1 (one-shot, source only) | Round 2 (context + import hint + repair, max 3 att) |
+|---|---|---|
+| Model | qwen2.5:7b (4.68 GB) | qwen2.5-coder:7b (4.68 GB) |
+| Generated tests pass | 0 | 14 |
+| Generated tests fail | 9 | 9 |
+| Collection errors | 6 | 2 |
+| Tests kept (pass final attempt) | n/a | 14 |
+| Functions with ≥1 kept test | 0 | 5 of 10 |
+| Coverage delta (best) | 0.0 | +0.9 (`BadParameter.format_message`) |
+| Tokens/sec | ~38-41 | ~39-41 |
+| Peak RSS during gen | ~344-421 MB | ~4.7 GB (model fully resident) |
+
+Round 1 re-measured generated-only (excluding the pre-existing suite): 0 pass / 9 fail / 6 collection error. The round-1 table above is kept intact as originally measured.
+
+### Round 2 hardware implication for a lab
+- Model 4.68 GB Q4_K_M → provision ≥ 8 GB RAM. Peak ollama/llama RSS ≈ 4.7 GB (model fully resident); on-disk model size is the binding constraint.
+- ~39-41 tok/s; wall 3–15 s/function. CPU-only sufficient (no GPU); Apple Silicon or x86-64 AVX2.
+- Fully offline after model load.
+
+### Round 2 evidence
+- `harness/w6/results_r2.json`, `harness/w6/logs/r1_*.log`, `r2_*.log`, `harness/w6/driver_r2.py` (grade A).
+- `harness/w6/FEASIBILITY_R2.md` — full table and every command.
+
+### Open questions (unchanged, plus round-2)
+1. Does repair-loop context (imports, examples) plus a coding model raise the kept-test rate enough to pass Gate A on real customer code?
+2. What human-review-effort threshold makes test generation economic? (`03 §5` Gate D)
+3. Can retrieval over the repo (symbols, docstrings) improve test correctness enough to pass Gate A?
+

@@ -1,0 +1,607 @@
+
+=== ATTEMPT 1 ===
+{
+ "tok_s": 36.3,
+ "wall_s": 7.11,
+ "peak_rss_mb": 4738.9
+}
+=== RESPONSE ===
+```python
+import io
+import pytest
+from . import _compat
+from . import formatting
+from . import termui
+from . import utils
+from ._compat import _find_binary_reader
+from .input_stream import make_input_stream
+
+def test_make_input_stream_with_binary_stream():
+    binary_stream = io.BytesIO(b"test")
+    result = make_input_stream(binary_stream, "utf-8")
+    assert result is binary_stream
+
+def test_make_input_stream_with_none():
+    result = make_input_stream(None, "utf-8")
+    assert isinstance(result, io.BytesIO)
+    assert result.getvalue() == b""
+
+def test_make_input_stream_with_string():
+    result = make_input_stream("test", "utf-8")
+    assert isinstance(result, io.BytesIO)
+    assert result.getvalue() == b"test"
+
+def test_make_input_stream_with_non_binary_stream():
+    class NonBinaryStream:
+        def read(self):
+            return "test"
+
+    non_binary_stream = NonBinaryStream()
+    with pytest.raises(TypeError):
+        make_input_stream(non_binary_stream, "utf-8")
+```
+=== PYTEST ===
+
+==================================== ERRORS ====================================
+________________ ERROR collecting test_r2_make_input_stream.py _________________
+ImportError while importing test module '/Users/srujansai/Desktop/AirG.A.P/harness/w6/sandbox/click/test_r2_make_input_stream.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/Library/Frameworks/Python.framework/Versions/3.14/lib/python3.14/importlib/__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+test_r2_make_input_stream.py:3: in <module>
+    from . import _compat
+E   ImportError: attempted relative import with no known parent package
+=========================== short test summary info ============================
+ERROR test_r2_make_input_stream.py
+!!!!!!!!!!!!!!!!!!!! Interrupted: 1 error during collection !!!!!!!!!!!!!!!!!!!!
+1 error in 0.06s
+
+=== ATTEMPT 2 ===
+{
+ "tok_s": 39.9,
+ "wall_s": 6.94,
+ "peak_rss_mb": 4716.5
+}
+=== RESPONSE ===
+```python
+import io
+from typing import Any, BinaryIO, Optional
+from unittest.mock import patch
+
+from click._compat import _find_binary_reader
+from click.utils import make_input_stream
+
+def test_make_input_stream_with_input_stream():
+    input_stream = io.BytesIO(b"test")
+    result = make_input_stream(input_stream, "utf-8")
+    assert result is input_stream
+
+def test_make_input_stream_with_none():
+    result = make_input_stream(None, "utf-8")
+    assert isinstance(result, io.BytesIO)
+    assert result.getvalue() == b""
+
+def test_make_input_stream_with_str():
+    result = make_input_stream("test", "utf-8")
+    assert isinstance(result, io.BytesIO)
+    assert result.getvalue() == b"test"
+
+def test_make_input_stream_with_bytes():
+    result = make_input_stream(b"test", "utf-8")
+    assert isinstance(result, io.BytesIO)
+    assert result.getvalue() == b"test"
+
+@patch.object(_compat, "_find_binary_reader", return_value=None)
+def test_make_input_stream_with_invalid_input(mock_find_binary_reader):
+    with pytest.raises(TypeError):
+        make_input_stream(object(), "utf-8")
+```
+=== PYTEST ===
+
+==================================== ERRORS ====================================
+________________ ERROR collecting test_r2_make_input_stream.py _________________
+ImportError while importing test module '/Users/srujansai/Desktop/AirG.A.P/harness/w6/sandbox/click/test_r2_make_input_stream.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/Library/Frameworks/Python.framework/Versions/3.14/lib/python3.14/importlib/__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+test_r2_make_input_stream.py:6: in <module>
+    from click.utils import make_input_stream
+E   ImportError: cannot import name 'make_input_stream' from 'click.utils' (/Users/srujansai/Desktop/AirG.A.P/harness/w6/sandbox/click/src/click/utils.py)
+=========================== short test summary info ============================
+ERROR test_r2_make_input_stream.py
+!!!!!!!!!!!!!!!!!!!! Interrupted: 1 error during collection !!!!!!!!!!!!!!!!!!!!
+1 error in 0.08s
+
+=== ATTEMPT 3 ===
+{
+ "tok_s": 39.6,
+ "wall_s": 7.6,
+ "peak_rss_mb": 4698.9
+}
+=== RESPONSE ===
+```python
+from click.utils import make_input_stream
+import io
+import pytest
+
+def test_make_input_stream_with_string_input():
+    input_str = "Hello, World!"
+    charset = "utf-8"
+    result = make_input_stream(input_str, charset)
+    assert isinstance(result, io.BytesIO)
+    assert result.read() == input_str.encode(charset)
+
+def test_make_input_stream_with_bytes_input():
+    input_bytes = b"Hello, World!"
+    charset = "utf-8"
+    result = make_input_stream(input_bytes, charset)
+    assert isinstance(result, io.BytesIO)
+    assert result.read() == input_bytes
+
+def test_make_input_stream_with_none_input():
+    charset = "utf-8"
+    result = make_input_stream(None, charset)
+    assert isinstance(result, io.BytesIO)
+    assert result.read() == b""
+
+def test_make_input_stream_with_io_input():
+    input_io = io.BytesIO(b"Hello, World!")
+    result = make_input_stream(input_io, "utf-8")
+    assert isinstance(result, io.BytesIO)
+    assert result.read() == b"Hello, World!"
+
+def test_make_input_stream_with_non_io_input():
+    input_non_io = "Hello, World!"
+    charset = "utf-8"
+    with pytest.raises(TypeError):
+        make_input_stream(input_non_io, charset)
+```
+=== PYTEST ===
+
+==================================== ERRORS ====================================
+________________ ERROR collecting test_r2_make_input_stream.py _________________
+ImportError while importing test module '/Users/srujansai/Desktop/AirG.A.P/harness/w6/sandbox/click/test_r2_make_input_stream.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/Library/Frameworks/Python.framework/Versions/3.14/lib/python3.14/importlib/__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+test_r2_make_input_stream.py:1: in <module>
+    from click.utils import make_input_stream
+E   ImportError: cannot import name 'make_input_stream' from 'click.utils' (/Users/srujansai/Desktop/AirG.A.P/harness/w6/sandbox/click/src/click/utils.py)
+=========================== short test summary info ============================
+ERROR test_r2_make_input_stream.py
+!!!!!!!!!!!!!!!!!!!! Interrupted: 1 error during collection !!!!!!!!!!!!!!!!!!!!
+1 error in 0.07s
+
+=== ATTEMPT 1 ===
+{
+ "tok_s": 37.5,
+ "wall_s": 7.28,
+ "peak_rss_mb": 4751.1
+}
+=== RESPONSE ===
+```python
+import io
+import pytest
+from your_module import make_input_stream
+
+def test_make_input_stream_with_string():
+    input_str = "Hello, World!"
+    charset = "utf-8"
+    result = make_input_stream(input_str, charset)
+    assert isinstance(result, io.BytesIO)
+    assert result.read() == input_str.encode(charset)
+
+def test_make_input_stream_with_bytes():
+    input_bytes = b"Hello, World!"
+    charset = "utf-8"
+    result = make_input_stream(input_bytes, charset)
+    assert isinstance(result, io.BytesIO)
+    assert result.read() == input_bytes
+
+def test_make_input_stream_with_io_object():
+    input_io = io.BytesIO(b"Hello, World!")
+    result = make_input_stream(input_io, "utf-8")
+    assert result is input_io
+
+def test_make_input_stream_with_none():
+    input_none = None
+    charset = "utf-8"
+    result = make_input_stream(input_none, charset)
+    assert isinstance(result, io.BytesIO)
+    assert result.read() == b""
+
+def test_make_input_stream_with_non_string_non_bytes_non_io():
+    with pytest.raises(TypeError):
+        make_input_stream(123, "utf-8")
+```
+=== PYTEST ===
+
+==================================== ERRORS ====================================
+________________ ERROR collecting test_r2_make_input_stream.py _________________
+ImportError while importing test module '/Users/srujansai/Desktop/AirG.A.P/harness/w6/sandbox/click/test_r2_make_input_stream.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/Library/Frameworks/Python.framework/Versions/3.14/lib/python3.14/importlib/__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+test_r2_make_input_stream.py:3: in <module>
+    from your_module import make_input_stream
+E   ModuleNotFoundError: No module named 'your_module'
+=========================== short test summary info ============================
+ERROR test_r2_make_input_stream.py
+!!!!!!!!!!!!!!!!!!!! Interrupted: 1 error during collection !!!!!!!!!!!!!!!!!!!!
+1 error in 0.17s
+
+=== ATTEMPT 2 ===
+{
+ "tok_s": 36.8,
+ "wall_s": 7.05,
+ "peak_rss_mb": 4722.6
+}
+=== RESPONSE ===
+```python
+import io
+from typing import Any, BinaryIO, Optional
+from your_module import make_input_stream
+
+def test_make_input_stream_with_string():
+    input_str = "Hello, world!"
+    charset = "utf-8"
+    result = make_input_stream(input_str, charset)
+    assert isinstance(result, io.BytesIO)
+    assert result.getvalue() == input_str.encode(charset)
+
+def test_make_input_stream_with_bytes():
+    input_bytes = b"Hello, world!"
+    charset = "utf-8"
+    result = make_input_stream(input_bytes, charset)
+    assert isinstance(result, io.BytesIO)
+    assert result.getvalue() == input_bytes
+
+def test_make_input_stream_with_io_stream():
+    input_stream = io.BytesIO(b"Hello, world!")
+    charset = "utf-8"
+    result = make_input_stream(input_stream, charset)
+    assert result is input_stream
+
+def test_make_input_stream_with_none():
+    charset = "utf-8"
+    result = make_input_stream(None, charset)
+    assert isinstance(result, io.BytesIO)
+    assert result.getvalue() == b""
+```
+=== PYTEST ===
+
+==================================== ERRORS ====================================
+________________ ERROR collecting test_r2_make_input_stream.py _________________
+ImportError while importing test module '/Users/srujansai/Desktop/AirG.A.P/harness/w6/sandbox/click/test_r2_make_input_stream.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/Library/Frameworks/Python.framework/Versions/3.14/lib/python3.14/importlib/__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+test_r2_make_input_stream.py:3: in <module>
+    from your_module import make_input_stream
+E   ModuleNotFoundError: No module named 'your_module'
+=========================== short test summary info ============================
+ERROR test_r2_make_input_stream.py
+!!!!!!!!!!!!!!!!!!!! Interrupted: 1 error during collection !!!!!!!!!!!!!!!!!!!!
+1 error in 0.22s
+
+=== ATTEMPT 3 ===
+{
+ "tok_s": 37.4,
+ "wall_s": 8.09,
+ "peak_rss_mb": 4709.5
+}
+=== RESPONSE ===
+```python
+import io
+from typing import Any, BinaryIO, Optional
+from unittest.mock import patch
+
+from your_module import make_input_stream
+
+def test_make_input_stream_with_string_input():
+    input_str = "Hello, world!"
+    charset = "utf-8"
+    result = make_input_stream(input_str, charset)
+    assert isinstance(result, io.BytesIO)
+    assert result.read() == input_str.encode(charset)
+
+def test_make_input_stream_with_bytes_input():
+    input_bytes = b"Hello, world!"
+    charset = "utf-8"
+    result = make_input_stream(input_bytes, charset)
+    assert isinstance(result, io.BytesIO)
+    assert result.read() == input_bytes
+
+def test_make_input_stream_with_io_input():
+    input_io = io.BytesIO(b"Hello, world!")
+    result = make_input_stream(input_io, "utf-8")
+    assert result is input_io
+
+def test_make_input_stream_with_none_input():
+    charset = "utf-8"
+    result = make_input_stream(None, charset)
+    assert isinstance(result, io.BytesIO)
+    assert result.read() == b""
+
+def test_make_input_stream_with_non_string_non_bytes_non_io_input():
+    input_non_valid = 123
+    charset = "utf-8"
+    with patch.object(io, 'BytesIO', side_effect=TypeError):
+        with pytest.raises(TypeError):
+            make_input_stream(input_non_valid, charset)
+```
+=== PYTEST ===
+
+==================================== ERRORS ====================================
+________________ ERROR collecting test_r2_make_input_stream.py _________________
+ImportError while importing test module '/Users/srujansai/Desktop/AirG.A.P/harness/w6/sandbox/click/test_r2_make_input_stream.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/Library/Frameworks/Python.framework/Versions/3.14/lib/python3.14/importlib/__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+test_r2_make_input_stream.py:5: in <module>
+    from your_module import make_input_stream
+E   ModuleNotFoundError: No module named 'your_module'
+=========================== short test summary info ============================
+ERROR test_r2_make_input_stream.py
+!!!!!!!!!!!!!!!!!!!! Interrupted: 1 error during collection !!!!!!!!!!!!!!!!!!!!
+1 error in 0.22s
+
+=== ATTEMPT 1 ===
+{
+ "tok_s": 39.6,
+ "wall_s": 7.22,
+ "peak_rss_mb": 4737.1
+}
+=== RESPONSE ===
+```python
+import io
+import pytest
+from click import make_input_stream
+
+def test_make_input_stream_with_bytes():
+    input_data = b"test bytes"
+    charset = "utf-8"
+    result = make_input_stream(input_data, charset)
+    assert isinstance(result, io.BytesIO)
+    assert result.read() == input_data
+
+def test_make_input_stream_with_str():
+    input_data = "test string"
+    charset = "utf-8"
+    result = make_input_stream(input_data, charset)
+    assert isinstance(result, io.BytesIO)
+    assert result.read() == input_data.encode(charset)
+
+def test_make_input_stream_with_io():
+    input_data = io.BytesIO(b"test io")
+    result = make_input_stream(input_data, "utf-8")
+    assert result is input_data
+
+def test_make_input_stream_with_none():
+    input_data = None
+    charset = "utf-8"
+    result = make_input_stream(input_data, charset)
+    assert isinstance(result, io.BytesIO)
+    assert result.read() == b""
+
+def test_make_input_stream_with_invalid_input():
+    input_data = object()
+    charset = "utf-8"
+    with pytest.raises(TypeError):
+        make_input_stream(input_data, charset)
+```
+=== PYTEST ===
+============================= test session starts ==============================
+platform darwin -- Python 3.14.3, pytest-9.2.0, pluggy-1.7.0 -- /Users/srujansai/Desktop/AirG.A.P/harness/w6/venv/bin/python
+rootdir: /Users/srujansai/Desktop/AirG.A.P/harness/w6/sandbox/click
+configfile: pyproject.toml
+collecting ... collected 0 items / 1 error
+
+==================================== ERRORS ====================================
+________________ ERROR collecting test_r2_make_input_stream.py _________________
+ImportError while importing test module '/Users/srujansai/Desktop/AirG.A.P/harness/w6/sandbox/click/test_r2_make_input_stream.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/Library/Frameworks/Python.framework/Versions/3.14/lib/python3.14/importlib/__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+test_r2_make_input_stream.py:3: in <module>
+    from click import make_input_stream
+E   ImportError: cannot import name 'make_input_stream' from 'click' (/Users/srujansai/Desktop/AirG.A.P/harness/w6/sandbox/click/src/click/__init__.py)
+=========================== short test summary info ============================
+ERROR test_r2_make_input_stream.py
+!!!!!!!!!!!!!!!!!!!! Interrupted: 1 error during collection !!!!!!!!!!!!!!!!!!!!
+=============================== 1 error in 0.06s ===============================
+
+=== ATTEMPT 2 ===
+{
+ "tok_s": 40.4,
+ "wall_s": 7.65,
+ "peak_rss_mb": 4762.5
+}
+=== RESPONSE ===
+```python
+import io
+import pytest
+from click import make_input_stream
+
+def test_make_input_stream_with_bytes():
+    input_data = b"test bytes"
+    charset = "utf-8"
+    result = make_input_stream(input_data, charset)
+    assert isinstance(result, io.BytesIO)
+    assert result.read() == input_data
+
+def test_make_input_stream_with_str():
+    input_data = "test string"
+    charset = "utf-8"
+    result = make_input_stream(input_data, charset)
+    assert isinstance(result, io.BytesIO)
+    assert result.read() == input_data.encode(charset)
+
+def test_make_input_stream_with_io():
+    input_data = io.BytesIO(b"test io")
+    result = make_input_stream(input_data, "utf-8")
+    assert result is input_data
+
+def test_make_input_stream_with_none():
+    charset = "utf-8"
+    result = make_input_stream(None, charset)
+    assert isinstance(result, io.BytesIO)
+    assert result.read() == b""
+
+def test_make_input_stream_with_invalid_input():
+    input_data = object()
+    charset = "utf-8"
+    with pytest.raises(TypeError):
+        make_input_stream(input_data, charset)
+```
+=== PYTEST ===
+============================= test session starts ==============================
+platform darwin -- Python 3.14.3, pytest-9.2.0, pluggy-1.7.0 -- /Users/srujansai/Desktop/AirG.A.P/harness/w6/venv/bin/python
+rootdir: /Users/srujansai/Desktop/AirG.A.P/harness/w6/sandbox/click
+configfile: pyproject.toml
+collecting ... collected 0 items / 1 error
+
+==================================== ERRORS ====================================
+________________ ERROR collecting test_r2_make_input_stream.py _________________
+ImportError while importing test module '/Users/srujansai/Desktop/AirG.A.P/harness/w6/sandbox/click/test_r2_make_input_stream.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/Library/Frameworks/Python.framework/Versions/3.14/lib/python3.14/importlib/__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+test_r2_make_input_stream.py:3: in <module>
+    from click import make_input_stream
+E   ImportError: cannot import name 'make_input_stream' from 'click' (/Users/srujansai/Desktop/AirG.A.P/harness/w6/sandbox/click/src/click/__init__.py)
+=========================== short test summary info ============================
+ERROR test_r2_make_input_stream.py
+!!!!!!!!!!!!!!!!!!!! Interrupted: 1 error during collection !!!!!!!!!!!!!!!!!!!!
+=============================== 1 error in 0.07s ===============================
+
+=== ATTEMPT 3 ===
+{
+ "tok_s": 39.3,
+ "wall_s": 5.31,
+ "peak_rss_mb": 4739.3
+}
+=== RESPONSE ===
+```python
+import io
+import pytest
+from click import make_input_stream
+
+def test_make_input_stream_with_bytes():
+    input_data = b"test bytes"
+    charset = "utf-8"
+    result = make_input_stream(input_data, charset)
+    assert result.read() == input_data
+
+def test_make_input_stream_with_str():
+    input_data = "test string"
+    charset = "utf-8"
+    result = make_input_stream(input_data, charset)
+    assert result.read() == input_data.encode(charset)
+
+def test_make_input_stream_with_io():
+    input_data = io.BytesIO(b"test io")
+    result = make_input_stream(input_data, "utf-8")
+    assert result.read() == b"test io"
+
+def test_make_input_stream_with_none():
+    charset = "utf-8"
+    result = make_input_stream(None, charset)
+    assert result.read() == b""
+```
+=== PYTEST ===
+============================= test session starts ==============================
+platform darwin -- Python 3.14.3, pytest-9.2.0, pluggy-1.7.0 -- /Users/srujansai/Desktop/AirG.A.P/harness/w6/venv/bin/python
+rootdir: /Users/srujansai/Desktop/AirG.A.P/harness/w6/sandbox/click
+configfile: pyproject.toml
+collecting ... collected 0 items / 1 error
+
+==================================== ERRORS ====================================
+________________ ERROR collecting test_r2_make_input_stream.py _________________
+ImportError while importing test module '/Users/srujansai/Desktop/AirG.A.P/harness/w6/sandbox/click/test_r2_make_input_stream.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/Library/Frameworks/Python.framework/Versions/3.14/lib/python3.14/importlib/__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+test_r2_make_input_stream.py:3: in <module>
+    from click import make_input_stream
+E   ImportError: cannot import name 'make_input_stream' from 'click' (/Users/srujansai/Desktop/AirG.A.P/harness/w6/sandbox/click/src/click/__init__.py)
+=========================== short test summary info ============================
+ERROR test_r2_make_input_stream.py
+!!!!!!!!!!!!!!!!!!!! Interrupted: 1 error during collection !!!!!!!!!!!!!!!!!!!!
+=============================== 1 error in 0.07s ===============================
+
+=== ATTEMPT 1 ===
+{
+ "tok_s": 41.4,
+ "wall_s": 7.13,
+ "peak_rss_mb": 4742.9
+}
+=== RESPONSE ===
+```python
+from click.testing import make_input_stream
+import io
+import pytest
+
+def test_make_input_stream_with_string():
+    input_str = "Hello, World!"
+    charset = "utf-8"
+    result = make_input_stream(input_str, charset)
+    assert isinstance(result, io.BytesIO)
+    assert result.read() == input_str.encode(charset)
+
+def test_make_input_stream_with_bytes():
+    input_bytes = b"Hello, World!"
+    charset = "utf-8"
+    result = make_input_stream(input_bytes, charset)
+    assert isinstance(result, io.BytesIO)
+    assert result.read() == input_bytes
+
+def test_make_input_stream_with_io_object():
+    input_io = io.BytesIO(b"Hello, World!")
+    charset = "utf-8"
+    result = make_input_stream(input_io, charset)
+    assert result is input_io
+
+def test_make_input_stream_with_none():
+    input_none = None
+    charset = "utf-8"
+    result = make_input_stream(input_none, charset)
+    assert isinstance(result, io.BytesIO)
+    assert result.read() == b""
+
+def test_make_input_stream_with_non_string_non_bytes_non_io():
+    with pytest.raises(TypeError):
+        make_input_stream(123, "utf-8")
+```
+=== PYTEST ===
+============================= test session starts ==============================
+platform darwin -- Python 3.14.3, pytest-9.2.0, pluggy-1.7.0 -- /Users/srujansai/Desktop/AirG.A.P/harness/w6/venv/bin/python
+rootdir: /Users/srujansai/Desktop/AirG.A.P/harness/w6/sandbox/click
+configfile: pyproject.toml
+collecting ... collected 5 items
+
+test_r2_make_input_stream.py::test_make_input_stream_with_string PASSED  [ 20%]
+test_r2_make_input_stream.py::test_make_input_stream_with_bytes PASSED   [ 40%]
+test_r2_make_input_stream.py::test_make_input_stream_with_io_object PASSED [ 60%]
+test_r2_make_input_stream.py::test_make_input_stream_with_none PASSED    [ 80%]
+test_r2_make_input_stream.py::test_make_input_stream_with_non_string_non_bytes_non_io PASSED [100%]
+
+============================== 5 passed in 0.02s ===============================

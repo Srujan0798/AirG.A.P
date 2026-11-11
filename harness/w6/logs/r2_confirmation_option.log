@@ -1,0 +1,684 @@
+
+=== ATTEMPT 1 ===
+{
+ "tok_s": 36.3,
+ "wall_s": 4.46,
+ "peak_rss_mb": 4754.4
+}
+=== RESPONSE ===
+```python
+from click import Context, option
+from click.testing import CliRunner
+
+def test_confirmation_option():
+    @click.command()
+    @confirmation_option("--confirm")
+    def test_command():
+        click.echo("Confirmed!")
+
+    runner = CliRunner()
+    result = runner.invoke(test_command, ["--confirm"])
+    assert result.exit_code == 0
+    assert result.output == "Confirmed!\n"
+
+    result = runner.invoke(test_command)
+    assert result.exit_code == 1
+    assert result.output == "Do you want to continue? [y/N]: Aborted!\n"
+```
+=== PYTEST ===
+F                                                                        [100%]
+=================================== FAILURES ===================================
+___________________________ test_confirmation_option ___________________________
+
+    def test_confirmation_option():
+>       @click.command()
+         ^^^^^
+E       NameError: name 'click' is not defined
+
+test_r2_confirmation_option.py:5: NameError
+=========================== short test summary info ============================
+FAILED test_r2_confirmation_option.py::test_confirmation_option - NameError: ...
+1 failed in 0.04s
+
+=== ATTEMPT 2 ===
+{
+ "tok_s": 35.9,
+ "wall_s": 9.35,
+ "peak_rss_mb": 4710.3
+}
+=== RESPONSE ===
+```python
+from typing_extensions import assert_type
+
+import click
+from click.decorators import option
+
+
+def confirmation_option(*param_decls: str, **kwargs: t.Any) -> t.Callable[[FC], FC]:
+    """Add a ``--yes`` option which shows a prompt before continuing if
+    not passed. If the prompt is declined, the program will exit.
+
+    :param param_decls: One or more option names. Defaults to the single
+        value ``"--yes"``.
+    :param kwargs: Extra arguments are passed to :func:`option`.
+    """
+
+    def callback(ctx: Context, param: Parameter, value: bool) -> None:
+        if not value:
+            ctx.abort()
+
+    if not param_decls:
+        param_decls = ("--yes",)
+
+    kwargs.setdefault("is_flag", True)
+    kwargs.setdefault("callback", callback)
+    kwargs.setdefault("expose_value", False)
+    kwargs.setdefault("prompt", _("Do you want to continue?"))
+    kwargs.setdefault("help", _("Confirm the action without prompting."))
+    return option(*param_decls, **kwargs)
+
+
+def test_confirmation_option():
+    @click.command()
+    @confirmation_option()
+    def dropdb() -> None:
+        click.echo("Dropped all tables!")
+
+    assert_type(dropdb, click.Command)
+
+    with click.Context(dropdb) as ctx:
+        with pytest.raises(click.Abort):
+            dropdb(ctx, ["--no"])
+
+        dropdb(ctx, ["--yes"])
+        assert ctx.params["yes"] is True
+```
+=== PYTEST ===
+
+==================================== ERRORS ====================================
+_______________ ERROR collecting test_r2_confirmation_option.py ________________
+ImportError while importing test module '/Users/srujansai/Desktop/AirG.A.P/harness/w6/sandbox/click/test_r2_confirmation_option.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/Library/Frameworks/Python.framework/Versions/3.14/lib/python3.14/importlib/__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+test_r2_confirmation_option.py:1: in <module>
+    from typing_extensions import assert_type
+E   ModuleNotFoundError: No module named 'typing_extensions'
+=========================== short test summary info ============================
+ERROR test_r2_confirmation_option.py
+!!!!!!!!!!!!!!!!!!!! Interrupted: 1 error during collection !!!!!!!!!!!!!!!!!!!!
+1 error in 0.19s
+
+=== ATTEMPT 3 ===
+{
+ "tok_s": 35.0,
+ "wall_s": 4.4,
+ "peak_rss_mb": 4714.5
+}
+=== RESPONSE ===
+```python
+import pytest
+from click import Context, option
+from click.decorators import FC
+from click.utils import echo
+
+from your_module import confirmation_option  # Replace 'your_module' with the actual module name
+
+def test_confirmation_option():
+    @click.command()
+    @confirmation_option("--confirm")
+    def test_command():
+        echo("Confirmed!")
+
+    runner = test_command.make_context("test_command", ["--confirm"])
+    test_command(runner)
+    assert runner.params["confirm"] is True
+
+    runner = test_command.make_context("test_command", [])
+    with pytest.raises(SystemExit):
+        test_command(runner)
+```
+=== PYTEST ===
+
+==================================== ERRORS ====================================
+_______________ ERROR collecting test_r2_confirmation_option.py ________________
+ImportError while importing test module '/Users/srujansai/Desktop/AirG.A.P/harness/w6/sandbox/click/test_r2_confirmation_option.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/Library/Frameworks/Python.framework/Versions/3.14/lib/python3.14/importlib/__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+test_r2_confirmation_option.py:6: in <module>
+    from your_module import confirmation_option  # Replace 'your_module' with the actual module name
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ModuleNotFoundError: No module named 'your_module'
+=========================== short test summary info ============================
+ERROR test_r2_confirmation_option.py
+!!!!!!!!!!!!!!!!!!!! Interrupted: 1 error during collection !!!!!!!!!!!!!!!!!!!!
+1 error in 0.20s
+
+=== ATTEMPT 1 ===
+{
+ "tok_s": 38.4,
+ "wall_s": 4.08,
+ "peak_rss_mb": 4782.7
+}
+=== RESPONSE ===
+```python
+from click import Context, option
+from click.testing import CliRunner
+from .core import confirmation_option
+
+def test_confirmation_option():
+    @click.command()
+    @confirmation_option(prompt="Are you sure you want to proceed?")
+    def proceed():
+        click.echo("Proceeding...")
+
+    runner = CliRunner()
+    result = runner.invoke(proceed, input="y\n")
+    assert result.exit_code == 0
+    assert result.output == "Proceeding...\n"
+
+    result = runner.invoke(proceed, input="n\n")
+    assert result.exit_code == 1
+    assert result.output == "Do you want to continue? [y/n]: Proceeding aborted.\n"
+```
+=== PYTEST ===
+
+==================================== ERRORS ====================================
+_______________ ERROR collecting test_r2_confirmation_option.py ________________
+ImportError while importing test module '/Users/srujansai/Desktop/AirG.A.P/harness/w6/sandbox/click/test_r2_confirmation_option.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/Library/Frameworks/Python.framework/Versions/3.14/lib/python3.14/importlib/__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+test_r2_confirmation_option.py:3: in <module>
+    from .core import confirmation_option
+E   ImportError: attempted relative import with no known parent package
+=========================== short test summary info ============================
+ERROR test_r2_confirmation_option.py
+!!!!!!!!!!!!!!!!!!!! Interrupted: 1 error during collection !!!!!!!!!!!!!!!!!!!!
+1 error in 0.09s
+
+=== ATTEMPT 2 ===
+{
+ "tok_s": 38.9,
+ "wall_s": 3.64,
+ "peak_rss_mb": 4720.0
+}
+=== RESPONSE ===
+```python
+from click import command, confirmation_option
+from click.testing import CliRunner
+
+def test_confirmation_option():
+    @command()
+    @confirmation_option()
+    def my_command():
+        click.echo("Command executed!")
+
+    runner = CliRunner()
+    result = runner.invoke(my_command, input="y\n")
+    assert result.exit_code == 0
+    assert result.output == "Command executed!\n"
+
+    result = runner.invoke(my_command, input="n\n")
+    assert result.exit_code == 1
+    assert result.output == ""
+```
+=== PYTEST ===
+F                                                                        [100%]
+=================================== FAILURES ===================================
+___________________________ test_confirmation_option ___________________________
+
+    def test_confirmation_option():
+        @command()
+        @confirmation_option()
+        def my_command():
+            click.echo("Command executed!")
+    
+        runner = CliRunner()
+        result = runner.invoke(my_command, input="y\n")
+>       assert result.exit_code == 0
+E       assert 1 == 0
+E        +  where 1 = <Result NameError("name 'click' is not defined")>.exit_code
+
+test_r2_confirmation_option.py:12: AssertionError
+=========================== short test summary info ============================
+FAILED test_r2_confirmation_option.py::test_confirmation_option - assert 1 == 0
+1 failed in 0.02s
+
+=== ATTEMPT 3 ===
+{
+ "tok_s": 40.6,
+ "wall_s": 3.7,
+ "peak_rss_mb": 4713.0
+}
+=== RESPONSE ===
+```python
+from click import command, option
+from click.testing import CliRunner
+
+def test_confirmation_option():
+    @command()
+    @option("--yes", is_flag=True, callback=lambda ctx, param, value: ctx.abort() if not value else None)
+    def my_command():
+        click.echo("Command executed!")
+
+    runner = CliRunner()
+    result = runner.invoke(my_command, input="n\n")
+    assert result.exit_code == 1
+
+    result = runner.invoke(my_command, input="y\n")
+    assert result.exit_code == 0
+    assert result.output == "Command executed!\n"
+```
+=== PYTEST ===
+F                                                                        [100%]
+=================================== FAILURES ===================================
+___________________________ test_confirmation_option ___________________________
+
+    def test_confirmation_option():
+        @command()
+        @option("--yes", is_flag=True, callback=lambda ctx, param, value: ctx.abort() if not value else None)
+        def my_command():
+            click.echo("Command executed!")
+    
+        runner = CliRunner()
+        result = runner.invoke(my_command, input="n\n")
+        assert result.exit_code == 1
+    
+        result = runner.invoke(my_command, input="y\n")
+>       assert result.exit_code == 0
+E       assert 1 == 0
+E        +  where 1 = <Result SystemExit(1)>.exit_code
+
+test_r2_confirmation_option.py:15: AssertionError
+=========================== short test summary info ============================
+FAILED test_r2_confirmation_option.py::test_confirmation_option - assert 1 == 0
+1 failed in 0.02s
+
+=== ATTEMPT 1 ===
+{
+ "tok_s": 39.8,
+ "wall_s": 10.1,
+ "peak_rss_mb": 4816.9
+}
+=== RESPONSE ===
+```python
+import click
+from click.decorators import option
+from click.core import Context, Parameter
+from click.utils import echo
+
+def confirmation_option(*param_decls: str, **kwargs: t.Any) -> t.Callable[[FC], FC]:
+    """Add a ``--yes`` option which shows a prompt before continuing if
+    not passed. If the prompt is declined, the program will exit.
+
+    :param param_decls: One or more option names. Defaults to the single
+        value ``"--yes"``.
+    :param kwargs: Extra arguments are passed to :func:`option`.
+    """
+
+    def callback(ctx: Context, param: Parameter, value: bool) -> None:
+        if not value:
+            ctx.abort()
+
+    if not param_decls:
+        param_decls = ("--yes",)
+
+    kwargs.setdefault("is_flag", True)
+    kwargs.setdefault("callback", callback)
+    kwargs.setdefault("expose_value", False)
+    kwargs.setdefault("prompt", _("Do you want to continue?"))
+    kwargs.setdefault("help", _("Confirm the action without prompting."))
+    return option(*param_decls, **kwargs)
+
+# Test cases
+def test_confirmation_option():
+    @click.command()
+    @confirmation_option()
+    def test_command():
+        click.echo("Confirmed!")
+
+    runner = click.testing CliRunner()
+    result = runner.invoke(test_command, input="y\n")
+    assert result.exit_code == 0
+    assert result.output == "Confirmed!\n"
+
+    result = runner.invoke(test_command, input="n\n")
+    assert result.exit_code != 0
+    assert result.output == "Do you want to continue? [y/n]: Aborted!\n"
+```
+=== PYTEST ===
+============================= test session starts ==============================
+platform darwin -- Python 3.14.3, pytest-9.2.0, pluggy-1.7.0 -- /Users/srujansai/Desktop/AirG.A.P/harness/w6/venv/bin/python
+rootdir: /Users/srujansai/Desktop/AirG.A.P/harness/w6/sandbox/click
+configfile: pyproject.toml
+collecting ... collected 0 items / 1 error
+
+==================================== ERRORS ====================================
+_______________ ERROR collecting test_r2_confirmation_option.py ________________
+../../venv/lib/python3.14/site-packages/_pytest/python.py:528: in importtestmodule
+    mod = import_path(
+../../venv/lib/python3.14/site-packages/_pytest/pathlib.py:640: in import_path
+    importlib.import_module(module_name)
+/Library/Frameworks/Python.framework/Versions/3.14/lib/python3.14/importlib/__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+<frozen importlib._bootstrap>:1398: in _gcd_import
+    ???
+<frozen importlib._bootstrap>:1371: in _find_and_load
+    ???
+<frozen importlib._bootstrap>:1342: in _find_and_load_unlocked
+    ???
+<frozen importlib._bootstrap>:938: in _load_unlocked
+    ???
+../../venv/lib/python3.14/site-packages/_pytest/assertion/rewrite.py:176: in exec_module
+    source_hash, co = _rewrite_test(fn, self.config)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../../venv/lib/python3.14/site-packages/_pytest/assertion/rewrite.py:339: in _rewrite_test
+    tree = ast.parse(source, filename=strfn)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/Library/Frameworks/Python.framework/Versions/3.14/lib/python3.14/ast.py:46: in parse
+    return compile(source, filename, mode, flags,
+E     File "/Users/srujansai/Desktop/AirG.A.P/harness/w6/sandbox/click/test_r2_confirmation_option.py", line 36
+E       runner = click.testing CliRunner()
+E                              ^^^^^^^^^
+E   SyntaxError: invalid syntax
+=========================== short test summary info ============================
+ERROR test_r2_confirmation_option.py
+!!!!!!!!!!!!!!!!!!!! Interrupted: 1 error during collection !!!!!!!!!!!!!!!!!!!!
+=============================== 1 error in 0.10s ===============================
+
+=== ATTEMPT 2 ===
+{
+ "tok_s": 40.0,
+ "wall_s": 5.57,
+ "peak_rss_mb": 4776.2
+}
+=== RESPONSE ===
+```python
+import click
+from click.testing import CliRunner
+from click.core import Context, Parameter
+from click.utils import echo
+
+def test_confirmation_option():
+    @click.command()
+    @click.confirmation_option(prompt="Are you sure you want to drop the db?")
+    def dropdb() -> None:
+        click.echo("Dropped all tables!")
+
+    runner = CliRunner()
+    result = runner.invoke(dropdb, input="y\n")
+    assert result.exit_code == 0
+    assert result.output == "Dropped all tables!\n"
+
+    result = runner.invoke(dropdb, input="n\n")
+    assert result.exit_code == 1
+    assert result.output == "Aborted!\n"
+```
+=== PYTEST ===
+============================= test session starts ==============================
+platform darwin -- Python 3.14.3, pytest-9.2.0, pluggy-1.7.0 -- /Users/srujansai/Desktop/AirG.A.P/harness/w6/venv/bin/python
+rootdir: /Users/srujansai/Desktop/AirG.A.P/harness/w6/sandbox/click
+configfile: pyproject.toml
+collecting ... collected 1 item
+
+test_r2_confirmation_option.py::test_confirmation_option FAILED          [100%]
+
+=================================== FAILURES ===================================
+___________________________ test_confirmation_option ___________________________
+
+    def test_confirmation_option():
+        @click.command()
+        @click.confirmation_option(prompt="Are you sure you want to drop the db?")
+        def dropdb() -> None:
+            click.echo("Dropped all tables!")
+    
+        runner = CliRunner()
+        result = runner.invoke(dropdb, input="y\n")
+        assert result.exit_code == 0
+>       assert result.output == "Dropped all tables!\n"
+E       AssertionError: assert 'Are you sure...all tables!\n' == 'Dropped all tables!\n'
+E         
+E         + Are you sure you want to drop the db? [y/N]: y
+E           Dropped all tables!
+
+test_r2_confirmation_option.py:15: AssertionError
+=========================== short test summary info ============================
+FAILED test_r2_confirmation_option.py::test_confirmation_option - AssertionEr...
+============================== 1 failed in 0.03s ===============================
+
+=== ATTEMPT 3 ===
+{
+ "tok_s": 38.8,
+ "wall_s": 11.34,
+ "peak_rss_mb": 4790.8
+}
+=== RESPONSE ===
+```python
+import click
+from click.testing import CliRunner
+from click.core import Context, Parameter
+from click.decorators import option
+
+def confirmation_option(*param_decls: str, **kwargs: t.Any) -> t.Callable[[FC], FC]:
+    """Add a ``--yes`` option which shows a prompt before continuing if
+    not passed. If the prompt is declined, the program will exit.
+
+    :param param_decls: One or more option names. Defaults to the single
+        value ``"--yes"``.
+    :param kwargs: Extra arguments are passed to :func:`option`.
+    """
+
+    def callback(ctx: Context, param: Parameter, value: bool) -> None:
+        if not value:
+            ctx.abort()
+
+    if not param_decls:
+        param_decls = ("--yes",)
+
+    kwargs.setdefault("is_flag", True)
+    kwargs.setdefault("callback", callback)
+    kwargs.setdefault("expose_value", False)
+    kwargs.setdefault("prompt", _("Do you want to continue?"))
+    kwargs.setdefault("help", _("Confirm the action without prompting."))
+    return option(*param_decls, **kwargs)
+
+@click.command()
+@confirmation_option(prompt="Are you sure you want to drop the db?")
+def dropdb() -> None:
+    click.echo("Dropped all tables!")
+
+def test_confirmation_option():
+    runner = CliRunner()
+    result = runner.invoke(dropdb, input="y\n")
+    assert result.exit_code == 0
+    assert result.output == "Are you sure you want to drop the db? [y/N]: y\nDropped all tables!\n"
+
+    result = runner.invoke(dropdb, input="n\n")
+    assert result.exit_code == 1
+    assert result.output == "Are you sure you want to drop the db? [y/N]: n\nAborted!\n"
+```
+=== PYTEST ===
+============================= test session starts ==============================
+platform darwin -- Python 3.14.3, pytest-9.2.0, pluggy-1.7.0 -- /Users/srujansai/Desktop/AirG.A.P/harness/w6/venv/bin/python
+rootdir: /Users/srujansai/Desktop/AirG.A.P/harness/w6/sandbox/click
+configfile: pyproject.toml
+collecting ... collected 0 items / 1 error
+
+==================================== ERRORS ====================================
+_______________ ERROR collecting test_r2_confirmation_option.py ________________
+test_r2_confirmation_option.py:30: in <module>
+    @confirmation_option(prompt="Are you sure you want to drop the db?")
+     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+test_r2_confirmation_option.py:25: in confirmation_option
+    kwargs.setdefault("prompt", _("Do you want to continue?"))
+                                ^
+E   NameError: name '_' is not defined
+=========================== short test summary info ============================
+ERROR test_r2_confirmation_option.py - NameError: name '_' is not defined
+!!!!!!!!!!!!!!!!!!!! Interrupted: 1 error during collection !!!!!!!!!!!!!!!!!!!!
+=============================== 1 error in 0.08s ===============================
+
+=== ATTEMPT 1 ===
+{
+ "tok_s": 34.1,
+ "wall_s": 5.9,
+ "peak_rss_mb": 4741.4
+}
+=== RESPONSE ===
+```python
+from click.decorators import confirmation_option
+from click.core import Command
+from click.core import Context
+from click.utils import echo
+from click.testing import CliRunner
+
+def test_confirmation_option():
+    @click.command()
+    @confirmation_option(prompt="Are you sure you want to drop the db?")
+    def dropdb() -> None:
+        click.echo("Dropped all tables!")
+
+    runner = CliRunner()
+    result = runner.invoke(dropdb, input="y\n")
+    assert result.exit_code == 0
+    assert result.output == "Dropped all tables!\n"
+
+    result = runner.invoke(dropdb, input="n\n")
+    assert result.exit_code == 1
+    assert result.output == "Aborted!\n"
+```
+=== PYTEST ===
+============================= test session starts ==============================
+platform darwin -- Python 3.14.3, pytest-9.2.0, pluggy-1.7.0 -- /Users/srujansai/Desktop/AirG.A.P/harness/w6/venv/bin/python
+rootdir: /Users/srujansai/Desktop/AirG.A.P/harness/w6/sandbox/click
+configfile: pyproject.toml
+collecting ... collected 1 item
+
+test_r2_confirmation_option.py::test_confirmation_option FAILED          [100%]
+
+=================================== FAILURES ===================================
+___________________________ test_confirmation_option ___________________________
+
+    def test_confirmation_option():
+>       @click.command()
+         ^^^^^
+E       NameError: name 'click' is not defined
+
+test_r2_confirmation_option.py:8: NameError
+=========================== short test summary info ============================
+FAILED test_r2_confirmation_option.py::test_confirmation_option - NameError: ...
+============================== 1 failed in 0.03s ===============================
+
+=== ATTEMPT 2 ===
+{
+ "tok_s": 32.7,
+ "wall_s": 6.9,
+ "peak_rss_mb": 4758.8
+}
+=== RESPONSE ===
+```python
+from click.decorators import confirmation_option
+from click import Command, Context, option
+
+def test_confirmation_option():
+    @confirmation_option(prompt="Are you sure you want to drop the db?")
+    def dropdb() -> None:
+        click.echo("Dropped all tables!")
+
+    assert isinstance(dropdb, Command)
+    assert isinstance(dropdb.params[0], option)
+    assert dropdb.params[0].prompt == "Are you sure you want to drop the db?"
+    assert dropdb.params[0].help == "Confirm the action without prompting."
+    assert dropdb.params[0].is_flag is True
+    assert dropdb.params[0].callback is not None
+
+    ctx = Context(dropdb)
+    with ctx:
+        with pytest.raises(SystemExit):
+            dropdb(ctx, "--yes", False)
+        dropdb(ctx, "--yes", True)
+```
+=== PYTEST ===
+============================= test session starts ==============================
+platform darwin -- Python 3.14.3, pytest-9.2.0, pluggy-1.7.0 -- /Users/srujansai/Desktop/AirG.A.P/harness/w6/venv/bin/python
+rootdir: /Users/srujansai/Desktop/AirG.A.P/harness/w6/sandbox/click
+configfile: pyproject.toml
+collecting ... collected 1 item
+
+test_r2_confirmation_option.py::test_confirmation_option FAILED          [100%]
+
+=================================== FAILURES ===================================
+___________________________ test_confirmation_option ___________________________
+
+    def test_confirmation_option():
+        @confirmation_option(prompt="Are you sure you want to drop the db?")
+        def dropdb() -> None:
+            click.echo("Dropped all tables!")
+    
+>       assert isinstance(dropdb, Command)
+E       assert False
+E        +  where False = isinstance(<function test_confirmation_option.<locals>.dropdb at 0x107d16ae0>, Command)
+
+test_r2_confirmation_option.py:9: AssertionError
+=========================== short test summary info ============================
+FAILED test_r2_confirmation_option.py::test_confirmation_option - assert False
+============================== 1 failed in 0.03s ===============================
+
+=== ATTEMPT 3 ===
+{
+ "tok_s": 32.4,
+ "wall_s": 6.09,
+ "peak_rss_mb": 4767.1
+}
+=== RESPONSE ===
+```python
+from click import Command, Context, option
+from click.decorators import confirmation_option
+
+def test_confirmation_option():
+    @confirmation_option(prompt="Are you sure you want to drop the db?")
+    def dropdb() -> None:
+        click.echo("Dropped all tables!")
+
+    assert isinstance(dropdb, Command)
+    assert isinstance(dropdb.params[0], Option)
+    assert dropdb.params[0].prompt == "Are you sure you want to drop the db?"
+    assert dropdb.params[0].is_flag
+    assert dropdb.params[0].callback.__name__ == "callback"
+    assert dropdb.params[0].expose_value is False
+    assert dropdb.params[0].help == "Confirm the action without prompting."
+```
+=== PYTEST ===
+============================= test session starts ==============================
+platform darwin -- Python 3.14.3, pytest-9.2.0, pluggy-1.7.0 -- /Users/srujansai/Desktop/AirG.A.P/harness/w6/venv/bin/python
+rootdir: /Users/srujansai/Desktop/AirG.A.P/harness/w6/sandbox/click
+configfile: pyproject.toml
+collecting ... collected 1 item
+
+test_r2_confirmation_option.py::test_confirmation_option FAILED          [100%]
+
+=================================== FAILURES ===================================
+___________________________ test_confirmation_option ___________________________
+
+    def test_confirmation_option():
+        @confirmation_option(prompt="Are you sure you want to drop the db?")
+        def dropdb() -> None:
+            click.echo("Dropped all tables!")
+    
+>       assert isinstance(dropdb, Command)
+E       assert False
+E        +  where False = isinstance(<function test_confirmation_option.<locals>.dropdb at 0x1077bac40>, Command)
+
+test_r2_confirmation_option.py:9: AssertionError
+=========================== short test summary info ============================
+FAILED test_r2_confirmation_option.py::test_confirmation_option - assert False
+============================== 1 failed in 0.03s ===============================
