@@ -71,7 +71,3 @@ Everything downstream — the recommended ICP (defense/aerospace isolated lab, c
 
 - No market-size, TAM/SAM/SOM, or willingness-to-pay figure appears in this report; none will be produced without a cited sizing methodology (consistent with `09 §9`).
 - All scores above are illustrative re-scorings using `09`'s own rubric, not customer-validated evidence.
-
----
-
-**Appended to `harness/STATUS.log`.** Next: run `09 §8` step 1 (15–25 interviews across top 3 segments) and re-rank only after evidence, per `09 §7.3` / `01 §9 Gate A`.

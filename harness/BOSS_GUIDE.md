@@ -32,3 +32,31 @@ If the boss needs to answer a window that's already running, the boss writes `ha
 
 ## Review pattern
 The boss reads `harness/STATUS.log` for the status line, then opens the named `REPORT.md` and checks it against disk — never accepts a result on the strength of the log line alone.
+
+## Diagnosing a window that goes quiet or claims done with no file
+
+Never accept "done" without the file on disk (see Review pattern above). When a window claims done but `harness/<window>/REPORT.md` is missing or empty, diagnose read-only before asking the owner to do anything:
+
+```bash
+sqlite3 -readonly ~/.local/share/opencode/opencode.db "PRAGMA busy_timeout=8000;" \
+  "SELECT id,title,directory,time_updated FROM session WHERE parent_id IS NULL AND directory='<project path>' ORDER BY time_updated DESC;"
+```
+
+Then for the suspect session, check the finish reason on its latest assistant message:
+
+```bash
+sqlite3 -readonly ~/.local/share/opencode/opencode.db "PRAGMA busy_timeout=8000;" \
+  "SELECT time_created, json_extract(data,'\$.role'), json_extract(data,'\$.finish') FROM message WHERE session_id='<id>' ORDER BY time_created DESC LIMIT 2;"
+```
+
+- `finish='length'` — the reply hit the model's output cap mid-task. The window looks finished but isn't. **Fix: the owner types "continue" in that exact window** — this is the most common cause (confirmed by south-0f and seen directly on W1, 2026-11-11).
+- No session row for the project directory — the paste never reached a window there (wrong window, or wrong folder). The owner opens a window in the project and pastes again.
+- `finish='stop'` but still no file — it finished normally without writing. Re-paste with "write the file first, explain after" appended.
+
+To read message text content (for confirming which task a stuck session was given), content lives in the `part` table, not inline in `message.data`:
+```bash
+sqlite3 -readonly ~/.local/share/opencode/opencode.db "PRAGMA busy_timeout=8000;" \
+  "SELECT json_extract(data,'\$.text') FROM part WHERE message_id IN (SELECT id FROM message WHERE session_id='<id>' AND json_extract(data,'\$.role')='user') ORDER BY time_created ASC LIMIT 1;"
+```
+
+**Prevention (per swa-erp-d8 and south-0f):** every future paste should end with "Keep every chat reply under 10 lines; write the file first, explain after" to reduce truncation risk, and should always use the full project-relative or absolute output path (never a bare filename) to avoid wrong-path writes like the one caught on W2.
