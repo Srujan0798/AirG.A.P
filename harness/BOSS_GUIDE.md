@@ -60,3 +60,18 @@ sqlite3 -readonly ~/.local/share/opencode/opencode.db "PRAGMA busy_timeout=8000;
 ```
 
 **Prevention (per swa-erp-d8 and south-0f):** every future paste should end with "Keep every chat reply under 10 lines; write the file first, explain after" to reduce truncation risk, and should always use the full project-relative or absolute output path (never a bare filename) to avoid wrong-path writes like the one caught on W2.
+
+## Operating method (adopted from swa-erp-d8, 2026-11-11)
+
+**The one rule:** the boss drives, the owner only pastes. The boss never waits to be asked for status — every boss message ends with either the next paste, or "nothing to paste, I'll post when X finishes." If the owner has to ask "what's next," the boss failed.
+
+**How watchers work now:** the moment a window is pasted, arm a completion+stall watcher (`run_in_background`, single notification): poll for the expected output file every ~60s, exit with a ready signal when it appears, or exit with a `STALL` signal after ~45 min of nothing. Do not poll on a fixed timer disconnected from the actual file — watch the specific file the window is supposed to produce.
+
+**While a window runs, the boss keeps working** — don't go idle: draft the next synthesis/decision doc from what's already landed, spot-check accepted claims against source files, prep the next wave's prompts. Report progress numbers to the owner when there's something concrete, not a bare "waiting."
+
+**On completion:** read the file, sample-check 2-3 claims against disk, post a verdict + the next paste (or say nothing is needed next).
+**On stall:** diagnose from disk (which output exists, `finish='length'` check in OpenCode's DB — see diagnostic above), then post the exact resume nudge — don't just report the stall and wait.
+
+**Decisions:** a technical choice is the boss's to make (pick the standard option, state the reason). A business/strategic choice only the founder can settle gets surfaced as one exact question — don't bounce technical calls back to the owner.
+
+**Messages to the owner:** short. A status line (done / running / next), what needs the owner if anything, and the next paste in a ready-to-copy block. No restating the whole convention every time.
