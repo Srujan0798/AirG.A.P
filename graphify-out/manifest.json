@@ -1,0 +1,74 @@
+{
+  "01_MASTER_VISION_AND_STRATEGY.md": {
+    "mtime": 1794382839.0281923,
+    "seen": 1794387438.3219898,
+    "ast_hash": "88c0a4439e1c5ee05531d07a7043dcb7",
+    "semantic_hash": "88c0a4439e1c5ee05531d07a7043dcb7"
+  },
+  "02_INDEPENDENT_RESEARCH_AGENT_PROTOCOLS.md": {
+    "mtime": 1794382839.021261,
+    "seen": 1794387438.321992,
+    "ast_hash": "6f2fa3930170f91795d0f1ccde06ad4c",
+    "semantic_hash": "6f2fa3930170f91795d0f1ccde06ad4c"
+  },
+  "03_IDE_AGENT_AND_STARTUP_INITIALIZATION.md": {
+    "mtime": 1794382839.0169804,
+    "seen": 1794387438.321994,
+    "ast_hash": "9e7f8a480f2f13c422626f20e191bc85",
+    "semantic_hash": "9e7f8a480f2f13c422626f20e191bc85"
+  },
+  "04_TRADITIONAL_SYSTEMS_ENGINEERING_BLUEPRINT.md": {
+    "mtime": 1794382839.0108569,
+    "seen": 1794387438.321995,
+    "ast_hash": "aaa55c04c99b29eec0b25d8cd2f648f7",
+    "semantic_hash": "aaa55c04c99b29eec0b25d8cd2f648f7"
+  },
+  "05_PLUGIN_POWERED_ENGINEERING_FRAMEWORK.md": {
+    "mtime": 1794382839.006869,
+    "seen": 1794387438.321996,
+    "ast_hash": "ac90b47d1f92e3c50bf6cae2142d7d54",
+    "semantic_hash": "ac90b47d1f92e3c50bf6cae2142d7d54"
+  },
+  "06_CUSTOM_HYBRID_ENGINEERING_METHODOLOGY.md": {
+    "mtime": 1794382838.9941587,
+    "seen": 1794387438.3219972,
+    "ast_hash": "12a50c21989e7596f3c3224726fa9fdc",
+    "semantic_hash": "12a50c21989e7596f3c3224726fa9fdc"
+  },
+  "07_NEXT_STEPS_DISPATCH_PROTOCOL.md": {
+    "mtime": 1794383323.4827118,
+    "seen": 1794387438.3219981,
+    "ast_hash": "733d88213ba8bf3b49490b91afe7284e",
+    "semantic_hash": "733d88213ba8bf3b49490b91afe7284e"
+  },
+  "08_WAVE_1_READY_TO_PASTE_PROMPTS.md": {
+    "mtime": 1794386267.0016963,
+    "seen": 1794387438.322006,
+    "ast_hash": "02a2c67aff5837dca682e2beccacb43c",
+    "semantic_hash": "02a2c67aff5837dca682e2beccacb43c"
+  },
+  "09_INITIAL_WEDGE_DISCOVERY.md": {
+    "mtime": 1794386883.8484073,
+    "seen": 1794387438.322007,
+    "ast_hash": "2dc73fffaa93420d9f26f8efeecb3484",
+    "semantic_hash": "2dc73fffaa93420d9f26f8efeecb3484"
+  },
+  "README.md": {
+    "mtime": 1794382838.9880457,
+    "seen": 1794387438.322009,
+    "ast_hash": "98c1a9abc07b217e9bafc50ac5e1e63a",
+    "semantic_hash": "98c1a9abc07b217e9bafc50ac5e1e63a"
+  },
+  "harness/BOSS_GUIDE.md": {
+    "mtime": 1794386807.741912,
+    "seen": 1794387438.322009,
+    "ast_hash": "72717fd26d494ee3e1a6e3c212e379e0",
+    "semantic_hash": "72717fd26d494ee3e1a6e3c212e379e0"
+  },
+  "harness/PASTES.md": {
+    "mtime": 1794386829.2269907,
+    "seen": 1794387438.322011,
+    "ast_hash": "4fa0db19dd600599d842e1acbdf8af43",
+    "semantic_hash": "4fa0db19dd600599d842e1acbdf8af43"
+  }
+}
