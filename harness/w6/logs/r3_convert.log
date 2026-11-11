@@ -1,0 +1,115 @@
+=== BASELINE MISSING IN FUNCTION RANGE ===
+line 203:         return t.cast("_ValueT_co", value)
+
+=== ATTEMPT 1 ===
+{
+ "tok_s": 39.5,
+ "wall_s": 2.85,
+ "peak_rss_mb": 4753.3,
+ "pass": 1,
+ "fail": 0,
+ "error": 0,
+ "target_hit": "yes",
+ "executed": [
+  203
+ ],
+ "not_executed": []
+}
+=== PROMPT ===
+You are a test-generation engineer. Write pytest unit tests whose ONLY goal is to execute the specific uncovered lines listed below.
+
+Hard rules:
+1. Output ONLY one python code block (```python ... ```).
+2. Tests must be deterministic. No network access, no secrets, no sleeps.
+3. Import EXACTLY as shown in the 'Correct import' block. Do not guess another module.
+4. The test must PASS. Avoid assertions on values you are not sure about unless the target line requires it.
+5. Every line in the TARGET LINES list must actually be executed by your test.
+
+Correct import for the function under test:
+from click.types import ParamType
+
+NOTE: ParamType.convert is a METHOD. You must create an instance first (for example `obj = ParamType(...)`) and then call `obj.convert(...)`. Calling `convert(...)` as a bare function will fail.
+
+Module imports available in the file under test:
+from __future__ import annotations
+import abc
+import collections.abc as cabc
+import enum
+import os
+import stat
+import sys
+import typing as t
+import uuid
+from datetime import datetime
+from gettext import gettext as _
+from gettext import ngettext
+from ._compat import _get_argv_encoding
+from ._compat import open_stream
+from .exceptions import BadParameter
+from .utils import _LazyFile
+from .utils import _safecall
+from .utils import format_filename
+
+Existing test style example:
+def test_func_param_type_uses_value_error_message(error_message, expected):
+    def parse(value):
+        raise ValueError(error_message if error_message else "")
+
+    func_type = click.types.FuncParamType(parse)
+
+    with pytest.raises(click.BadParameter) as exc_info:
+        func_type.convert("nope", None, None)
+
+    assert expected in exc_info.value.message
+
+TARGET LINES currently NOT executed (your test MUST execute all of these):
+line 203:         return t.cast("_ValueT_co", value)
+
+Function source (with line numbers):
+
+ 179:     def convert(
+ 180:         self, value: _InputT_contra, param: Parameter | None, ctx: Context | None
+ 181:     ) -> _ValueT_co:
+ 182:         """Convert the value to the correct type. This is not called if
+ 183:         the value is ``None`` (the missing value).
+ 184: 
+ 185:         This must accept string values from the command line, as well as
+ 186:         values that are already the correct type. It may also convert
+ 187:         other compatible types.
+ 188: 
+ 189:         The ``param`` and ``ctx`` arguments may be ``None`` in certain
+ 190:         situations, such as when converting prompt input.
+ 191: 
+ 192:         If the value cannot be converted, call :meth:`fail` with a
+ 193:         descriptive message.
+ 194: 
+ 195:         :param value: The value to convert.
+ 196:         :param param: The parameter that is using this type to convert
+ 197:             its value. May be ``None``.
+ 198:         :param ctx: The current context that arrived at this value. May
+ 199:             be ``None``.
+ 200:         """
+ 201:         # The default returns the value as-is so subclasses that only customize
+ 202:         # metadata are not forced to redeclare ``convert``.
+ 203:         return t.cast("_ValueT_co", value)
+
+=== RESPONSE ===
+```python
+from click.types import ParamType
+
+def test_param_type_convert_returns_value():
+    param_type = ParamType()
+    value = "test_value"
+    result = param_type.convert(value, None, None)
+    assert result == value
+```
+=== PYTEST ===
+============================= test session starts ==============================
+platform darwin -- Python 3.14.3, pytest-9.2.0, pluggy-1.7.0 -- /Users/srujansai/Desktop/AirG.A.P/harness/w6/venv/bin/python
+rootdir: /Users/srujansai/Desktop/AirG.A.P/harness/w6/sandbox/click
+configfile: pyproject.toml
+collecting ... collected 1 item
+
+test_r3_convert.py::test_param_type_convert_returns_value PASSED         [100%]
+
+============================== 1 passed in 0.01s ===============================

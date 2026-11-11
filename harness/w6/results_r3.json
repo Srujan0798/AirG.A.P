@@ -1,0 +1,318 @@
+[
+ {
+  "module": "click.exceptions",
+  "function": "_join_param_hints",
+  "baseline_cov": 86.42533936651584,
+  "target_lines": [
+   21
+  ],
+  "target_lines_text": "line 21:         return \" / \".join(repr(x) for x in param_hint)",
+  "r2_claimed_target_lines": [
+   21
+  ],
+  "r2_claim_matches_computed": true,
+  "attempts": 1,
+  "pass": 1,
+  "fail": 0,
+  "error": 0,
+  "target_hit": "yes",
+  "target_executed": [
+   21
+  ],
+  "target_not_executed": [],
+  "tests_kept": 1,
+  "after_cov": 87.33031674208145,
+  "cov_delta": 0.9,
+  "tok_s": 41.7,
+  "wall_s": 8.14,
+  "peak_rss_mb": 4706.4
+ },
+ {
+  "module": "click._textwrap",
+  "function": "TextWrapper._handle_long_word",
+  "baseline_cov": 73.20261437908496,
+  "target_lines": [
+   63,
+   64
+  ],
+  "target_lines_text": "line 63:         elif not cur_line:\nline 64:             cur_line.append(reversed_chunks.pop())",
+  "r2_claimed_target_lines": [
+   63,
+   64
+  ],
+  "r2_claim_matches_computed": true,
+  "attempts": 2,
+  "pass": 1,
+  "fail": 0,
+  "error": 0,
+  "target_hit": "yes",
+  "target_executed": [
+   63,
+   64
+  ],
+  "target_not_executed": [],
+  "tests_kept": 1,
+  "after_cov": 75.81699346405229,
+  "cov_delta": 2.61,
+  "tok_s": 38.3,
+  "wall_s": 3.92,
+  "peak_rss_mb": 4724.4
+ },
+ {
+  "module": "click.formatting",
+  "function": "wrap_text",
+  "baseline_cov": 94.47236180904522,
+  "target_lines": [
+   80
+  ],
+  "target_lines_text": "line 80:             return",
+  "r2_claimed_target_lines": [
+   80
+  ],
+  "r2_claim_matches_computed": true,
+  "attempts": 4,
+  "pass": 0,
+  "fail": 1,
+  "error": 0,
+  "target_hit": "no",
+  "target_executed": [],
+  "target_not_executed": [
+   80
+  ],
+  "tests_kept": 0,
+  "after_cov": null,
+  "cov_delta": null,
+  "tok_s": 37.2,
+  "wall_s": 2.4,
+  "peak_rss_mb": 4699.9
+ },
+ {
+  "module": "click.testing",
+  "function": "EchoingStdin.readline",
+  "baseline_cov": 95.53990610328638,
+  "target_lines": [
+   79
+  ],
+  "target_lines_text": "line 79:         return self._echo(self._input.readline(n))",
+  "r2_claimed_target_lines": [
+   79
+  ],
+  "r2_claim_matches_computed": true,
+  "attempts": 4,
+  "pass": 0,
+  "fail": 1,
+  "error": 0,
+  "target_hit": "no",
+  "target_executed": [],
+  "target_not_executed": [
+   79
+  ],
+  "tests_kept": 0,
+  "after_cov": null,
+  "cov_delta": null,
+  "tok_s": 39.3,
+  "wall_s": 2.13,
+  "peak_rss_mb": 4697.1
+ },
+ {
+  "module": "click.testing",
+  "function": "make_input_stream",
+  "baseline_cov": 95.53990610328638,
+  "target_lines": [
+   245
+  ],
+  "target_lines_text": "line 245:         raise TypeError(\"Could not find binary reader for input stream.\")",
+  "r2_claimed_target_lines": [
+   245
+  ],
+  "r2_claim_matches_computed": true,
+  "attempts": 4,
+  "pass": 0,
+  "fail": 1,
+  "error": 0,
+  "target_hit": "no",
+  "target_executed": [],
+  "target_not_executed": [
+   245
+  ],
+  "tests_kept": 0,
+  "after_cov": null,
+  "cov_delta": null,
+  "tok_s": 40.2,
+  "wall_s": 1.88,
+  "peak_rss_mb": 4709.1
+ },
+ {
+  "module": "click.decorators",
+  "function": "custom_version_option",
+  "baseline_cov": 79.21146953405018,
+  "target_lines": [
+   585
+  ],
+  "target_lines_text": "line 585:             return",
+  "r2_claimed_target_lines": [
+   585
+  ],
+  "r2_claim_matches_computed": true,
+  "attempts": 4,
+  "pass": 0,
+  "fail": 1,
+  "error": 0,
+  "target_hit": "no",
+  "target_executed": [],
+  "target_not_executed": [
+   585
+  ],
+  "tests_kept": 0,
+  "after_cov": null,
+  "cov_delta": null,
+  "tok_s": 38.3,
+  "wall_s": 2.09,
+  "peak_rss_mb": 4696.2
+ },
+ {
+  "module": "click.exceptions",
+  "function": "BadParameter.format_message",
+  "baseline_cov": 86.42533936651584,
+  "target_lines": [
+   148,
+   152
+  ],
+  "target_lines_text": "line 148:             param_hint = self.param_hint\nline 152:             return _(\"Invalid value: {message}\").format(message=self.message)",
+  "r2_claimed_target_lines": [
+   148,
+   152
+  ],
+  "r2_claim_matches_computed": true,
+  "attempts": 1,
+  "pass": 2,
+  "fail": 0,
+  "error": 0,
+  "target_hit": "yes",
+  "target_executed": [
+   148,
+   152
+  ],
+  "target_not_executed": [],
+  "tests_kept": 2,
+  "after_cov": 88.23529411764706,
+  "cov_delta": 1.81,
+  "tok_s": 39.9,
+  "wall_s": 3.72,
+  "peak_rss_mb": 4805.8
+ },
+ {
+  "module": "click.types",
+  "function": "ParamType.convert",
+  "baseline_cov": 87.55690440060698,
+  "target_lines": [
+   203
+  ],
+  "target_lines_text": "line 203:         return t.cast(\"_ValueT_co\", value)",
+  "r2_claimed_target_lines": [
+   203
+  ],
+  "r2_claim_matches_computed": true,
+  "attempts": 1,
+  "pass": 1,
+  "fail": 0,
+  "error": 0,
+  "target_hit": "yes",
+  "target_executed": [
+   203
+  ],
+  "target_not_executed": [],
+  "tests_kept": 1,
+  "after_cov": 87.70864946889226,
+  "cov_delta": 0.15,
+  "tok_s": 39.5,
+  "wall_s": 2.85,
+  "peak_rss_mb": 4753.3
+ },
+ {
+  "module": "click.utils",
+  "function": "_make_default_short_help",
+  "baseline_cov": 78.96341463414635,
+  "target_lines": [],
+  "target_lines_text": "",
+  "r2_claimed_target_lines": [
+   33
+  ],
+  "r2_claim_matches_computed": false,
+  "attempts": 4,
+  "pass": 0,
+  "fail": 1,
+  "error": 0,
+  "target_hit": "no-target",
+  "target_executed": [],
+  "target_not_executed": [],
+  "tests_kept": 0,
+  "after_cov": null,
+  "cov_delta": null,
+  "tok_s": 35.1,
+  "wall_s": 6.32,
+  "peak_rss_mb": 4721.5,
+  "r2_claim_note": "R2 attributed line 33 to this function; line 33 is the body of _posixify in click/utils.py. _make_default_short_help (lines 62-100) has no uncovered lines in the baseline - already covered by the repo suite."
+ },
+ {
+  "module": "click.decorators",
+  "function": "confirmation_option",
+  "baseline_cov": 79.21146953405018,
+  "target_lines": [
+   389,
+   390,
+   391,
+   393,
+   394,
+   396,
+   397,
+   398,
+   399,
+   400,
+   401
+  ],
+  "target_lines_text": "line 389:     def callback(ctx: Context, param: Parameter, value: bool) -> None:\nline 390:         if not value:\nline 391:             ctx.abort()\nline 393:     if not param_decls:\nline 394:         param_decls = (\"--yes\",)\nline 396:     kwargs.setdefault(\"is_flag\", True)\nline 397:     kwargs.setdefault(\"callback\", callback)\nline 398:     kwargs.setdefault(\"expose_value\", False)\nline 399:     kwargs.setdefault(\"prompt\", _(\"Do you want to continue?\"))\nline 400:     kwargs.setdefault(\"help\", _(\"Confirm the action without prompting.\"))\nline 401:     return option(*param_decls, **kwargs)",
+  "r2_claimed_target_lines": [
+   389,
+   390,
+   391,
+   392,
+   393,
+   394,
+   395,
+   396,
+   397,
+   398,
+   399,
+   400,
+   401
+  ],
+  "r2_claim_matches_computed": false,
+  "attempts": 4,
+  "pass": 0,
+  "fail": 0,
+  "error": 1,
+  "target_hit": "no",
+  "target_executed": [],
+  "target_not_executed": [
+   389,
+   390,
+   391,
+   393,
+   394,
+   396,
+   397,
+   398,
+   399,
+   400,
+   401
+  ],
+  "tests_kept": 0,
+  "after_cov": null,
+  "cov_delta": null,
+  "tok_s": 39.5,
+  "wall_s": 6.2,
+  "peak_rss_mb": 4714.0,
+  "r2_claim_note": "R2 claimed the contiguous range 389-401; coverage.py reports 11 uncovered lines (392 and 395 are not flagged)."
+ }
+]

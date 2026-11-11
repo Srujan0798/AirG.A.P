@@ -1,0 +1,327 @@
+=== BASELINE MISSING IN FUNCTION RANGE ===
+line 63:         elif not cur_line:
+line 64:             cur_line.append(reversed_chunks.pop())
+
+=== ATTEMPT 1 ===
+{
+ "tok_s": 40.4,
+ "wall_s": 3.78,
+ "peak_rss_mb": 4743.5,
+ "pass": 0,
+ "fail": 1,
+ "error": 0,
+ "target_hit": "yes",
+ "executed": [
+  63,
+  64
+ ],
+ "not_executed": []
+}
+=== PROMPT ===
+You are a test-generation engineer. Write pytest unit tests whose ONLY goal is to execute the specific uncovered lines listed below.
+
+Hard rules:
+1. Output ONLY one python code block (```python ... ```).
+2. Tests must be deterministic. No network access, no secrets, no sleeps.
+3. Import EXACTLY as shown in the 'Correct import' block. Do not guess another module.
+4. The test must PASS. Avoid assertions on values you are not sure about unless the target line requires it.
+5. Every line in the TARGET LINES list must actually be executed by your test.
+
+Correct import for the function under test:
+from click._textwrap import TextWrapper
+
+NOTE: TextWrapper._handle_long_word is a METHOD. You must create an instance first (for example `obj = TextWrapper(...)`) and then call `obj._handle_long_word(...)`. Calling `_handle_long_word(...)` as a bare function will fail.
+
+Module imports available in the file under test:
+from __future__ import annotations
+import collections.abc as cabc
+import textwrap
+from contextlib import contextmanager
+from ._compat import _ansi_re
+from ._compat import term_len
+
+Existing test style example:
+import pytest
+
+import click
+from click._compat import strip_ansi
+
+
+def test_basic_functionality(runner):
+    @click.command()
+    def cli():
+        """First paragraph.
+
+        This is a very long second
+        paragraph and not correctly
+        wrapped but it will be rewrapped.
+
+        \b
+        This is
+        a paragraph
+        without rewrapping.
+
+        \b
+        1
+         2
+          3
+
+        And this is a paragraph
+        that will be rewrapped again.
+        """
+
+    result = runner.invoke(cli, ["--help"], terminal_width=60)
+    assert not result.exception
+    assert result.output.splitlines() == [
+        "Usage: cli [OPTIONS]",
+        "",
+        "  First paragraph.",
+        "",
+        "  This is a very long second paragraph and not correctly",
+        "  wrapped b
+
+TARGET LINES currently NOT executed (your test MUST execute all of these):
+line 63:         elif not cur_line:
+line 64:             cur_line.append(reversed_chunks.pop())
+
+Function source (with line numbers):
+
+  48:     def _handle_long_word(
+  49:         self,
+  50:         reversed_chunks: list[str],
+  51:         cur_line: list[str],
+  52:         cur_len: int,
+  53:         width: int,
+  54:     ) -> None:
+  55:         space_left = max(width - cur_len, 1)
+  56: 
+  57:         if self.break_long_words:
+  58:             last = reversed_chunks[-1]
+  59:             cut = _truncate_visible(last, space_left)
+  60:             res = last[len(cut) :]
+  61:             cur_line.append(cut)
+  62:             reversed_chunks[-1] = res
+  63:         elif not cur_line:
+  64:             cur_line.append(reversed_chunks.pop())
+
+=== RESPONSE ===
+```python
+import pytest
+from click._textwrap import TextWrapper
+
+def test_handle_long_word():
+    wrapper = TextWrapper(width=10)
+    reversed_chunks = ['hello', 'world']
+    cur_line = []
+    cur_len = 0
+    wrapper.break_long_words = False
+
+    wrapper._handle_long_word(reversed_chunks, cur_line, cur_len, 10)
+
+    assert cur_line == ['hello']
+    assert reversed_chunks == ['world']
+```
+=== PYTEST ===
+============================= test session starts ==============================
+platform darwin -- Python 3.14.3, pytest-9.2.0, pluggy-1.7.0 -- /Users/srujansai/Desktop/AirG.A.P/harness/w6/venv/bin/python
+rootdir: /Users/srujansai/Desktop/AirG.A.P/harness/w6/sandbox/click
+configfile: pyproject.toml
+collecting ... collected 1 item
+
+test_r3__handle_long_word.py::test_handle_long_word FAILED               [100%]
+
+=================================== FAILURES ===================================
+____________________________ test_handle_long_word _____________________________
+
+    def test_handle_long_word():
+        wrapper = TextWrapper(width=10)
+        reversed_chunks = ['hello', 'world']
+        cur_line = []
+        cur_len = 0
+        wrapper.break_long_words = False
+    
+        wrapper._handle_long_word(reversed_chunks, cur_line, cur_len, 10)
+    
+>       assert cur_line == ['hello']
+E       AssertionError: assert ['world'] == ['hello']
+E         
+E         At index 0 diff: 'world' != 'hello'
+E         
+E         Full diff: (-: missing in left side, +: extra in left side)
+E           [
+E         -     'hello',
+E         +     'world',
+E           ]
+
+test_r3__handle_long_word.py:13: AssertionError
+=========================== short test summary info ============================
+FAILED test_r3__handle_long_word.py::test_handle_long_word - AssertionError: ...
+============================== 1 failed in 0.02s ===============================
+
+=== ATTEMPT 2 ===
+{
+ "tok_s": 38.3,
+ "wall_s": 3.92,
+ "peak_rss_mb": 4724.4,
+ "pass": 1,
+ "fail": 0,
+ "error": 0,
+ "target_hit": "yes",
+ "executed": [
+  63,
+  64
+ ],
+ "not_executed": []
+}
+=== PROMPT ===
+You are a test-generation engineer. Write pytest unit tests whose ONLY goal is to execute the specific uncovered lines listed below.
+
+Hard rules:
+1. Output ONLY one python code block (```python ... ```).
+2. Tests must be deterministic. No network access, no secrets, no sleeps.
+3. Import EXACTLY as shown in the 'Correct import' block. Do not guess another module.
+4. The test must PASS. Avoid assertions on values you are not sure about unless the target line requires it.
+5. Every line in the TARGET LINES list must actually be executed by your test.
+
+Correct import for the function under test:
+from click._textwrap import TextWrapper
+
+NOTE: TextWrapper._handle_long_word is a METHOD. You must create an instance first (for example `obj = TextWrapper(...)`) and then call `obj._handle_long_word(...)`. Calling `_handle_long_word(...)` as a bare function will fail.
+
+Module imports available in the file under test:
+from __future__ import annotations
+import collections.abc as cabc
+import textwrap
+from contextlib import contextmanager
+from ._compat import _ansi_re
+from ._compat import term_len
+
+Existing test style example:
+import pytest
+
+import click
+from click._compat import strip_ansi
+
+
+def test_basic_functionality(runner):
+    @click.command()
+    def cli():
+        """First paragraph.
+
+        This is a very long second
+        paragraph and not correctly
+        wrapped but it will be rewrapped.
+
+        \b
+        This is
+        a paragraph
+        without rewrapping.
+
+        \b
+        1
+         2
+          3
+
+        And this is a paragraph
+        that will be rewrapped again.
+        """
+
+    result = runner.invoke(cli, ["--help"], terminal_width=60)
+    assert not result.exception
+    assert result.output.splitlines() == [
+        "Usage: cli [OPTIONS]",
+        "",
+        "  First paragraph.",
+        "",
+        "  This is a very long second paragraph and not correctly",
+        "  wrapped b
+
+TARGET LINES currently NOT executed (your test MUST execute all of these):
+line 63:         elif not cur_line:
+line 64:             cur_line.append(reversed_chunks.pop())
+
+=== FEEDBACK FROM THE PREVIOUS ATTEMPT ===
+The previous test file did not pass. Pytest output:
+============================= test session starts ==============================
+platform darwin -- Python 3.14.3, pytest-9.2.0, pluggy-1.7.0 -- /Users/srujansai/Desktop/AirG.A.P/harness/w6/venv/bin/python
+rootdir: /Users/srujansai/Desktop/AirG.A.P/harness/w6/sandbox/click
+configfile: pyproject.toml
+collecting ... collected 1 item
+
+test_r3__handle_long_word.py::test_handle_long_word FAILED               [100%]
+
+=================================== FAILURES ===================================
+____________________________ test_handle_long_word _____________________________
+
+    def test_handle_long_word():
+        wrapper = TextWrapper(width=10)
+        reversed_chunks = ['hello', 'world']
+        cur_line = []
+        cur_len = 0
+        wrapper.break_long_words = False
+    
+        wrapper._handle_long_word(reversed_chunks, cur_line, cur_len, 10)
+    
+>       assert cur_line == ['hello']
+E       AssertionError: assert ['world'] == ['hello']
+E         
+E         At index 0 diff: 'world' != 'hello'
+E         
+E         Full diff: (-: missing in left side, +: extra in left side)
+E           [
+E         -     'hello',
+E         +     'world',
+E           ]
+
+test_r3__handle_long_word.py:13: AssertionError
+=========================== short test summary info ============================
+FAILED test_r3__handle_long_word.py::test_handle_long_word - AssertionError: ...
+============================== 1 failed in 0.02s ===============================
+
+
+Function source (with line numbers):
+
+  48:     def _handle_long_word(
+  49:         self,
+  50:         reversed_chunks: list[str],
+  51:         cur_line: list[str],
+  52:         cur_len: int,
+  53:         width: int,
+  54:     ) -> None:
+  55:         space_left = max(width - cur_len, 1)
+  56: 
+  57:         if self.break_long_words:
+  58:             last = reversed_chunks[-1]
+  59:             cut = _truncate_visible(last, space_left)
+  60:             res = last[len(cut) :]
+  61:             cur_line.append(cut)
+  62:             reversed_chunks[-1] = res
+  63:         elif not cur_line:
+  64:             cur_line.append(reversed_chunks.pop())
+
+=== RESPONSE ===
+```python
+import pytest
+from click._textwrap import TextWrapper
+
+def test_handle_long_word():
+    wrapper = TextWrapper(width=10)
+    reversed_chunks = ['hello', 'world']
+    cur_line = []
+    cur_len = 0
+    wrapper.break_long_words = False
+
+    wrapper._handle_long_word(reversed_chunks, cur_line, cur_len, 10)
+
+    assert cur_line == ['world']
+```
+=== PYTEST ===
+============================= test session starts ==============================
+platform darwin -- Python 3.14.3, pytest-9.2.0, pluggy-1.7.0 -- /Users/srujansai/Desktop/AirG.A.P/harness/w6/venv/bin/python
+rootdir: /Users/srujansai/Desktop/AirG.A.P/harness/w6/sandbox/click
+configfile: pyproject.toml
+collecting ... collected 1 item
+
+test_r3__handle_long_word.py::test_handle_long_word PASSED               [100%]
+
+============================== 1 passed in 0.02s ===============================

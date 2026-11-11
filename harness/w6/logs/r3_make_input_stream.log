@@ -1,0 +1,494 @@
+=== BASELINE MISSING IN FUNCTION RANGE ===
+line 245:         raise TypeError("Could not find binary reader for input stream.")
+
+=== ATTEMPT 1 ===
+{
+ "tok_s": 38.4,
+ "wall_s": 2.75,
+ "peak_rss_mb": 4757.9,
+ "pass": 0,
+ "fail": 1,
+ "error": 0,
+ "target_hit": "no",
+ "executed": [],
+ "not_executed": [
+  245
+ ]
+}
+=== PROMPT ===
+You are a test-generation engineer. Write pytest unit tests whose ONLY goal is to execute the specific uncovered lines listed below.
+
+Hard rules:
+1. Output ONLY one python code block (```python ... ```).
+2. Tests must be deterministic. No network access, no secrets, no sleeps.
+3. Import EXACTLY as shown in the 'Correct import' block. Do not guess another module.
+4. The test must PASS. Avoid assertions on values you are not sure about unless the target line requires it.
+5. Every line in the TARGET LINES list must actually be executed by your test.
+
+Correct import for the function under test:
+from click.testing import make_input_stream
+
+
+Module imports available in the file under test:
+from __future__ import annotations
+import collections.abc as cabc
+import contextlib
+import io
+import os
+import pdb
+import shlex
+import sys
+import tempfile
+import typing as t
+from types import TracebackType
+from . import _compat
+from . import formatting
+from . import termui
+from . import utils
+from ._compat import _find_binary_reader
+
+Existing test style example:
+# (no existing test references this function in the repo)
+
+TARGET LINES currently NOT executed (your test MUST execute all of these):
+line 245:         raise TypeError("Could not find binary reader for input stream.")
+
+Function source (with line numbers):
+
+ 235: def make_input_stream(
+ 236:     input: str | bytes | t.IO[t.Any] | None, charset: str
+ 237: ) -> t.BinaryIO:
+ 238:     # Is already an input stream.
+ 239:     if hasattr(input, "read"):
+ 240:         rv = _find_binary_reader(t.cast("t.IO[t.Any]", input))
+ 241: 
+ 242:         if rv is not None:
+ 243:             return rv
+ 244: 
+ 245:         raise TypeError("Could not find binary reader for input stream.")
+ 246: 
+ 247:     if input is None:
+ 248:         input = b""
+ 249:     elif isinstance(input, str):
+ 250:         input = input.encode(charset)
+ 251: 
+ 252:     return io.BytesIO(input)
+
+=== RESPONSE ===
+```python
+from click.testing import make_input_stream
+
+def test_make_input_stream_raises_type_error():
+    with pytest.raises(TypeError) as exc_info:
+        make_input_stream(None, "utf-8")
+    assert str(exc_info.value) == "Could not find binary reader for input stream."
+```
+=== PYTEST ===
+============================= test session starts ==============================
+platform darwin -- Python 3.14.3, pytest-9.2.0, pluggy-1.7.0 -- /Users/srujansai/Desktop/AirG.A.P/harness/w6/venv/bin/python
+rootdir: /Users/srujansai/Desktop/AirG.A.P/harness/w6/sandbox/click
+configfile: pyproject.toml
+collecting ... collected 1 item
+
+test_r3_make_input_stream.py::test_make_input_stream_raises_type_error FAILED [100%]
+
+=================================== FAILURES ===================================
+___________________ test_make_input_stream_raises_type_error ___________________
+
+    def test_make_input_stream_raises_type_error():
+>       with pytest.raises(TypeError) as exc_info:
+             ^^^^^^
+E       NameError: name 'pytest' is not defined
+
+test_r3_make_input_stream.py:4: NameError
+=========================== short test summary info ============================
+FAILED test_r3_make_input_stream.py::test_make_input_stream_raises_type_error
+============================== 1 failed in 0.03s ===============================
+
+=== ATTEMPT 2 ===
+{
+ "tok_s": 42.0,
+ "wall_s": 2.52,
+ "peak_rss_mb": 4722.1,
+ "pass": 0,
+ "fail": 1,
+ "error": 0,
+ "target_hit": "no",
+ "executed": [],
+ "not_executed": [
+  245
+ ]
+}
+=== PROMPT ===
+You are a test-generation engineer. Write pytest unit tests whose ONLY goal is to execute the specific uncovered lines listed below.
+
+Hard rules:
+1. Output ONLY one python code block (```python ... ```).
+2. Tests must be deterministic. No network access, no secrets, no sleeps.
+3. Import EXACTLY as shown in the 'Correct import' block. Do not guess another module.
+4. The test must PASS. Avoid assertions on values you are not sure about unless the target line requires it.
+5. Every line in the TARGET LINES list must actually be executed by your test.
+
+Correct import for the function under test:
+from click.testing import make_input_stream
+
+
+Module imports available in the file under test:
+from __future__ import annotations
+import collections.abc as cabc
+import contextlib
+import io
+import os
+import pdb
+import shlex
+import sys
+import tempfile
+import typing as t
+from types import TracebackType
+from . import _compat
+from . import formatting
+from . import termui
+from . import utils
+from ._compat import _find_binary_reader
+
+Existing test style example:
+# (no existing test references this function in the repo)
+
+TARGET LINES currently NOT executed (your test MUST execute all of these):
+line 245:         raise TypeError("Could not find binary reader for input stream.")
+
+=== FEEDBACK FROM THE PREVIOUS ATTEMPT ===
+The previous test file did not pass. Pytest output:
+============================= test session starts ==============================
+platform darwin -- Python 3.14.3, pytest-9.2.0, pluggy-1.7.0 -- /Users/srujansai/Desktop/AirG.A.P/harness/w6/venv/bin/python
+rootdir: /Users/srujansai/Desktop/AirG.A.P/harness/w6/sandbox/click
+configfile: pyproject.toml
+collecting ... collected 1 item
+
+test_r3_make_input_stream.py::test_make_input_stream_raises_type_error FAILED [100%]
+
+=================================== FAILURES ===================================
+___________________ test_make_input_stream_raises_type_error ___________________
+
+    def test_make_input_stream_raises_type_error():
+>       with pytest.raises(TypeError) as exc_info:
+             ^^^^^^
+E       NameError: name 'pytest' is not defined
+
+test_r3_make_input_stream.py:4: NameError
+=========================== short test summary info ============================
+FAILED test_r3_make_input_stream.py::test_make_input_stream_raises_type_error
+============================== 1 failed in 0.03s ===============================
+
+
+Target lines still not executed: 245.
+
+Function source (with line numbers):
+
+ 235: def make_input_stream(
+ 236:     input: str | bytes | t.IO[t.Any] | None, charset: str
+ 237: ) -> t.BinaryIO:
+ 238:     # Is already an input stream.
+ 239:     if hasattr(input, "read"):
+ 240:         rv = _find_binary_reader(t.cast("t.IO[t.Any]", input))
+ 241: 
+ 242:         if rv is not None:
+ 243:             return rv
+ 244: 
+ 245:         raise TypeError("Could not find binary reader for input stream.")
+ 246: 
+ 247:     if input is None:
+ 248:         input = b""
+ 249:     elif isinstance(input, str):
+ 250:         input = input.encode(charset)
+ 251: 
+ 252:     return io.BytesIO(input)
+
+=== RESPONSE ===
+```python
+import pytest
+from click.testing import make_input_stream
+
+def test_make_input_stream_raises_type_error():
+    with pytest.raises(TypeError) as exc_info:
+        make_input_stream(None, "utf-8")
+```
+=== PYTEST ===
+============================= test session starts ==============================
+platform darwin -- Python 3.14.3, pytest-9.2.0, pluggy-1.7.0 -- /Users/srujansai/Desktop/AirG.A.P/harness/w6/venv/bin/python
+rootdir: /Users/srujansai/Desktop/AirG.A.P/harness/w6/sandbox/click
+configfile: pyproject.toml
+collecting ... collected 1 item
+
+test_r3_make_input_stream.py::test_make_input_stream_raises_type_error FAILED [100%]
+
+=================================== FAILURES ===================================
+___________________ test_make_input_stream_raises_type_error ___________________
+
+    def test_make_input_stream_raises_type_error():
+>       with pytest.raises(TypeError) as exc_info:
+             ^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE TypeError
+
+test_r3_make_input_stream.py:5: Failed
+=========================== short test summary info ============================
+FAILED test_r3_make_input_stream.py::test_make_input_stream_raises_type_error
+============================== 1 failed in 0.06s ===============================
+
+=== ATTEMPT 3 ===
+{
+ "tok_s": 38.0,
+ "wall_s": 2.08,
+ "peak_rss_mb": 4691.0,
+ "pass": 0,
+ "fail": 1,
+ "error": 0,
+ "target_hit": "no",
+ "executed": [],
+ "not_executed": [
+  245
+ ]
+}
+=== PROMPT ===
+You are a test-generation engineer. Write pytest unit tests whose ONLY goal is to execute the specific uncovered lines listed below.
+
+Hard rules:
+1. Output ONLY one python code block (```python ... ```).
+2. Tests must be deterministic. No network access, no secrets, no sleeps.
+3. Import EXACTLY as shown in the 'Correct import' block. Do not guess another module.
+4. The test must PASS. Avoid assertions on values you are not sure about unless the target line requires it.
+5. Every line in the TARGET LINES list must actually be executed by your test.
+
+Correct import for the function under test:
+from click.testing import make_input_stream
+
+
+Module imports available in the file under test:
+from __future__ import annotations
+import collections.abc as cabc
+import contextlib
+import io
+import os
+import pdb
+import shlex
+import sys
+import tempfile
+import typing as t
+from types import TracebackType
+from . import _compat
+from . import formatting
+from . import termui
+from . import utils
+from ._compat import _find_binary_reader
+
+Existing test style example:
+# (no existing test references this function in the repo)
+
+TARGET LINES currently NOT executed (your test MUST execute all of these):
+line 245:         raise TypeError("Could not find binary reader for input stream.")
+
+=== FEEDBACK FROM THE PREVIOUS ATTEMPT ===
+The previous test file did not pass. Pytest output:
+============================= test session starts ==============================
+platform darwin -- Python 3.14.3, pytest-9.2.0, pluggy-1.7.0 -- /Users/srujansai/Desktop/AirG.A.P/harness/w6/venv/bin/python
+rootdir: /Users/srujansai/Desktop/AirG.A.P/harness/w6/sandbox/click
+configfile: pyproject.toml
+collecting ... collected 1 item
+
+test_r3_make_input_stream.py::test_make_input_stream_raises_type_error FAILED [100%]
+
+=================================== FAILURES ===================================
+___________________ test_make_input_stream_raises_type_error ___________________
+
+    def test_make_input_stream_raises_type_error():
+>       with pytest.raises(TypeError) as exc_info:
+             ^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE TypeError
+
+test_r3_make_input_stream.py:5: Failed
+=========================== short test summary info ============================
+FAILED test_r3_make_input_stream.py::test_make_input_stream_raises_type_error
+============================== 1 failed in 0.06s ===============================
+
+
+Target lines still not executed: 245.
+
+Function source (with line numbers):
+
+ 235: def make_input_stream(
+ 236:     input: str | bytes | t.IO[t.Any] | None, charset: str
+ 237: ) -> t.BinaryIO:
+ 238:     # Is already an input stream.
+ 239:     if hasattr(input, "read"):
+ 240:         rv = _find_binary_reader(t.cast("t.IO[t.Any]", input))
+ 241: 
+ 242:         if rv is not None:
+ 243:             return rv
+ 244: 
+ 245:         raise TypeError("Could not find binary reader for input stream.")
+ 246: 
+ 247:     if input is None:
+ 248:         input = b""
+ 249:     elif isinstance(input, str):
+ 250:         input = input.encode(charset)
+ 251: 
+ 252:     return io.BytesIO(input)
+
+=== RESPONSE ===
+```python
+from click.testing import make_input_stream
+
+def test_make_input_stream_raises_type_error():
+    with pytest.raises(TypeError) as exc_info:
+        make_input_stream(None, "utf-8")
+```
+=== PYTEST ===
+============================= test session starts ==============================
+platform darwin -- Python 3.14.3, pytest-9.2.0, pluggy-1.7.0 -- /Users/srujansai/Desktop/AirG.A.P/harness/w6/venv/bin/python
+rootdir: /Users/srujansai/Desktop/AirG.A.P/harness/w6/sandbox/click
+configfile: pyproject.toml
+collecting ... collected 1 item
+
+test_r3_make_input_stream.py::test_make_input_stream_raises_type_error FAILED [100%]
+
+=================================== FAILURES ===================================
+___________________ test_make_input_stream_raises_type_error ___________________
+
+    def test_make_input_stream_raises_type_error():
+>       with pytest.raises(TypeError) as exc_info:
+             ^^^^^^
+E       NameError: name 'pytest' is not defined
+
+test_r3_make_input_stream.py:4: NameError
+=========================== short test summary info ============================
+FAILED test_r3_make_input_stream.py::test_make_input_stream_raises_type_error
+============================== 1 failed in 0.02s ===============================
+
+=== ATTEMPT 4 ===
+{
+ "tok_s": 40.2,
+ "wall_s": 1.88,
+ "peak_rss_mb": 4709.1,
+ "pass": 0,
+ "fail": 1,
+ "error": 0,
+ "target_hit": "no",
+ "executed": [],
+ "not_executed": [
+  245
+ ]
+}
+=== PROMPT ===
+You are a test-generation engineer. Write pytest unit tests whose ONLY goal is to execute the specific uncovered lines listed below.
+
+Hard rules:
+1. Output ONLY one python code block (```python ... ```).
+2. Tests must be deterministic. No network access, no secrets, no sleeps.
+3. Import EXACTLY as shown in the 'Correct import' block. Do not guess another module.
+4. The test must PASS. Avoid assertions on values you are not sure about unless the target line requires it.
+5. Every line in the TARGET LINES list must actually be executed by your test.
+
+Correct import for the function under test:
+from click.testing import make_input_stream
+
+
+Module imports available in the file under test:
+from __future__ import annotations
+import collections.abc as cabc
+import contextlib
+import io
+import os
+import pdb
+import shlex
+import sys
+import tempfile
+import typing as t
+from types import TracebackType
+from . import _compat
+from . import formatting
+from . import termui
+from . import utils
+from ._compat import _find_binary_reader
+
+Existing test style example:
+# (no existing test references this function in the repo)
+
+TARGET LINES currently NOT executed (your test MUST execute all of these):
+line 245:         raise TypeError("Could not find binary reader for input stream.")
+
+=== FEEDBACK FROM THE PREVIOUS ATTEMPT ===
+The previous test file did not pass. Pytest output:
+============================= test session starts ==============================
+platform darwin -- Python 3.14.3, pytest-9.2.0, pluggy-1.7.0 -- /Users/srujansai/Desktop/AirG.A.P/harness/w6/venv/bin/python
+rootdir: /Users/srujansai/Desktop/AirG.A.P/harness/w6/sandbox/click
+configfile: pyproject.toml
+collecting ... collected 1 item
+
+test_r3_make_input_stream.py::test_make_input_stream_raises_type_error FAILED [100%]
+
+=================================== FAILURES ===================================
+___________________ test_make_input_stream_raises_type_error ___________________
+
+    def test_make_input_stream_raises_type_error():
+>       with pytest.raises(TypeError) as exc_info:
+             ^^^^^^
+E       NameError: name 'pytest' is not defined
+
+test_r3_make_input_stream.py:4: NameError
+=========================== short test summary info ============================
+FAILED test_r3_make_input_stream.py::test_make_input_stream_raises_type_error
+============================== 1 failed in 0.02s ===============================
+
+
+Target lines still not executed: 245.
+
+Function source (with line numbers):
+
+ 235: def make_input_stream(
+ 236:     input: str | bytes | t.IO[t.Any] | None, charset: str
+ 237: ) -> t.BinaryIO:
+ 238:     # Is already an input stream.
+ 239:     if hasattr(input, "read"):
+ 240:         rv = _find_binary_reader(t.cast("t.IO[t.Any]", input))
+ 241: 
+ 242:         if rv is not None:
+ 243:             return rv
+ 244: 
+ 245:         raise TypeError("Could not find binary reader for input stream.")
+ 246: 
+ 247:     if input is None:
+ 248:         input = b""
+ 249:     elif isinstance(input, str):
+ 250:         input = input.encode(charset)
+ 251: 
+ 252:     return io.BytesIO(input)
+
+=== RESPONSE ===
+```python
+from click.testing import make_input_stream
+
+def test_make_input_stream_raises_type_error():
+    with pytest.raises(TypeError) as exc_info:
+        make_input_stream(None, "utf-8")
+```
+=== PYTEST ===
+============================= test session starts ==============================
+platform darwin -- Python 3.14.3, pytest-9.2.0, pluggy-1.7.0 -- /Users/srujansai/Desktop/AirG.A.P/harness/w6/venv/bin/python
+rootdir: /Users/srujansai/Desktop/AirG.A.P/harness/w6/sandbox/click
+configfile: pyproject.toml
+collecting ... collected 1 item
+
+test_r3_make_input_stream.py::test_make_input_stream_raises_type_error FAILED [100%]
+
+=================================== FAILURES ===================================
+___________________ test_make_input_stream_raises_type_error ___________________
+
+    def test_make_input_stream_raises_type_error():
+>       with pytest.raises(TypeError) as exc_info:
+             ^^^^^^
+E       NameError: name 'pytest' is not defined
+
+test_r3_make_input_stream.py:4: NameError
+=========================== short test summary info ============================
+FAILED test_r3_make_input_stream.py::test_make_input_stream_raises_type_error
+============================== 1 failed in 0.04s ===============================

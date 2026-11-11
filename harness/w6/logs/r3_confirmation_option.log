@@ -1,0 +1,719 @@
+=== BASELINE MISSING IN FUNCTION RANGE ===
+line 389:     def callback(ctx: Context, param: Parameter, value: bool) -> None:
+line 390:         if not value:
+line 391:             ctx.abort()
+line 393:     if not param_decls:
+line 394:         param_decls = ("--yes",)
+line 396:     kwargs.setdefault("is_flag", True)
+line 397:     kwargs.setdefault("callback", callback)
+line 398:     kwargs.setdefault("expose_value", False)
+line 399:     kwargs.setdefault("prompt", _("Do you want to continue?"))
+line 400:     kwargs.setdefault("help", _("Confirm the action without prompting."))
+line 401:     return option(*param_decls, **kwargs)
+
+=== ATTEMPT 1 ===
+{
+ "tok_s": 36.7,
+ "wall_s": 5.15,
+ "peak_rss_mb": 4806.0,
+ "pass": 0,
+ "fail": 0,
+ "error": 1,
+ "target_hit": "no",
+ "executed": [],
+ "not_executed": [
+  389,
+  390,
+  391,
+  393,
+  394,
+  396,
+  397,
+  398,
+  399,
+  400,
+  401
+ ]
+}
+=== PROMPT ===
+You are a test-generation engineer. Write pytest unit tests whose ONLY goal is to execute the specific uncovered lines listed below.
+
+Hard rules:
+1. Output ONLY one python code block (```python ... ```).
+2. Tests must be deterministic. No network access, no secrets, no sleeps.
+3. Import EXACTLY as shown in the 'Correct import' block. Do not guess another module.
+4. The test must PASS. Avoid assertions on values you are not sure about unless the target line requires it.
+5. Every line in the TARGET LINES list must actually be executed by your test.
+
+Correct import for the function under test:
+from click.decorators import confirmation_option
+
+
+Module imports available in the file under test:
+from __future__ import annotations
+import inspect
+import typing as t
+from functools import update_wrapper
+from gettext import gettext as _
+from .core import Argument
+from .core import Command
+from .core import Context
+from .core import Group
+from .core import Option
+from .core import Parameter
+from .globals import get_current_context
+from .utils import echo
+
+Existing test style example:
+"""From https://click.palletsprojects.com/en/stable/options/#yes-parameters"""
+
+from typing_extensions import assert_type
+
+import click
+
+
+@click.command()
+@click.confirmation_option(prompt="Are you sure you want to drop the db?")
+def dropdb() -> None:
+    click.echo("Dropped all tables!")
+
+
+assert_type(dropdb, click.Command)
+
+
+TARGET LINES currently NOT executed (your test MUST execute all of these):
+line 389:     def callback(ctx: Context, param: Parameter, value: bool) -> None:
+line 390:         if not value:
+line 391:             ctx.abort()
+line 393:     if not param_decls:
+line 394:         param_decls = ("--yes",)
+line 396:     kwargs.setdefault("is_flag", True)
+line 397:     kwargs.setdefault("callback", callback)
+line 398:     kwargs.setdefault("expose_value", False)
+line 399:     kwargs.setdefault("prompt", _("Do you want to continue?"))
+line 400:     kwargs.setdefault("help", _("Confirm the action without prompting."))
+line 401:     return option(*param_decls, **kwargs)
+
+Function source (with line numbers):
+
+ 380: def confirmation_option(*param_decls: str, **kwargs: t.Any) -> t.Callable[[FC], FC]:
+ 381:     """Add a ``--yes`` option which shows a prompt before continuing if
+ 382:     not passed. If the prompt is declined, the program will exit.
+ 383: 
+ 384:     :param param_decls: One or more option names. Defaults to the single
+ 385:         value ``"--yes"``.
+ 386:     :param kwargs: Extra arguments are passed to :func:`option`.
+ 387:     """
+ 388: 
+ 389:     def callback(ctx: Context, param: Parameter, value: bool) -> None:
+ 390:         if not value:
+ 391:             ctx.abort()
+ 392: 
+ 393:     if not param_decls:
+ 394:         param_decls = ("--yes",)
+ 395: 
+ 396:     kwargs.setdefault("is_flag", True)
+ 397:     kwargs.setdefault("callback", callback)
+ 398:     kwargs.setdefault("expose_value", False)
+ 399:     kwargs.setdefault("prompt", _("Do you want to continue?"))
+ 400:     kwargs.setdefault("help", _("Confirm the action without prompting."))
+ 401:     return option(*param_decls, **kwargs)
+
+=== RESPONSE ===
+```python
+from click.decorators import confirmation_option
+from click.core import Context, option
+
+def test_confirmation_option():
+    ctx = Context(None)
+    param = Parameter(None, None)
+    callback(ctx, param, False)
+    callback(ctx, param, True)
+
+    confirmation_option()
+    confirmation_option(param_decls=())
+    confirmation_option(param_decls=("--yes",))
+    confirmation_option(is_flag=True)
+    confirmation_option(callback=callback)
+    confirmation_option(expose_value=False)
+    confirmation_option(prompt="Do you want to continue?")
+    confirmation_option(help="Confirm the action without prompting.")
+```
+=== PYTEST ===
+============================= test session starts ==============================
+platform darwin -- Python 3.14.3, pytest-9.2.0, pluggy-1.7.0 -- /Users/srujansai/Desktop/AirG.A.P/harness/w6/venv/bin/python
+rootdir: /Users/srujansai/Desktop/AirG.A.P/harness/w6/sandbox/click
+configfile: pyproject.toml
+collecting ... collected 0 items / 1 error
+
+==================================== ERRORS ====================================
+_______________ ERROR collecting test_r3_confirmation_option.py ________________
+ImportError while importing test module '/Users/srujansai/Desktop/AirG.A.P/harness/w6/sandbox/click/test_r3_confirmation_option.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/Library/Frameworks/Python.framework/Versions/3.14/lib/python3.14/importlib/__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+test_r3_confirmation_option.py:2: in <module>
+    from click.core import Context, option
+E   ImportError: cannot import name 'option' from 'click.core' (/Users/srujansai/Desktop/AirG.A.P/harness/w6/sandbox/click/src/click/core.py). Did you mean: 'Option'?
+=========================== short test summary info ============================
+ERROR test_r3_confirmation_option.py
+!!!!!!!!!!!!!!!!!!!! Interrupted: 1 error during collection !!!!!!!!!!!!!!!!!!!!
+=============================== 1 error in 0.05s ===============================
+
+=== ATTEMPT 2 ===
+{
+ "tok_s": 40.4,
+ "wall_s": 3.67,
+ "peak_rss_mb": 4722.2,
+ "pass": 0,
+ "fail": 0,
+ "error": 1,
+ "target_hit": "no",
+ "executed": [],
+ "not_executed": [
+  389,
+  390,
+  391,
+  393,
+  394,
+  396,
+  397,
+  398,
+  399,
+  400,
+  401
+ ]
+}
+=== PROMPT ===
+You are a test-generation engineer. Write pytest unit tests whose ONLY goal is to execute the specific uncovered lines listed below.
+
+Hard rules:
+1. Output ONLY one python code block (```python ... ```).
+2. Tests must be deterministic. No network access, no secrets, no sleeps.
+3. Import EXACTLY as shown in the 'Correct import' block. Do not guess another module.
+4. The test must PASS. Avoid assertions on values you are not sure about unless the target line requires it.
+5. Every line in the TARGET LINES list must actually be executed by your test.
+
+Correct import for the function under test:
+from click.decorators import confirmation_option
+
+
+Module imports available in the file under test:
+from __future__ import annotations
+import inspect
+import typing as t
+from functools import update_wrapper
+from gettext import gettext as _
+from .core import Argument
+from .core import Command
+from .core import Context
+from .core import Group
+from .core import Option
+from .core import Parameter
+from .globals import get_current_context
+from .utils import echo
+
+Existing test style example:
+"""From https://click.palletsprojects.com/en/stable/options/#yes-parameters"""
+
+from typing_extensions import assert_type
+
+import click
+
+
+@click.command()
+@click.confirmation_option(prompt="Are you sure you want to drop the db?")
+def dropdb() -> None:
+    click.echo("Dropped all tables!")
+
+
+assert_type(dropdb, click.Command)
+
+
+TARGET LINES currently NOT executed (your test MUST execute all of these):
+line 389:     def callback(ctx: Context, param: Parameter, value: bool) -> None:
+line 390:         if not value:
+line 391:             ctx.abort()
+line 393:     if not param_decls:
+line 394:         param_decls = ("--yes",)
+line 396:     kwargs.setdefault("is_flag", True)
+line 397:     kwargs.setdefault("callback", callback)
+line 398:     kwargs.setdefault("expose_value", False)
+line 399:     kwargs.setdefault("prompt", _("Do you want to continue?"))
+line 400:     kwargs.setdefault("help", _("Confirm the action without prompting."))
+line 401:     return option(*param_decls, **kwargs)
+
+=== FEEDBACK FROM THE PREVIOUS ATTEMPT ===
+The previous test file did not pass. Pytest output:
+============================= test session starts ==============================
+platform darwin -- Python 3.14.3, pytest-9.2.0, pluggy-1.7.0 -- /Users/srujansai/Desktop/AirG.A.P/harness/w6/venv/bin/python
+rootdir: /Users/srujansai/Desktop/AirG.A.P/harness/w6/sandbox/click
+configfile: pyproject.toml
+collecting ... collected 0 items / 1 error
+
+==================================== ERRORS ====================================
+_______________ ERROR collecting test_r3_confirmation_option.py ________________
+ImportError while importing test module '/Users/srujansai/Desktop/AirG.A.P/harness/w6/sandbox/click/test_r3_confirmation_option.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/Library/Frameworks/Python.framework/Versions/3.14/lib/python3.14/importlib/__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+test_r3_confirmation_option.py:2: in <module>
+    from click.core import Context, option
+E   ImportError: cannot import name 'option' from 'click.core' (/Users/srujansai/Desktop/AirG.A.P/harness/w6/sandbox/click/src/click/core.py). Did you mean: 'Option'?
+=========================== short test summary info ============================
+ERROR test_r3_confirmation_option.py
+!!!!!!!!!!!!!!!!!!!! Interrupted: 1 error during collection !!!!!!!!!!!!!!!!!!!!
+=============================== 1 error in 0.05s ===============================
+
+
+Target lines still not executed: 389, 390, 391, 393, 394, 396, 397, 398, 399, 400, 401.
+
+Function source (with line numbers):
+
+ 380: def confirmation_option(*param_decls: str, **kwargs: t.Any) -> t.Callable[[FC], FC]:
+ 381:     """Add a ``--yes`` option which shows a prompt before continuing if
+ 382:     not passed. If the prompt is declined, the program will exit.
+ 383: 
+ 384:     :param param_decls: One or more option names. Defaults to the single
+ 385:         value ``"--yes"``.
+ 386:     :param kwargs: Extra arguments are passed to :func:`option`.
+ 387:     """
+ 388: 
+ 389:     def callback(ctx: Context, param: Parameter, value: bool) -> None:
+ 390:         if not value:
+ 391:             ctx.abort()
+ 392: 
+ 393:     if not param_decls:
+ 394:         param_decls = ("--yes",)
+ 395: 
+ 396:     kwargs.setdefault("is_flag", True)
+ 397:     kwargs.setdefault("callback", callback)
+ 398:     kwargs.setdefault("expose_value", False)
+ 399:     kwargs.setdefault("prompt", _("Do you want to continue?"))
+ 400:     kwargs.setdefault("help", _("Confirm the action without prompting."))
+ 401:     return option(*param_decls, **kwargs)
+
+=== RESPONSE ===
+```python
+from click.decorators import confirmation_option
+from click.core import Context, Parameter, option
+
+def test_confirmation_option():
+    ctx = Context(None)
+    param = Parameter(None)
+    callback = confirmation_option()(lambda: None).__closure__[0].cell_contents
+    callback(ctx, param, False)
+```
+=== PYTEST ===
+============================= test session starts ==============================
+platform darwin -- Python 3.14.3, pytest-9.2.0, pluggy-1.7.0 -- /Users/srujansai/Desktop/AirG.A.P/harness/w6/venv/bin/python
+rootdir: /Users/srujansai/Desktop/AirG.A.P/harness/w6/sandbox/click
+configfile: pyproject.toml
+collecting ... collected 0 items / 1 error
+
+==================================== ERRORS ====================================
+_______________ ERROR collecting test_r3_confirmation_option.py ________________
+ImportError while importing test module '/Users/srujansai/Desktop/AirG.A.P/harness/w6/sandbox/click/test_r3_confirmation_option.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/Library/Frameworks/Python.framework/Versions/3.14/lib/python3.14/importlib/__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+test_r3_confirmation_option.py:2: in <module>
+    from click.core import Context, Parameter, option
+E   ImportError: cannot import name 'option' from 'click.core' (/Users/srujansai/Desktop/AirG.A.P/harness/w6/sandbox/click/src/click/core.py). Did you mean: 'Option'?
+=========================== short test summary info ============================
+ERROR test_r3_confirmation_option.py
+!!!!!!!!!!!!!!!!!!!! Interrupted: 1 error during collection !!!!!!!!!!!!!!!!!!!!
+=============================== 1 error in 0.13s ===============================
+
+=== ATTEMPT 3 ===
+{
+ "tok_s": 36.3,
+ "wall_s": 8.44,
+ "peak_rss_mb": 4680.4,
+ "pass": 0,
+ "fail": 0,
+ "error": 1,
+ "target_hit": "no",
+ "executed": [],
+ "not_executed": [
+  389,
+  390,
+  391,
+  393,
+  394,
+  396,
+  397,
+  398,
+  399,
+  400,
+  401
+ ]
+}
+=== PROMPT ===
+You are a test-generation engineer. Write pytest unit tests whose ONLY goal is to execute the specific uncovered lines listed below.
+
+Hard rules:
+1. Output ONLY one python code block (```python ... ```).
+2. Tests must be deterministic. No network access, no secrets, no sleeps.
+3. Import EXACTLY as shown in the 'Correct import' block. Do not guess another module.
+4. The test must PASS. Avoid assertions on values you are not sure about unless the target line requires it.
+5. Every line in the TARGET LINES list must actually be executed by your test.
+
+Correct import for the function under test:
+from click.decorators import confirmation_option
+
+
+Module imports available in the file under test:
+from __future__ import annotations
+import inspect
+import typing as t
+from functools import update_wrapper
+from gettext import gettext as _
+from .core import Argument
+from .core import Command
+from .core import Context
+from .core import Group
+from .core import Option
+from .core import Parameter
+from .globals import get_current_context
+from .utils import echo
+
+Existing test style example:
+"""From https://click.palletsprojects.com/en/stable/options/#yes-parameters"""
+
+from typing_extensions import assert_type
+
+import click
+
+
+@click.command()
+@click.confirmation_option(prompt="Are you sure you want to drop the db?")
+def dropdb() -> None:
+    click.echo("Dropped all tables!")
+
+
+assert_type(dropdb, click.Command)
+
+
+TARGET LINES currently NOT executed (your test MUST execute all of these):
+line 389:     def callback(ctx: Context, param: Parameter, value: bool) -> None:
+line 390:         if not value:
+line 391:             ctx.abort()
+line 393:     if not param_decls:
+line 394:         param_decls = ("--yes",)
+line 396:     kwargs.setdefault("is_flag", True)
+line 397:     kwargs.setdefault("callback", callback)
+line 398:     kwargs.setdefault("expose_value", False)
+line 399:     kwargs.setdefault("prompt", _("Do you want to continue?"))
+line 400:     kwargs.setdefault("help", _("Confirm the action without prompting."))
+line 401:     return option(*param_decls, **kwargs)
+
+=== FEEDBACK FROM THE PREVIOUS ATTEMPT ===
+The previous test file did not pass. Pytest output:
+============================= test session starts ==============================
+platform darwin -- Python 3.14.3, pytest-9.2.0, pluggy-1.7.0 -- /Users/srujansai/Desktop/AirG.A.P/harness/w6/venv/bin/python
+rootdir: /Users/srujansai/Desktop/AirG.A.P/harness/w6/sandbox/click
+configfile: pyproject.toml
+collecting ... collected 0 items / 1 error
+
+==================================== ERRORS ====================================
+_______________ ERROR collecting test_r3_confirmation_option.py ________________
+ImportError while importing test module '/Users/srujansai/Desktop/AirG.A.P/harness/w6/sandbox/click/test_r3_confirmation_option.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/Library/Frameworks/Python.framework/Versions/3.14/lib/python3.14/importlib/__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+test_r3_confirmation_option.py:2: in <module>
+    from click.core import Context, Parameter, option
+E   ImportError: cannot import name 'option' from 'click.core' (/Users/srujansai/Desktop/AirG.A.P/harness/w6/sandbox/click/src/click/core.py). Did you mean: 'Option'?
+=========================== short test summary info ============================
+ERROR test_r3_confirmation_option.py
+!!!!!!!!!!!!!!!!!!!! Interrupted: 1 error during collection !!!!!!!!!!!!!!!!!!!!
+=============================== 1 error in 0.13s ===============================
+
+
+Target lines still not executed: 389, 390, 391, 393, 394, 396, 397, 398, 399, 400, 401.
+
+Function source (with line numbers):
+
+ 380: def confirmation_option(*param_decls: str, **kwargs: t.Any) -> t.Callable[[FC], FC]:
+ 381:     """Add a ``--yes`` option which shows a prompt before continuing if
+ 382:     not passed. If the prompt is declined, the program will exit.
+ 383: 
+ 384:     :param param_decls: One or more option names. Defaults to the single
+ 385:         value ``"--yes"``.
+ 386:     :param kwargs: Extra arguments are passed to :func:`option`.
+ 387:     """
+ 388: 
+ 389:     def callback(ctx: Context, param: Parameter, value: bool) -> None:
+ 390:         if not value:
+ 391:             ctx.abort()
+ 392: 
+ 393:     if not param_decls:
+ 394:         param_decls = ("--yes",)
+ 395: 
+ 396:     kwargs.setdefault("is_flag", True)
+ 397:     kwargs.setdefault("callback", callback)
+ 398:     kwargs.setdefault("expose_value", False)
+ 399:     kwargs.setdefault("prompt", _("Do you want to continue?"))
+ 400:     kwargs.setdefault("help", _("Confirm the action without prompting."))
+ 401:     return option(*param_decls, **kwargs)
+
+=== RESPONSE ===
+```python
+from click.decorators import confirmation_option
+from click.core import Context, Parameter, option
+
+def test_confirmation_option():
+    # Create a mock context
+    mock_context = Context(None)
+    
+    # Create a mock parameter
+    mock_parameter = Parameter("test_param")
+    
+    # Call the callback with value=False
+    callback = confirmation_option()(lambda ctx, param, value: None).callback
+    callback(mock_context, mock_parameter, False)
+    
+    # Check if ctx.abort() was called
+    assert mock_context.abort.called
+    
+    # Call the callback with value=True
+    callback(mock_context, mock_parameter, True)
+    
+    # Check if ctx.abort() was not called
+    assert not mock_context.abort.called
+    
+    # Check if default param_decls is set
+    result = confirmation_option()()
+    assert result.param_decls == ("--yes",)
+    
+    # Check if kwargs are set correctly
+    result = confirmation_option()(lambda ctx, param, value: None)
+    assert result.is_flag is True
+    assert result.callback is not None
+    assert result.expose_value is False
+    assert result.prompt == "Do you want to continue?"
+    assert result.help == "Confirm the action without prompting."
+```
+=== PYTEST ===
+============================= test session starts ==============================
+platform darwin -- Python 3.14.3, pytest-9.2.0, pluggy-1.7.0 -- /Users/srujansai/Desktop/AirG.A.P/harness/w6/venv/bin/python
+rootdir: /Users/srujansai/Desktop/AirG.A.P/harness/w6/sandbox/click
+configfile: pyproject.toml
+collecting ... collected 0 items / 1 error
+
+==================================== ERRORS ====================================
+_______________ ERROR collecting test_r3_confirmation_option.py ________________
+ImportError while importing test module '/Users/srujansai/Desktop/AirG.A.P/harness/w6/sandbox/click/test_r3_confirmation_option.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/Library/Frameworks/Python.framework/Versions/3.14/lib/python3.14/importlib/__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+test_r3_confirmation_option.py:2: in <module>
+    from click.core import Context, Parameter, option
+E   ImportError: cannot import name 'option' from 'click.core' (/Users/srujansai/Desktop/AirG.A.P/harness/w6/sandbox/click/src/click/core.py). Did you mean: 'Option'?
+=========================== short test summary info ============================
+ERROR test_r3_confirmation_option.py
+!!!!!!!!!!!!!!!!!!!! Interrupted: 1 error during collection !!!!!!!!!!!!!!!!!!!!
+=============================== 1 error in 0.06s ===============================
+
+=== ATTEMPT 4 ===
+{
+ "tok_s": 39.5,
+ "wall_s": 6.2,
+ "peak_rss_mb": 4714.0,
+ "pass": 0,
+ "fail": 0,
+ "error": 1,
+ "target_hit": "no",
+ "executed": [],
+ "not_executed": [
+  389,
+  390,
+  391,
+  393,
+  394,
+  396,
+  397,
+  398,
+  399,
+  400,
+  401
+ ]
+}
+=== PROMPT ===
+You are a test-generation engineer. Write pytest unit tests whose ONLY goal is to execute the specific uncovered lines listed below.
+
+Hard rules:
+1. Output ONLY one python code block (```python ... ```).
+2. Tests must be deterministic. No network access, no secrets, no sleeps.
+3. Import EXACTLY as shown in the 'Correct import' block. Do not guess another module.
+4. The test must PASS. Avoid assertions on values you are not sure about unless the target line requires it.
+5. Every line in the TARGET LINES list must actually be executed by your test.
+
+Correct import for the function under test:
+from click.decorators import confirmation_option
+
+
+Module imports available in the file under test:
+from __future__ import annotations
+import inspect
+import typing as t
+from functools import update_wrapper
+from gettext import gettext as _
+from .core import Argument
+from .core import Command
+from .core import Context
+from .core import Group
+from .core import Option
+from .core import Parameter
+from .globals import get_current_context
+from .utils import echo
+
+Existing test style example:
+"""From https://click.palletsprojects.com/en/stable/options/#yes-parameters"""
+
+from typing_extensions import assert_type
+
+import click
+
+
+@click.command()
+@click.confirmation_option(prompt="Are you sure you want to drop the db?")
+def dropdb() -> None:
+    click.echo("Dropped all tables!")
+
+
+assert_type(dropdb, click.Command)
+
+
+TARGET LINES currently NOT executed (your test MUST execute all of these):
+line 389:     def callback(ctx: Context, param: Parameter, value: bool) -> None:
+line 390:         if not value:
+line 391:             ctx.abort()
+line 393:     if not param_decls:
+line 394:         param_decls = ("--yes",)
+line 396:     kwargs.setdefault("is_flag", True)
+line 397:     kwargs.setdefault("callback", callback)
+line 398:     kwargs.setdefault("expose_value", False)
+line 399:     kwargs.setdefault("prompt", _("Do you want to continue?"))
+line 400:     kwargs.setdefault("help", _("Confirm the action without prompting."))
+line 401:     return option(*param_decls, **kwargs)
+
+=== FEEDBACK FROM THE PREVIOUS ATTEMPT ===
+The previous test file did not pass. Pytest output:
+============================= test session starts ==============================
+platform darwin -- Python 3.14.3, pytest-9.2.0, pluggy-1.7.0 -- /Users/srujansai/Desktop/AirG.A.P/harness/w6/venv/bin/python
+rootdir: /Users/srujansai/Desktop/AirG.A.P/harness/w6/sandbox/click
+configfile: pyproject.toml
+collecting ... collected 0 items / 1 error
+
+==================================== ERRORS ====================================
+_______________ ERROR collecting test_r3_confirmation_option.py ________________
+ImportError while importing test module '/Users/srujansai/Desktop/AirG.A.P/harness/w6/sandbox/click/test_r3_confirmation_option.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/Library/Frameworks/Python.framework/Versions/3.14/lib/python3.14/importlib/__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+test_r3_confirmation_option.py:2: in <module>
+    from click.core import Context, Parameter, option
+E   ImportError: cannot import name 'option' from 'click.core' (/Users/srujansai/Desktop/AirG.A.P/harness/w6/sandbox/click/src/click/core.py). Did you mean: 'Option'?
+=========================== short test summary info ============================
+ERROR test_r3_confirmation_option.py
+!!!!!!!!!!!!!!!!!!!! Interrupted: 1 error during collection !!!!!!!!!!!!!!!!!!!!
+=============================== 1 error in 0.06s ===============================
+
+
+Target lines still not executed: 389, 390, 391, 393, 394, 396, 397, 398, 399, 400, 401.
+
+Function source (with line numbers):
+
+ 380: def confirmation_option(*param_decls: str, **kwargs: t.Any) -> t.Callable[[FC], FC]:
+ 381:     """Add a ``--yes`` option which shows a prompt before continuing if
+ 382:     not passed. If the prompt is declined, the program will exit.
+ 383: 
+ 384:     :param param_decls: One or more option names. Defaults to the single
+ 385:         value ``"--yes"``.
+ 386:     :param kwargs: Extra arguments are passed to :func:`option`.
+ 387:     """
+ 388: 
+ 389:     def callback(ctx: Context, param: Parameter, value: bool) -> None:
+ 390:         if not value:
+ 391:             ctx.abort()
+ 392: 
+ 393:     if not param_decls:
+ 394:         param_decls = ("--yes",)
+ 395: 
+ 396:     kwargs.setdefault("is_flag", True)
+ 397:     kwargs.setdefault("callback", callback)
+ 398:     kwargs.setdefault("expose_value", False)
+ 399:     kwargs.setdefault("prompt", _("Do you want to continue?"))
+ 400:     kwargs.setdefault("help", _("Confirm the action without prompting."))
+ 401:     return option(*param_decls, **kwargs)
+
+=== RESPONSE ===
+```python
+from click.decorators import confirmation_option
+from click.core import Context, Parameter, option
+
+def test_confirmation_option():
+    # Create a mock context
+    class MockContext:
+        def abort(self):
+            pass
+
+    ctx = MockContext()
+    param = Parameter()
+    value = False
+
+    # Call the callback function
+    callback = confirmation_option.callback
+    callback(ctx, param, value)
+
+    # Check if ctx.abort was called
+    assert ctx.abort.called
+
+    # Check if default param_decls is set
+    result = confirmation_option()
+    assert result.param_decls == ("--yes",)
+
+    # Check if default kwargs are set
+    result = confirmation_option()
+    assert result.is_flag is True
+    assert result.callback == confirmation_option.callback
+    assert result.expose_value is False
+    assert result.prompt == _("Do you want to continue?")
+    assert result.help == _("Confirm the action without prompting.")
+```
+=== PYTEST ===
+============================= test session starts ==============================
+platform darwin -- Python 3.14.3, pytest-9.2.0, pluggy-1.7.0 -- /Users/srujansai/Desktop/AirG.A.P/harness/w6/venv/bin/python
+rootdir: /Users/srujansai/Desktop/AirG.A.P/harness/w6/sandbox/click
+configfile: pyproject.toml
+collecting ... collected 0 items / 1 error
+
+==================================== ERRORS ====================================
+_______________ ERROR collecting test_r3_confirmation_option.py ________________
+ImportError while importing test module '/Users/srujansai/Desktop/AirG.A.P/harness/w6/sandbox/click/test_r3_confirmation_option.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/Library/Frameworks/Python.framework/Versions/3.14/lib/python3.14/importlib/__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+test_r3_confirmation_option.py:2: in <module>
+    from click.core import Context, Parameter, option
+E   ImportError: cannot import name 'option' from 'click.core' (/Users/srujansai/Desktop/AirG.A.P/harness/w6/sandbox/click/src/click/core.py). Did you mean: 'Option'?
+=========================== short test summary info ============================
+ERROR test_r3_confirmation_option.py
+!!!!!!!!!!!!!!!!!!!! Interrupted: 1 error during collection !!!!!!!!!!!!!!!!!!!!
+=============================== 1 error in 0.05s ===============================

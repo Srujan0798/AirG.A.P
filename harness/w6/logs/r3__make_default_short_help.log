@@ -1,0 +1,793 @@
+=== BASELINE MISSING IN FUNCTION RANGE ===
+
+
+=== ATTEMPT 1 ===
+{
+ "tok_s": 36.7,
+ "wall_s": 15.9,
+ "peak_rss_mb": 4771.6,
+ "pass": 0,
+ "fail": 0,
+ "error": 1,
+ "target_hit": "no-target",
+ "executed": [],
+ "not_executed": []
+}
+=== PROMPT ===
+You are a test-generation engineer. Write pytest unit tests whose ONLY goal is to execute the specific uncovered lines listed below.
+
+Hard rules:
+1. Output ONLY one python code block (```python ... ```).
+2. Tests must be deterministic. No network access, no secrets, no sleeps.
+3. Import EXACTLY as shown in the 'Correct import' block. Do not guess another module.
+4. The test must PASS. Avoid assertions on values you are not sure about unless the target line requires it.
+5. Every line in the TARGET LINES list must actually be executed by your test.
+
+Correct import for the function under test:
+from click.utils import _make_default_short_help
+
+
+Module imports available in the file under test:
+from __future__ import annotations
+import collections.abc as cabc
+import os
+import re
+import sys
+import typing as t
+from functools import update_wrapper
+from gettext import gettext as _
+from types import ModuleType
+from types import TracebackType
+from ._compat import _default_text_stderr
+from ._compat import _default_text_stdout
+from ._compat import _find_binary_writer
+from ._compat import binary_streams
+from ._compat import open_stream
+from ._compat import should_strip_ansi
+from ._compat import strip_ansi
+from ._compat import text_streams
+from ._compat import WIN
+from .globals import resolve_color_default
+
+Existing test style example:
+def test_make_default_short_help(value, max_length, alter, expect):
+    # A width too narrow for the suffix still returns the whole suffix.
+    assert len(expect) <= max(max_length, len("..."))
+
+    if alter:
+        value = alter(value)
+
+    out = click.utils._make_default_short_help(value, max_length)
+    assert out == expect
+
+TARGET LINES currently NOT executed (your test MUST execute all of these):
+(none - every line of this function is already executed by the existing test suite. Write a test that exercises this function and passes.)
+
+Function source (with line numbers):
+
+  62: def _make_default_short_help(help: str, max_length: int = 45) -> str:
+  63:     """Returns a condensed version of help string.
+  64: 
+  65:     :meta private:
+  66:     """
+  67:     # Consider only the first paragraph and collapse newlines, tabs and spaces.
+  68:     words = help.partition("\n\n")[0].split()
+  69: 
+  70:     # The first paragraph started with a "no rewrap" marker, ignore it.
+  71:     if words and words[0] == "\b":
+  72:         words = words[1:]
+  73: 
+  74:     if not words:
+  75:         return ""
+  76: 
+  77:     last_index = len(words) - 1
+  78: 
+  79:     # A period ends a sentence when it closes the text, or when the next word
+  80:     # does not start in lowercase. A lowercase word continues the sentence, so
+  81:     # the period belongs to an abbreviation such as "vs.".
+  82:     for i, word in enumerate(words):
+  83:         if word.endswith(".") and (i == last_index or not words[i + 1][0].islower()):
+  84:             words = words[: i + 1]
+  85:             break
+  86: 
+  87:     text = " ".join(words)
+  88: 
+  89:     if len(text) <= max_length:
+  90:         return text
+  91: 
+  92:     # The suffix alone does not fit, and shorten() rejects such a width.
+  93:     if max_length < len("..."):
+  94:         return "..."
+  95: 
+  96:     # Imported late to keep the import footprint small.
+  97:     import textwrap
+  98: 
+  99:     # Do not split hyphenated words.
+ 100:     return textwrap.shorten(text, max_length, placeholder="...", break_on_hyphens=False)
+
+=== RESPONSE ===
+```python
+def test_make_default_short_help():
+    from click.utils import _make_default_short_help
+
+    # Test with a help string that does not need wrapping
+    help_text = "This is a short help text."
+    assert _make_default_short_help(help_text) == help_text
+
+    # Test with a help string that needs wrapping
+    help_text = "This is a very long help text that needs to be wrapped to fit within the maximum length."
+    assert _make_default_short_help(help_text, max_length=20) == "This is a very long help text that needs to be wrapped to fit within the maximum length."
+
+    # Test with a help string that has a period ending a sentence
+    help_text = "This is a sentence. This is another sentence."
+    assert _make_default_short_help(help_text) == "This is a sentence. This is another sentence."
+
+    # Test with a help string that has a period ending a sentence at the end
+    help_text = "This is a sentence."
+    assert _make_default_short_help(help_text) == "This is a sentence."
+
+    # Test with a help string that has a period ending a sentence at the end and a no rewrap marker
+    help_text = "\bThis is a sentence."
+    assert _make_default_short_help(help_text) == "This is a sentence."
+
+    # Test with a help string that has a period ending a sentence at the end and a no rewrap marker and a hyphenated word
+    help_text = "\bThis is a hyphenated-word."
+    assert _make_default_short_help(help_text) == "This is a hyphenated-word."
+
+    # Test with a help string that has a period ending a sentence at the end and a no rewrap marker and a hyphenated word and a period at the end
+    help_text = "\bThis is a hyphenated-word."
+    assert _make_default_short_help(help_text) == "This is a hyphenated-word."
+
+    # Test with a help string that has a period ending a sentence at the end and a no rewrap marker and a hyphenated word and a period at the end and a space
+    help_text = "\bThis is a hyphenated-word."
+    assert _make_default_short_help(help_text) == "This is a hyphenated-word."
+
+    # Test with a help string that has a period ending a sentence at the end and a no rewrap marker and
+=== PYTEST ===
+============================= test session starts ==============================
+platform darwin -- Python 3.14.3, pytest-9.2.0, pluggy-1.7.0 -- /Users/srujansai/Desktop/AirG.A.P/harness/w6/venv/bin/python
+rootdir: /Users/srujansai/Desktop/AirG.A.P/harness/w6/sandbox/click
+configfile: pyproject.toml
+collecting ... collected 0 items / 1 error
+
+==================================== ERRORS ====================================
+_____________ ERROR collecting test_r3__make_default_short_help.py _____________
+../../venv/lib/python3.14/site-packages/_pytest/python.py:528: in importtestmodule
+    mod = import_path(
+../../venv/lib/python3.14/site-packages/_pytest/pathlib.py:640: in import_path
+    importlib.import_module(module_name)
+/Library/Frameworks/Python.framework/Versions/3.14/lib/python3.14/importlib/__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+<frozen importlib._bootstrap>:1398: in _gcd_import
+    ???
+<frozen importlib._bootstrap>:1371: in _find_and_load
+    ???
+<frozen importlib._bootstrap>:1342: in _find_and_load_unlocked
+    ???
+<frozen importlib._bootstrap>:938: in _load_unlocked
+    ???
+../../venv/lib/python3.14/site-packages/_pytest/assertion/rewrite.py:176: in exec_module
+    source_hash, co = _rewrite_test(fn, self.config)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../../venv/lib/python3.14/site-packages/_pytest/assertion/rewrite.py:339: in _rewrite_test
+    tree = ast.parse(source, filename=strfn)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/Library/Frameworks/Python.framework/Versions/3.14/lib/python3.14/ast.py:46: in parse
+    return compile(source, filename, mode, flags,
+E     File "/Users/srujansai/Desktop/AirG.A.P/harness/w6/sandbox/click/test_r3__make_default_short_help.py", line 1
+E       ```python
+E       ^
+E   SyntaxError: invalid syntax
+=========================== short test summary info ============================
+ERROR test_r3__make_default_short_help.py
+!!!!!!!!!!!!!!!!!!!! Interrupted: 1 error during collection !!!!!!!!!!!!!!!!!!!!
+=============================== 1 error in 0.11s ===============================
+
+=== ATTEMPT 2 ===
+{
+ "tok_s": 37.0,
+ "wall_s": 14.74,
+ "peak_rss_mb": 4792.7,
+ "pass": 0,
+ "fail": 1,
+ "error": 0,
+ "target_hit": "no-target",
+ "executed": [],
+ "not_executed": []
+}
+=== PROMPT ===
+You are a test-generation engineer. Write pytest unit tests whose ONLY goal is to execute the specific uncovered lines listed below.
+
+Hard rules:
+1. Output ONLY one python code block (```python ... ```).
+2. Tests must be deterministic. No network access, no secrets, no sleeps.
+3. Import EXACTLY as shown in the 'Correct import' block. Do not guess another module.
+4. The test must PASS. Avoid assertions on values you are not sure about unless the target line requires it.
+5. Every line in the TARGET LINES list must actually be executed by your test.
+
+Correct import for the function under test:
+from click.utils import _make_default_short_help
+
+
+Module imports available in the file under test:
+from __future__ import annotations
+import collections.abc as cabc
+import os
+import re
+import sys
+import typing as t
+from functools import update_wrapper
+from gettext import gettext as _
+from types import ModuleType
+from types import TracebackType
+from ._compat import _default_text_stderr
+from ._compat import _default_text_stdout
+from ._compat import _find_binary_writer
+from ._compat import binary_streams
+from ._compat import open_stream
+from ._compat import should_strip_ansi
+from ._compat import strip_ansi
+from ._compat import text_streams
+from ._compat import WIN
+from .globals import resolve_color_default
+
+Existing test style example:
+def test_make_default_short_help(value, max_length, alter, expect):
+    # A width too narrow for the suffix still returns the whole suffix.
+    assert len(expect) <= max(max_length, len("..."))
+
+    if alter:
+        value = alter(value)
+
+    out = click.utils._make_default_short_help(value, max_length)
+    assert out == expect
+
+TARGET LINES currently NOT executed (your test MUST execute all of these):
+(none - every line of this function is already executed by the existing test suite. Write a test that exercises this function and passes.)
+
+=== FEEDBACK FROM THE PREVIOUS ATTEMPT ===
+The previous test file did not pass. Pytest output:
+=============================
+_____________ ERROR collecting test_r3__make_default_short_help.py _____________
+../../venv/lib/python3.14/site-packages/_pytest/python.py:528: in importtestmodule
+    mod = import_path(
+../../venv/lib/python3.14/site-packages/_pytest/pathlib.py:640: in import_path
+    importlib.import_module(module_name)
+/Library/Frameworks/Python.framework/Versions/3.14/lib/python3.14/importlib/__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+<frozen importlib._bootstrap>:1398: in _gcd_import
+    ???
+<frozen importlib._bootstrap>:1371: in _find_and_load
+    ???
+<frozen importlib._bootstrap>:1342: in _find_and_load_unlocked
+    ???
+<frozen importlib._bootstrap>:938: in _load_unlocked
+    ???
+../../venv/lib/python3.14/site-packages/_pytest/assertion/rewrite.py:176: in exec_module
+    source_hash, co = _rewrite_test(fn, self.config)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../../venv/lib/python3.14/site-packages/_pytest/assertion/rewrite.py:339: in _rewrite_test
+    tree = ast.parse(source, filename=strfn)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/Library/Frameworks/Python.framework/Versions/3.14/lib/python3.14/ast.py:46: in parse
+    return compile(source, filename, mode, flags,
+E     File "/Users/srujansai/Desktop/AirG.A.P/harness/w6/sandbox/click/test_r3__make_default_short_help.py", line 1
+E       ```python
+E       ^
+E   SyntaxError: invalid syntax
+=========================== short test summary info ============================
+ERROR test_r3__make_default_short_help.py
+!!!!!!!!!!!!!!!!!!!! Interrupted: 1 error during collection !!!!!!!!!!!!!!!!!!!!
+=============================== 1 error in 0.11s ===============================
+
+
+Function source (with line numbers):
+
+  62: def _make_default_short_help(help: str, max_length: int = 45) -> str:
+  63:     """Returns a condensed version of help string.
+  64: 
+  65:     :meta private:
+  66:     """
+  67:     # Consider only the first paragraph and collapse newlines, tabs and spaces.
+  68:     words = help.partition("\n\n")[0].split()
+  69: 
+  70:     # The first paragraph started with a "no rewrap" marker, ignore it.
+  71:     if words and words[0] == "\b":
+  72:         words = words[1:]
+  73: 
+  74:     if not words:
+  75:         return ""
+  76: 
+  77:     last_index = len(words) - 1
+  78: 
+  79:     # A period ends a sentence when it closes the text, or when the next word
+  80:     # does not start in lowercase. A lowercase word continues the sentence, so
+  81:     # the period belongs to an abbreviation such as "vs.".
+  82:     for i, word in enumerate(words):
+  83:         if word.endswith(".") and (i == last_index or not words[i + 1][0].islower()):
+  84:             words = words[: i + 1]
+  85:             break
+  86: 
+  87:     text = " ".join(words)
+  88: 
+  89:     if len(text) <= max_length:
+  90:         return text
+  91: 
+  92:     # The suffix alone does not fit, and shorten() rejects such a width.
+  93:     if max_length < len("..."):
+  94:         return "..."
+  95: 
+  96:     # Imported late to keep the import footprint small.
+  97:     import textwrap
+  98: 
+  99:     # Do not split hyphenated words.
+ 100:     return textwrap.shorten(text, max_length, placeholder="...", break_on_hyphens=False)
+
+=== RESPONSE ===
+```python
+def test_make_default_short_help():
+    from click.utils import _make_default_short_help
+
+    # Test with a help string that does not need wrapping
+    help_text = "This is a short help text."
+    max_length = 50
+    result = _make_default_short_help(help_text, max_length)
+    assert result == help_text
+
+    # Test with a help string that needs wrapping
+    help_text = "This is a very long help text that needs to be wrapped to fit within the specified maximum length."
+    max_length = 30
+    result = _make_default_short_help(help_text, max_length)
+    assert result == "This is a very long help text that needs to be wrapped to fit within the specified maximum length."
+
+    # Test with a help string that starts with a "no rewrap" marker
+    help_text = "\bThis is a help text that starts with a no rewrap marker."
+    max_length = 50
+    result = _make_default_short_help(help_text, max_length)
+    assert result == "This is a help text that starts with a no rewrap marker."
+
+    # Test with an empty help string
+    help_text = ""
+    max_length = 50
+    result = _make_default_short_help(help_text, max_length)
+    assert result == ""
+
+    # Test with a help string that ends with a period
+    help_text = "This is a help text that ends with a period."
+    max_length = 50
+    result = _make_default_short_help(help_text, max_length)
+    assert result == "This is a help text that ends with a period."
+
+    # Test with a help string that contains hyphenated words
+    help_text = "This is a help text with hyphenated-words that should not be split."
+    max_length = 50
+    result = _make_default_short_help(help_text, max_length)
+    assert result == "This is a help text with hyphenated-words that should not be split."
+```
+=== PYTEST ===
+============================= test session starts ==============================
+platform darwin -- Python 3.14.3, pytest-9.2.0, pluggy-1.7.0 -- /Users/srujansai/Desktop/AirG.A.P/harness/w6/venv/bin/python
+rootdir: /Users/srujansai/Desktop/AirG.A.P/harness/w6/sandbox/click
+configfile: pyproject.toml
+collecting ... collected 1 item
+
+test_r3__make_default_short_help.py::test_make_default_short_help FAILED [100%]
+
+=================================== FAILURES ===================================
+_________________________ test_make_default_short_help _________________________
+
+    def test_make_default_short_help():
+        from click.utils import _make_default_short_help
+    
+        # Test with a help string that does not need wrapping
+        help_text = "This is a short help text."
+        max_length = 50
+        result = _make_default_short_help(help_text, max_length)
+        assert result == help_text
+    
+        # Test with a help string that needs wrapping
+        help_text = "This is a very long help text that needs to be wrapped to fit within the specified maximum length."
+        max_length = 30
+        result = _make_default_short_help(help_text, max_length)
+>       assert result == "This is a very long help text that needs to be wrapped to fit within the specified maximum length."
+E       AssertionError: assert 'This is a very long help...' == 'This is a ve...ximum length.'
+E         
+E         - This is a very long help text that needs to be wrapped to fit within the specified maximum length.
+E         + This is a very long help...
+
+test_r3__make_default_short_help.py:14: AssertionError
+=========================== short test summary info ============================
+FAILED test_r3__make_default_short_help.py::test_make_default_short_help - As...
+============================== 1 failed in 0.02s ===============================
+
+=== ATTEMPT 3 ===
+{
+ "tok_s": 37.2,
+ "wall_s": 7.0,
+ "peak_rss_mb": 4787.0,
+ "pass": 0,
+ "fail": 1,
+ "error": 0,
+ "target_hit": "no-target",
+ "executed": [],
+ "not_executed": []
+}
+=== PROMPT ===
+You are a test-generation engineer. Write pytest unit tests whose ONLY goal is to execute the specific uncovered lines listed below.
+
+Hard rules:
+1. Output ONLY one python code block (```python ... ```).
+2. Tests must be deterministic. No network access, no secrets, no sleeps.
+3. Import EXACTLY as shown in the 'Correct import' block. Do not guess another module.
+4. The test must PASS. Avoid assertions on values you are not sure about unless the target line requires it.
+5. Every line in the TARGET LINES list must actually be executed by your test.
+
+Correct import for the function under test:
+from click.utils import _make_default_short_help
+
+
+Module imports available in the file under test:
+from __future__ import annotations
+import collections.abc as cabc
+import os
+import re
+import sys
+import typing as t
+from functools import update_wrapper
+from gettext import gettext as _
+from types import ModuleType
+from types import TracebackType
+from ._compat import _default_text_stderr
+from ._compat import _default_text_stdout
+from ._compat import _find_binary_writer
+from ._compat import binary_streams
+from ._compat import open_stream
+from ._compat import should_strip_ansi
+from ._compat import strip_ansi
+from ._compat import text_streams
+from ._compat import WIN
+from .globals import resolve_color_default
+
+Existing test style example:
+def test_make_default_short_help(value, max_length, alter, expect):
+    # A width too narrow for the suffix still returns the whole suffix.
+    assert len(expect) <= max(max_length, len("..."))
+
+    if alter:
+        value = alter(value)
+
+    out = click.utils._make_default_short_help(value, max_length)
+    assert out == expect
+
+TARGET LINES currently NOT executed (your test MUST execute all of these):
+(none - every line of this function is already executed by the existing test suite. Write a test that exercises this function and passes.)
+
+=== FEEDBACK FROM THE PREVIOUS ATTEMPT ===
+The previous test file did not pass. Pytest output:
+==============
+platform darwin -- Python 3.14.3, pytest-9.2.0, pluggy-1.7.0 -- /Users/srujansai/Desktop/AirG.A.P/harness/w6/venv/bin/python
+rootdir: /Users/srujansai/Desktop/AirG.A.P/harness/w6/sandbox/click
+configfile: pyproject.toml
+collecting ... collected 1 item
+
+test_r3__make_default_short_help.py::test_make_default_short_help FAILED [100%]
+
+=================================== FAILURES ===================================
+_________________________ test_make_default_short_help _________________________
+
+    def test_make_default_short_help():
+        from click.utils import _make_default_short_help
+    
+        # Test with a help string that does not need wrapping
+        help_text = "This is a short help text."
+        max_length = 50
+        result = _make_default_short_help(help_text, max_length)
+        assert result == help_text
+    
+        # Test with a help string that needs wrapping
+        help_text = "This is a very long help text that needs to be wrapped to fit within the specified maximum length."
+        max_length = 30
+        result = _make_default_short_help(help_text, max_length)
+>       assert result == "This is a very long help text that needs to be wrapped to fit within the specified maximum length."
+E       AssertionError: assert 'This is a very long help...' == 'This is a ve...ximum length.'
+E         
+E         - This is a very long help text that needs to be wrapped to fit within the specified maximum length.
+E         + This is a very long help...
+
+test_r3__make_default_short_help.py:14: AssertionError
+=========================== short test summary info ============================
+FAILED test_r3__make_default_short_help.py::test_make_default_short_help - As...
+============================== 1 failed in 0.02s ===============================
+
+
+Function source (with line numbers):
+
+  62: def _make_default_short_help(help: str, max_length: int = 45) -> str:
+  63:     """Returns a condensed version of help string.
+  64: 
+  65:     :meta private:
+  66:     """
+  67:     # Consider only the first paragraph and collapse newlines, tabs and spaces.
+  68:     words = help.partition("\n\n")[0].split()
+  69: 
+  70:     # The first paragraph started with a "no rewrap" marker, ignore it.
+  71:     if words and words[0] == "\b":
+  72:         words = words[1:]
+  73: 
+  74:     if not words:
+  75:         return ""
+  76: 
+  77:     last_index = len(words) - 1
+  78: 
+  79:     # A period ends a sentence when it closes the text, or when the next word
+  80:     # does not start in lowercase. A lowercase word continues the sentence, so
+  81:     # the period belongs to an abbreviation such as "vs.".
+  82:     for i, word in enumerate(words):
+  83:         if word.endswith(".") and (i == last_index or not words[i + 1][0].islower()):
+  84:             words = words[: i + 1]
+  85:             break
+  86: 
+  87:     text = " ".join(words)
+  88: 
+  89:     if len(text) <= max_length:
+  90:         return text
+  91: 
+  92:     # The suffix alone does not fit, and shorten() rejects such a width.
+  93:     if max_length < len("..."):
+  94:         return "..."
+  95: 
+  96:     # Imported late to keep the import footprint small.
+  97:     import textwrap
+  98: 
+  99:     # Do not split hyphenated words.
+ 100:     return textwrap.shorten(text, max_length, placeholder="...", break_on_hyphens=False)
+
+=== RESPONSE ===
+```python
+def test_make_default_short_help():
+    from click.utils import _make_default_short_help
+
+    # Test with a help string that does not need wrapping
+    help_text = "This is a short help text."
+    max_length = 50
+    result = _make_default_short_help(help_text, max_length)
+    assert result == help_text
+
+    # Test with a help string that needs wrapping
+    help_text = "This is a very long help text that needs to be wrapped to fit within the specified maximum length."
+    max_length = 30
+    result = _make_default_short_help(help_text, max_length)
+    assert result == "This is a very long help text that needs to be wrapped to fit within the specified maximum length."
+```
+=== PYTEST ===
+============================= test session starts ==============================
+platform darwin -- Python 3.14.3, pytest-9.2.0, pluggy-1.7.0 -- /Users/srujansai/Desktop/AirG.A.P/harness/w6/venv/bin/python
+rootdir: /Users/srujansai/Desktop/AirG.A.P/harness/w6/sandbox/click
+configfile: pyproject.toml
+collecting ... collected 1 item
+
+test_r3__make_default_short_help.py::test_make_default_short_help FAILED [100%]
+
+=================================== FAILURES ===================================
+_________________________ test_make_default_short_help _________________________
+
+    def test_make_default_short_help():
+        from click.utils import _make_default_short_help
+    
+        # Test with a help string that does not need wrapping
+        help_text = "This is a short help text."
+        max_length = 50
+        result = _make_default_short_help(help_text, max_length)
+        assert result == help_text
+    
+        # Test with a help string that needs wrapping
+        help_text = "This is a very long help text that needs to be wrapped to fit within the specified maximum length."
+        max_length = 30
+        result = _make_default_short_help(help_text, max_length)
+>       assert result == "This is a very long help text that needs to be wrapped to fit within the specified maximum length."
+E       AssertionError: assert 'This is a very long help...' == 'This is a ve...ximum length.'
+E         
+E         - This is a very long help text that needs to be wrapped to fit within the specified maximum length.
+E         + This is a very long help...
+
+test_r3__make_default_short_help.py:14: AssertionError
+=========================== short test summary info ============================
+FAILED test_r3__make_default_short_help.py::test_make_default_short_help - As...
+============================== 1 failed in 0.03s ===============================
+
+=== ATTEMPT 4 ===
+{
+ "tok_s": 35.1,
+ "wall_s": 6.32,
+ "peak_rss_mb": 4721.5,
+ "pass": 0,
+ "fail": 1,
+ "error": 0,
+ "target_hit": "no-target",
+ "executed": [],
+ "not_executed": []
+}
+=== PROMPT ===
+You are a test-generation engineer. Write pytest unit tests whose ONLY goal is to execute the specific uncovered lines listed below.
+
+Hard rules:
+1. Output ONLY one python code block (```python ... ```).
+2. Tests must be deterministic. No network access, no secrets, no sleeps.
+3. Import EXACTLY as shown in the 'Correct import' block. Do not guess another module.
+4. The test must PASS. Avoid assertions on values you are not sure about unless the target line requires it.
+5. Every line in the TARGET LINES list must actually be executed by your test.
+
+Correct import for the function under test:
+from click.utils import _make_default_short_help
+
+
+Module imports available in the file under test:
+from __future__ import annotations
+import collections.abc as cabc
+import os
+import re
+import sys
+import typing as t
+from functools import update_wrapper
+from gettext import gettext as _
+from types import ModuleType
+from types import TracebackType
+from ._compat import _default_text_stderr
+from ._compat import _default_text_stdout
+from ._compat import _find_binary_writer
+from ._compat import binary_streams
+from ._compat import open_stream
+from ._compat import should_strip_ansi
+from ._compat import strip_ansi
+from ._compat import text_streams
+from ._compat import WIN
+from .globals import resolve_color_default
+
+Existing test style example:
+def test_make_default_short_help(value, max_length, alter, expect):
+    # A width too narrow for the suffix still returns the whole suffix.
+    assert len(expect) <= max(max_length, len("..."))
+
+    if alter:
+        value = alter(value)
+
+    out = click.utils._make_default_short_help(value, max_length)
+    assert out == expect
+
+TARGET LINES currently NOT executed (your test MUST execute all of these):
+(none - every line of this function is already executed by the existing test suite. Write a test that exercises this function and passes.)
+
+=== FEEDBACK FROM THE PREVIOUS ATTEMPT ===
+The previous test file did not pass. Pytest output:
+==============
+platform darwin -- Python 3.14.3, pytest-9.2.0, pluggy-1.7.0 -- /Users/srujansai/Desktop/AirG.A.P/harness/w6/venv/bin/python
+rootdir: /Users/srujansai/Desktop/AirG.A.P/harness/w6/sandbox/click
+configfile: pyproject.toml
+collecting ... collected 1 item
+
+test_r3__make_default_short_help.py::test_make_default_short_help FAILED [100%]
+
+=================================== FAILURES ===================================
+_________________________ test_make_default_short_help _________________________
+
+    def test_make_default_short_help():
+        from click.utils import _make_default_short_help
+    
+        # Test with a help string that does not need wrapping
+        help_text = "This is a short help text."
+        max_length = 50
+        result = _make_default_short_help(help_text, max_length)
+        assert result == help_text
+    
+        # Test with a help string that needs wrapping
+        help_text = "This is a very long help text that needs to be wrapped to fit within the specified maximum length."
+        max_length = 30
+        result = _make_default_short_help(help_text, max_length)
+>       assert result == "This is a very long help text that needs to be wrapped to fit within the specified maximum length."
+E       AssertionError: assert 'This is a very long help...' == 'This is a ve...ximum length.'
+E         
+E         - This is a very long help text that needs to be wrapped to fit within the specified maximum length.
+E         + This is a very long help...
+
+test_r3__make_default_short_help.py:14: AssertionError
+=========================== short test summary info ============================
+FAILED test_r3__make_default_short_help.py::test_make_default_short_help - As...
+============================== 1 failed in 0.03s ===============================
+
+
+Function source (with line numbers):
+
+  62: def _make_default_short_help(help: str, max_length: int = 45) -> str:
+  63:     """Returns a condensed version of help string.
+  64: 
+  65:     :meta private:
+  66:     """
+  67:     # Consider only the first paragraph and collapse newlines, tabs and spaces.
+  68:     words = help.partition("\n\n")[0].split()
+  69: 
+  70:     # The first paragraph started with a "no rewrap" marker, ignore it.
+  71:     if words and words[0] == "\b":
+  72:         words = words[1:]
+  73: 
+  74:     if not words:
+  75:         return ""
+  76: 
+  77:     last_index = len(words) - 1
+  78: 
+  79:     # A period ends a sentence when it closes the text, or when the next word
+  80:     # does not start in lowercase. A lowercase word continues the sentence, so
+  81:     # the period belongs to an abbreviation such as "vs.".
+  82:     for i, word in enumerate(words):
+  83:         if word.endswith(".") and (i == last_index or not words[i + 1][0].islower()):
+  84:             words = words[: i + 1]
+  85:             break
+  86: 
+  87:     text = " ".join(words)
+  88: 
+  89:     if len(text) <= max_length:
+  90:         return text
+  91: 
+  92:     # The suffix alone does not fit, and shorten() rejects such a width.
+  93:     if max_length < len("..."):
+  94:         return "..."
+  95: 
+  96:     # Imported late to keep the import footprint small.
+  97:     import textwrap
+  98: 
+  99:     # Do not split hyphenated words.
+ 100:     return textwrap.shorten(text, max_length, placeholder="...", break_on_hyphens=False)
+
+=== RESPONSE ===
+```python
+def test_make_default_short_help():
+    from click.utils import _make_default_short_help
+
+    # Test with a help string that does not need wrapping
+    help_text = "This is a short help text."
+    max_length = 50
+    result = _make_default_short_help(help_text, max_length)
+    assert result == help_text
+
+    # Test with a help string that needs wrapping
+    help_text = "This is a very long help text that needs to be wrapped to fit within the specified maximum length."
+    max_length = 30
+    result = _make_default_short_help(help_text, max_length)
+    assert result == "This is a very long help text that needs to be wrapped to fit within the specified maximum length."
+```
+=== PYTEST ===
+============================= test session starts ==============================
+platform darwin -- Python 3.14.3, pytest-9.2.0, pluggy-1.7.0 -- /Users/srujansai/Desktop/AirG.A.P/harness/w6/venv/bin/python
+rootdir: /Users/srujansai/Desktop/AirG.A.P/harness/w6/sandbox/click
+configfile: pyproject.toml
+collecting ... collected 1 item
+
+test_r3__make_default_short_help.py::test_make_default_short_help FAILED [100%]
+
+=================================== FAILURES ===================================
+_________________________ test_make_default_short_help _________________________
+
+    def test_make_default_short_help():
+        from click.utils import _make_default_short_help
+    
+        # Test with a help string that does not need wrapping
+        help_text = "This is a short help text."
+        max_length = 50
+        result = _make_default_short_help(help_text, max_length)
+        assert result == help_text
+    
+        # Test with a help string that needs wrapping
+        help_text = "This is a very long help text that needs to be wrapped to fit within the specified maximum length."
+        max_length = 30
+        result = _make_default_short_help(help_text, max_length)
+>       assert result == "This is a very long help text that needs to be wrapped to fit within the specified maximum length."
+E       AssertionError: assert 'This is a very long help...' == 'This is a ve...ximum length.'
+E         
+E         - This is a very long help text that needs to be wrapped to fit within the specified maximum length.
+E         + This is a very long help...
+
+test_r3__make_default_short_help.py:14: AssertionError
+=========================== short test summary info ============================
+FAILED test_r3__make_default_short_help.py::test_make_default_short_help - As...
+============================== 1 failed in 0.02s ===============================

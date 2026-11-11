@@ -1,0 +1,12 @@
+{"function": "_join_param_hints", "attempts": 1, "pass": 1, "fail": 0, "error": 0, "target_hit": "yes", "tests_kept": 1, "baseline_cov": 86.42533936651584, "after_cov": 87.33031674208145, "cov_delta": 0.9, "tok_s": 41.7, "wall_s": 8.14}
+{"function": "TextWrapper._handle_long_word", "attempts": 2, "pass": 1, "fail": 0, "error": 0, "target_hit": "yes", "tests_kept": 1, "baseline_cov": 73.20261437908496, "after_cov": 75.81699346405229, "cov_delta": 2.61, "tok_s": 38.3, "wall_s": 3.92}
+{"function": "wrap_text", "attempts": 4, "pass": 0, "fail": 1, "error": 0, "target_hit": "no", "tests_kept": 0, "baseline_cov": 94.47236180904522, "after_cov": null, "cov_delta": null, "tok_s": 37.2, "wall_s": 2.4}
+{"function": "EchoingStdin.readline", "attempts": 4, "pass": 0, "fail": 1, "error": 0, "target_hit": "no", "tests_kept": 0, "baseline_cov": 95.53990610328638, "after_cov": null, "cov_delta": null, "tok_s": 39.3, "wall_s": 2.13}
+{"function": "make_input_stream", "attempts": 4, "pass": 0, "fail": 1, "error": 0, "target_hit": "no", "tests_kept": 0, "baseline_cov": 95.53990610328638, "after_cov": null, "cov_delta": null, "tok_s": 40.2, "wall_s": 1.88}
+{"function": "custom_version_option", "attempts": 4, "pass": 0, "fail": 1, "error": 0, "target_hit": "no", "tests_kept": 0, "baseline_cov": 79.21146953405018, "after_cov": null, "cov_delta": null, "tok_s": 38.3, "wall_s": 2.09}
+{"function": "BadParameter.format_message", "attempts": 1, "pass": 2, "fail": 0, "error": 0, "target_hit": "yes", "tests_kept": 2, "baseline_cov": 86.42533936651584, "after_cov": 88.23529411764706, "cov_delta": 1.81, "tok_s": 39.9, "wall_s": 3.72}
+{"function": "ParamType.convert", "attempts": 1, "pass": 1, "fail": 0, "error": 0, "target_hit": "yes", "tests_kept": 1, "baseline_cov": 87.55690440060698, "after_cov": 87.70864946889226, "cov_delta": 0.15, "tok_s": 39.5, "wall_s": 2.85}
+{"function": "_make_default_short_help", "attempts": 4, "pass": 0, "fail": 1, "error": 0, "target_hit": "no-target", "tests_kept": 0, "baseline_cov": 78.96341463414635, "after_cov": null, "cov_delta": null, "tok_s": 35.1, "wall_s": 6.32}
+{"function": "confirmation_option", "attempts": 4, "pass": 0, "fail": 0, "error": 1, "target_hit": "no", "tests_kept": 0, "baseline_cov": 79.21146953405018, "after_cov": null, "cov_delta": null, "tok_s": 39.5, "wall_s": 6.2}
+
+Logs: /Users/srujansai/Desktop/AirG.A.P/harness/w6/logs

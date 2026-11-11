@@ -1,0 +1,649 @@
+=== BASELINE MISSING IN FUNCTION RANGE ===
+line 585:             return
+
+=== ATTEMPT 1 ===
+{
+ "tok_s": 36.9,
+ "wall_s": 4.78,
+ "peak_rss_mb": 4772.2,
+ "pass": 0,
+ "fail": 1,
+ "error": 0,
+ "target_hit": "no",
+ "executed": [],
+ "not_executed": [
+  585
+ ]
+}
+=== PROMPT ===
+You are a test-generation engineer. Write pytest unit tests whose ONLY goal is to execute the specific uncovered lines listed below.
+
+Hard rules:
+1. Output ONLY one python code block (```python ... ```).
+2. Tests must be deterministic. No network access, no secrets, no sleeps.
+3. Import EXACTLY as shown in the 'Correct import' block. Do not guess another module.
+4. The test must PASS. Avoid assertions on values you are not sure about unless the target line requires it.
+5. Every line in the TARGET LINES list must actually be executed by your test.
+
+Correct import for the function under test:
+from click.decorators import custom_version_option
+
+
+Module imports available in the file under test:
+from __future__ import annotations
+import inspect
+import typing as t
+from functools import update_wrapper
+from gettext import gettext as _
+from .core import Argument
+from .core import Command
+from .core import Context
+from .core import Group
+from .core import Option
+from .core import Parameter
+from .globals import get_current_context
+from .utils import echo
+
+Existing test style example:
+def test_custom_version_option(runner, args):
+    @click.command()
+    @click.custom_version_option(lambda ctx: "custom 9.9.9", "-V", "--version")
+    def cli():
+        pass
+
+    result = runner.invoke(cli, args)
+    assert result.exit_code == 0
+    assert result.output == "custom 9.9.9\n"
+
+TARGET LINES currently NOT executed (your test MUST execute all of these):
+line 585:             return
+
+Function source (with line numbers):
+
+ 559: def custom_version_option(
+ 560:     callback: t.Callable[[Context], str],
+ 561:     *param_decls: str,
+ 562:     **kwargs: t.Any,
+ 563: ) -> t.Callable[[FC], FC]:
+ 564:     """Add a ``--version`` option whose output is produced by ``callback``.
+ 565: 
+ 566:     This is the customizable companion to :func:`version_option`. Where
+ 567:     :func:`version_option` is intentionally limited to a fixed message and
+ 568:     a small set of values, this option calls ``callback`` to build the
+ 569:     whole string to print. Use it when you need values that
+ 570:     :func:`version_option` does not expose, such as a file path, the
+ 571:     Python version, or git metadata.
+ 572: 
+ 573:     :param callback: Called with the current :class:`Context` when the
+ 574:         option is invoked. Its return value is printed, then the program
+ 575:         exits.
+ 576:     :param param_decls: One or more option names. Defaults to the single
+ 577:         value ``--version``.
+ 578:     :param kwargs: Extra arguments are passed to :func:`option`.
+ 579: 
+ 580:     .. versionadded:: 8.5.0
+ 581:     """
+ 582: 
+ 583:     def show_version(ctx: Context, param: Parameter, value: bool) -> None:
+ 584:         if not value or ctx.resilient_parsing:
+ 585:             return
+ 586: 
+ 587:         echo(callback(ctx), color=ctx.color)
+ 588:         ctx.exit()
+ 589: 
+ 590:     if not param_decls:
+ 591:         param_decls = ("--version",)
+ 592: 
+ 593:     kwargs.setdefault("is_flag", True)
+ 594:     kwargs.setdefault("expose_value", False)
+ 595:     kwargs.setdefault("is_eager", True)
+ 596:     kwargs.setdefault("help", _("Show the version and exit."))
+ 597:     kwargs["callback"] = show_version
+ 598:     return option(*param_decls, **kwargs)
+
+=== RESPONSE ===
+```python
+from click.decorators import custom_version_option
+
+def test_custom_version_option():
+    @custom_version_option(lambda ctx: "custom 9.9.9", "-V", "--version")
+    def cli():
+        pass
+
+    # This line must be executed to pass the test
+    show_version = cli.params[0].callback
+
+    # This line must be executed to pass the test
+    show_version(None, None, True)
+```
+=== PYTEST ===
+============================= test session starts ==============================
+platform darwin -- Python 3.14.3, pytest-9.2.0, pluggy-1.7.0 -- /Users/srujansai/Desktop/AirG.A.P/harness/w6/venv/bin/python
+rootdir: /Users/srujansai/Desktop/AirG.A.P/harness/w6/sandbox/click
+configfile: pyproject.toml
+collecting ... collected 1 item
+
+test_r3_custom_version_option.py::test_custom_version_option FAILED      [100%]
+
+=================================== FAILURES ===================================
+__________________________ test_custom_version_option __________________________
+
+    def test_custom_version_option():
+        @custom_version_option(lambda ctx: "custom 9.9.9", "-V", "--version")
+        def cli():
+            pass
+    
+        # This line must be executed to pass the test
+>       show_version = cli.params[0].callback
+                       ^^^^^^^^^^
+E       AttributeError: 'function' object has no attribute 'params'
+
+test_r3_custom_version_option.py:9: AttributeError
+=========================== short test summary info ============================
+FAILED test_r3_custom_version_option.py::test_custom_version_option - Attribu...
+============================== 1 failed in 0.02s ===============================
+
+=== ATTEMPT 2 ===
+{
+ "tok_s": 38.6,
+ "wall_s": 4.27,
+ "peak_rss_mb": 4781.8,
+ "pass": 0,
+ "fail": 1,
+ "error": 0,
+ "target_hit": "no",
+ "executed": [],
+ "not_executed": [
+  585
+ ]
+}
+=== PROMPT ===
+You are a test-generation engineer. Write pytest unit tests whose ONLY goal is to execute the specific uncovered lines listed below.
+
+Hard rules:
+1. Output ONLY one python code block (```python ... ```).
+2. Tests must be deterministic. No network access, no secrets, no sleeps.
+3. Import EXACTLY as shown in the 'Correct import' block. Do not guess another module.
+4. The test must PASS. Avoid assertions on values you are not sure about unless the target line requires it.
+5. Every line in the TARGET LINES list must actually be executed by your test.
+
+Correct import for the function under test:
+from click.decorators import custom_version_option
+
+
+Module imports available in the file under test:
+from __future__ import annotations
+import inspect
+import typing as t
+from functools import update_wrapper
+from gettext import gettext as _
+from .core import Argument
+from .core import Command
+from .core import Context
+from .core import Group
+from .core import Option
+from .core import Parameter
+from .globals import get_current_context
+from .utils import echo
+
+Existing test style example:
+def test_custom_version_option(runner, args):
+    @click.command()
+    @click.custom_version_option(lambda ctx: "custom 9.9.9", "-V", "--version")
+    def cli():
+        pass
+
+    result = runner.invoke(cli, args)
+    assert result.exit_code == 0
+    assert result.output == "custom 9.9.9\n"
+
+TARGET LINES currently NOT executed (your test MUST execute all of these):
+line 585:             return
+
+=== FEEDBACK FROM THE PREVIOUS ATTEMPT ===
+The previous test file did not pass. Pytest output:
+============================= test session starts ==============================
+platform darwin -- Python 3.14.3, pytest-9.2.0, pluggy-1.7.0 -- /Users/srujansai/Desktop/AirG.A.P/harness/w6/venv/bin/python
+rootdir: /Users/srujansai/Desktop/AirG.A.P/harness/w6/sandbox/click
+configfile: pyproject.toml
+collecting ... collected 1 item
+
+test_r3_custom_version_option.py::test_custom_version_option FAILED      [100%]
+
+=================================== FAILURES ===================================
+__________________________ test_custom_version_option __________________________
+
+    def test_custom_version_option():
+        @custom_version_option(lambda ctx: "custom 9.9.9", "-V", "--version")
+        def cli():
+            pass
+    
+        # This line must be executed to pass the test
+>       show_version = cli.params[0].callback
+                       ^^^^^^^^^^
+E       AttributeError: 'function' object has no attribute 'params'
+
+test_r3_custom_version_option.py:9: AttributeError
+=========================== short test summary info ============================
+FAILED test_r3_custom_version_option.py::test_custom_version_option - Attribu...
+============================== 1 failed in 0.02s ===============================
+
+
+Target lines still not executed: 585.
+
+Function source (with line numbers):
+
+ 559: def custom_version_option(
+ 560:     callback: t.Callable[[Context], str],
+ 561:     *param_decls: str,
+ 562:     **kwargs: t.Any,
+ 563: ) -> t.Callable[[FC], FC]:
+ 564:     """Add a ``--version`` option whose output is produced by ``callback``.
+ 565: 
+ 566:     This is the customizable companion to :func:`version_option`. Where
+ 567:     :func:`version_option` is intentionally limited to a fixed message and
+ 568:     a small set of values, this option calls ``callback`` to build the
+ 569:     whole string to print. Use it when you need values that
+ 570:     :func:`version_option` does not expose, such as a file path, the
+ 571:     Python version, or git metadata.
+ 572: 
+ 573:     :param callback: Called with the current :class:`Context` when the
+ 574:         option is invoked. Its return value is printed, then the program
+ 575:         exits.
+ 576:     :param param_decls: One or more option names. Defaults to the single
+ 577:         value ``--version``.
+ 578:     :param kwargs: Extra arguments are passed to :func:`option`.
+ 579: 
+ 580:     .. versionadded:: 8.5.0
+ 581:     """
+ 582: 
+ 583:     def show_version(ctx: Context, param: Parameter, value: bool) -> None:
+ 584:         if not value or ctx.resilient_parsing:
+ 585:             return
+ 586: 
+ 587:         echo(callback(ctx), color=ctx.color)
+ 588:         ctx.exit()
+ 589: 
+ 590:     if not param_decls:
+ 591:         param_decls = ("--version",)
+ 592: 
+ 593:     kwargs.setdefault("is_flag", True)
+ 594:     kwargs.setdefault("expose_value", False)
+ 595:     kwargs.setdefault("is_eager", True)
+ 596:     kwargs.setdefault("help", _("Show the version and exit."))
+ 597:     kwargs["callback"] = show_version
+ 598:     return option(*param_decls, **kwargs)
+
+=== RESPONSE ===
+```python
+from click.decorators import custom_version_option
+
+def test_custom_version_option():
+    @custom_version_option(lambda ctx: "custom 9.9.9", "-V", "--version")
+    def cli():
+        pass
+
+    show_version = cli.params[0].callback
+    assert callable(show_version)
+```
+=== PYTEST ===
+============================= test session starts ==============================
+platform darwin -- Python 3.14.3, pytest-9.2.0, pluggy-1.7.0 -- /Users/srujansai/Desktop/AirG.A.P/harness/w6/venv/bin/python
+rootdir: /Users/srujansai/Desktop/AirG.A.P/harness/w6/sandbox/click
+configfile: pyproject.toml
+collecting ... collected 1 item
+
+test_r3_custom_version_option.py::test_custom_version_option FAILED      [100%]
+
+=================================== FAILURES ===================================
+__________________________ test_custom_version_option __________________________
+
+    def test_custom_version_option():
+        @custom_version_option(lambda ctx: "custom 9.9.9", "-V", "--version")
+        def cli():
+            pass
+    
+>       show_version = cli.params[0].callback
+                       ^^^^^^^^^^
+E       AttributeError: 'function' object has no attribute 'params'
+
+test_r3_custom_version_option.py:8: AttributeError
+=========================== short test summary info ============================
+FAILED test_r3_custom_version_option.py::test_custom_version_option - Attribu...
+============================== 1 failed in 0.02s ===============================
+
+=== ATTEMPT 3 ===
+{
+ "tok_s": 37.5,
+ "wall_s": 3.89,
+ "peak_rss_mb": 4769.2,
+ "pass": 0,
+ "fail": 1,
+ "error": 0,
+ "target_hit": "no",
+ "executed": [],
+ "not_executed": [
+  585
+ ]
+}
+=== PROMPT ===
+You are a test-generation engineer. Write pytest unit tests whose ONLY goal is to execute the specific uncovered lines listed below.
+
+Hard rules:
+1. Output ONLY one python code block (```python ... ```).
+2. Tests must be deterministic. No network access, no secrets, no sleeps.
+3. Import EXACTLY as shown in the 'Correct import' block. Do not guess another module.
+4. The test must PASS. Avoid assertions on values you are not sure about unless the target line requires it.
+5. Every line in the TARGET LINES list must actually be executed by your test.
+
+Correct import for the function under test:
+from click.decorators import custom_version_option
+
+
+Module imports available in the file under test:
+from __future__ import annotations
+import inspect
+import typing as t
+from functools import update_wrapper
+from gettext import gettext as _
+from .core import Argument
+from .core import Command
+from .core import Context
+from .core import Group
+from .core import Option
+from .core import Parameter
+from .globals import get_current_context
+from .utils import echo
+
+Existing test style example:
+def test_custom_version_option(runner, args):
+    @click.command()
+    @click.custom_version_option(lambda ctx: "custom 9.9.9", "-V", "--version")
+    def cli():
+        pass
+
+    result = runner.invoke(cli, args)
+    assert result.exit_code == 0
+    assert result.output == "custom 9.9.9\n"
+
+TARGET LINES currently NOT executed (your test MUST execute all of these):
+line 585:             return
+
+=== FEEDBACK FROM THE PREVIOUS ATTEMPT ===
+The previous test file did not pass. Pytest output:
+============================= test session starts ==============================
+platform darwin -- Python 3.14.3, pytest-9.2.0, pluggy-1.7.0 -- /Users/srujansai/Desktop/AirG.A.P/harness/w6/venv/bin/python
+rootdir: /Users/srujansai/Desktop/AirG.A.P/harness/w6/sandbox/click
+configfile: pyproject.toml
+collecting ... collected 1 item
+
+test_r3_custom_version_option.py::test_custom_version_option FAILED      [100%]
+
+=================================== FAILURES ===================================
+__________________________ test_custom_version_option __________________________
+
+    def test_custom_version_option():
+        @custom_version_option(lambda ctx: "custom 9.9.9", "-V", "--version")
+        def cli():
+            pass
+    
+>       show_version = cli.params[0].callback
+                       ^^^^^^^^^^
+E       AttributeError: 'function' object has no attribute 'params'
+
+test_r3_custom_version_option.py:8: AttributeError
+=========================== short test summary info ============================
+FAILED test_r3_custom_version_option.py::test_custom_version_option - Attribu...
+============================== 1 failed in 0.02s ===============================
+
+
+Target lines still not executed: 585.
+
+Function source (with line numbers):
+
+ 559: def custom_version_option(
+ 560:     callback: t.Callable[[Context], str],
+ 561:     *param_decls: str,
+ 562:     **kwargs: t.Any,
+ 563: ) -> t.Callable[[FC], FC]:
+ 564:     """Add a ``--version`` option whose output is produced by ``callback``.
+ 565: 
+ 566:     This is the customizable companion to :func:`version_option`. Where
+ 567:     :func:`version_option` is intentionally limited to a fixed message and
+ 568:     a small set of values, this option calls ``callback`` to build the
+ 569:     whole string to print. Use it when you need values that
+ 570:     :func:`version_option` does not expose, such as a file path, the
+ 571:     Python version, or git metadata.
+ 572: 
+ 573:     :param callback: Called with the current :class:`Context` when the
+ 574:         option is invoked. Its return value is printed, then the program
+ 575:         exits.
+ 576:     :param param_decls: One or more option names. Defaults to the single
+ 577:         value ``--version``.
+ 578:     :param kwargs: Extra arguments are passed to :func:`option`.
+ 579: 
+ 580:     .. versionadded:: 8.5.0
+ 581:     """
+ 582: 
+ 583:     def show_version(ctx: Context, param: Parameter, value: bool) -> None:
+ 584:         if not value or ctx.resilient_parsing:
+ 585:             return
+ 586: 
+ 587:         echo(callback(ctx), color=ctx.color)
+ 588:         ctx.exit()
+ 589: 
+ 590:     if not param_decls:
+ 591:         param_decls = ("--version",)
+ 592: 
+ 593:     kwargs.setdefault("is_flag", True)
+ 594:     kwargs.setdefault("expose_value", False)
+ 595:     kwargs.setdefault("is_eager", True)
+ 596:     kwargs.setdefault("help", _("Show the version and exit."))
+ 597:     kwargs["callback"] = show_version
+ 598:     return option(*param_decls, **kwargs)
+
+=== RESPONSE ===
+```python
+from click.decorators import custom_version_option
+
+def test_custom_version_option():
+    @custom_version_option(lambda ctx: "custom 9.9.9", "-V", "--version")
+    def cli():
+        pass
+
+    show_version = cli.params[0].callback
+    assert callable(show_version)
+```
+=== PYTEST ===
+============================= test session starts ==============================
+platform darwin -- Python 3.14.3, pytest-9.2.0, pluggy-1.7.0 -- /Users/srujansai/Desktop/AirG.A.P/harness/w6/venv/bin/python
+rootdir: /Users/srujansai/Desktop/AirG.A.P/harness/w6/sandbox/click
+configfile: pyproject.toml
+collecting ... collected 1 item
+
+test_r3_custom_version_option.py::test_custom_version_option FAILED      [100%]
+
+=================================== FAILURES ===================================
+__________________________ test_custom_version_option __________________________
+
+    def test_custom_version_option():
+        @custom_version_option(lambda ctx: "custom 9.9.9", "-V", "--version")
+        def cli():
+            pass
+    
+>       show_version = cli.params[0].callback
+                       ^^^^^^^^^^
+E       AttributeError: 'function' object has no attribute 'params'
+
+test_r3_custom_version_option.py:8: AttributeError
+=========================== short test summary info ============================
+FAILED test_r3_custom_version_option.py::test_custom_version_option - Attribu...
+============================== 1 failed in 0.02s ===============================
+
+=== ATTEMPT 4 ===
+{
+ "tok_s": 38.3,
+ "wall_s": 2.09,
+ "peak_rss_mb": 4696.2,
+ "pass": 0,
+ "fail": 1,
+ "error": 0,
+ "target_hit": "no",
+ "executed": [],
+ "not_executed": [
+  585
+ ]
+}
+=== PROMPT ===
+You are a test-generation engineer. Write pytest unit tests whose ONLY goal is to execute the specific uncovered lines listed below.
+
+Hard rules:
+1. Output ONLY one python code block (```python ... ```).
+2. Tests must be deterministic. No network access, no secrets, no sleeps.
+3. Import EXACTLY as shown in the 'Correct import' block. Do not guess another module.
+4. The test must PASS. Avoid assertions on values you are not sure about unless the target line requires it.
+5. Every line in the TARGET LINES list must actually be executed by your test.
+
+Correct import for the function under test:
+from click.decorators import custom_version_option
+
+
+Module imports available in the file under test:
+from __future__ import annotations
+import inspect
+import typing as t
+from functools import update_wrapper
+from gettext import gettext as _
+from .core import Argument
+from .core import Command
+from .core import Context
+from .core import Group
+from .core import Option
+from .core import Parameter
+from .globals import get_current_context
+from .utils import echo
+
+Existing test style example:
+def test_custom_version_option(runner, args):
+    @click.command()
+    @click.custom_version_option(lambda ctx: "custom 9.9.9", "-V", "--version")
+    def cli():
+        pass
+
+    result = runner.invoke(cli, args)
+    assert result.exit_code == 0
+    assert result.output == "custom 9.9.9\n"
+
+TARGET LINES currently NOT executed (your test MUST execute all of these):
+line 585:             return
+
+=== FEEDBACK FROM THE PREVIOUS ATTEMPT ===
+The previous test file did not pass. Pytest output:
+============================= test session starts ==============================
+platform darwin -- Python 3.14.3, pytest-9.2.0, pluggy-1.7.0 -- /Users/srujansai/Desktop/AirG.A.P/harness/w6/venv/bin/python
+rootdir: /Users/srujansai/Desktop/AirG.A.P/harness/w6/sandbox/click
+configfile: pyproject.toml
+collecting ... collected 1 item
+
+test_r3_custom_version_option.py::test_custom_version_option FAILED      [100%]
+
+=================================== FAILURES ===================================
+__________________________ test_custom_version_option __________________________
+
+    def test_custom_version_option():
+        @custom_version_option(lambda ctx: "custom 9.9.9", "-V", "--version")
+        def cli():
+            pass
+    
+>       show_version = cli.params[0].callback
+                       ^^^^^^^^^^
+E       AttributeError: 'function' object has no attribute 'params'
+
+test_r3_custom_version_option.py:8: AttributeError
+=========================== short test summary info ============================
+FAILED test_r3_custom_version_option.py::test_custom_version_option - Attribu...
+============================== 1 failed in 0.02s ===============================
+
+
+Target lines still not executed: 585.
+
+Function source (with line numbers):
+
+ 559: def custom_version_option(
+ 560:     callback: t.Callable[[Context], str],
+ 561:     *param_decls: str,
+ 562:     **kwargs: t.Any,
+ 563: ) -> t.Callable[[FC], FC]:
+ 564:     """Add a ``--version`` option whose output is produced by ``callback``.
+ 565: 
+ 566:     This is the customizable companion to :func:`version_option`. Where
+ 567:     :func:`version_option` is intentionally limited to a fixed message and
+ 568:     a small set of values, this option calls ``callback`` to build the
+ 569:     whole string to print. Use it when you need values that
+ 570:     :func:`version_option` does not expose, such as a file path, the
+ 571:     Python version, or git metadata.
+ 572: 
+ 573:     :param callback: Called with the current :class:`Context` when the
+ 574:         option is invoked. Its return value is printed, then the program
+ 575:         exits.
+ 576:     :param param_decls: One or more option names. Defaults to the single
+ 577:         value ``--version``.
+ 578:     :param kwargs: Extra arguments are passed to :func:`option`.
+ 579: 
+ 580:     .. versionadded:: 8.5.0
+ 581:     """
+ 582: 
+ 583:     def show_version(ctx: Context, param: Parameter, value: bool) -> None:
+ 584:         if not value or ctx.resilient_parsing:
+ 585:             return
+ 586: 
+ 587:         echo(callback(ctx), color=ctx.color)
+ 588:         ctx.exit()
+ 589: 
+ 590:     if not param_decls:
+ 591:         param_decls = ("--version",)
+ 592: 
+ 593:     kwargs.setdefault("is_flag", True)
+ 594:     kwargs.setdefault("expose_value", False)
+ 595:     kwargs.setdefault("is_eager", True)
+ 596:     kwargs.setdefault("help", _("Show the version and exit."))
+ 597:     kwargs["callback"] = show_version
+ 598:     return option(*param_decls, **kwargs)
+
+=== RESPONSE ===
+```python
+from click.decorators import custom_version_option
+
+def test_custom_version_option():
+    @custom_version_option(lambda ctx: "custom 9.9.9", "-V", "--version")
+    def cli():
+        pass
+
+    show_version = cli.params[0].callback
+    show_version(None, None, True)
+```
+=== PYTEST ===
+============================= test session starts ==============================
+platform darwin -- Python 3.14.3, pytest-9.2.0, pluggy-1.7.0 -- /Users/srujansai/Desktop/AirG.A.P/harness/w6/venv/bin/python
+rootdir: /Users/srujansai/Desktop/AirG.A.P/harness/w6/sandbox/click
+configfile: pyproject.toml
+collecting ... collected 1 item
+
+test_r3_custom_version_option.py::test_custom_version_option FAILED      [100%]
+
+=================================== FAILURES ===================================
+__________________________ test_custom_version_option __________________________
+
+    def test_custom_version_option():
+        @custom_version_option(lambda ctx: "custom 9.9.9", "-V", "--version")
+        def cli():
+            pass
+    
+>       show_version = cli.params[0].callback
+                       ^^^^^^^^^^
+E       AttributeError: 'function' object has no attribute 'params'
+
+test_r3_custom_version_option.py:8: AttributeError
+=========================== short test summary info ============================
+FAILED test_r3_custom_version_option.py::test_custom_version_option - Attribu...
+============================== 1 failed in 0.02s ===============================

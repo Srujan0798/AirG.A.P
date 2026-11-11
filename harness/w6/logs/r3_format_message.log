@@ -1,0 +1,94 @@
+=== BASELINE MISSING IN FUNCTION RANGE ===
+line 148:             param_hint = self.param_hint
+line 152:             return _("Invalid value: {message}").format(message=self.message)
+
+=== ATTEMPT 1 ===
+{
+ "tok_s": 39.9,
+ "wall_s": 3.72,
+ "peak_rss_mb": 4805.8,
+ "pass": 2,
+ "fail": 0,
+ "error": 0,
+ "target_hit": "yes",
+ "executed": [
+  148,
+  152
+ ],
+ "not_executed": []
+}
+=== PROMPT ===
+You are a test-generation engineer. Write pytest unit tests whose ONLY goal is to execute the specific uncovered lines listed below.
+
+Hard rules:
+1. Output ONLY one python code block (```python ... ```).
+2. Tests must be deterministic. No network access, no secrets, no sleeps.
+3. Import EXACTLY as shown in the 'Correct import' block. Do not guess another module.
+4. The test must PASS. Avoid assertions on values you are not sure about unless the target line requires it.
+5. Every line in the TARGET LINES list must actually be executed by your test.
+
+Correct import for the function under test:
+from click.exceptions import BadParameter
+
+NOTE: BadParameter.format_message is a METHOD. You must create an instance first (for example `obj = BadParameter(...)`) and then call `obj.format_message(...)`. Calling `format_message(...)` as a bare function will fail.
+
+Module imports available in the file under test:
+from __future__ import annotations
+import collections.abc as cabc
+import typing as t
+from gettext import gettext as _
+from gettext import ngettext
+from ._compat import get_text_stderr
+from .globals import resolve_color_default
+from .utils import echo
+from .utils import format_filename
+
+Existing test style example:
+def test_file_error_surrogates():
+    message = click.FileError(filename="\udcff").format_message()
+    assert message == "Could not open file '�': unknown error"
+
+TARGET LINES currently NOT executed (your test MUST execute all of these):
+line 148:             param_hint = self.param_hint
+line 152:             return _("Invalid value: {message}").format(message=self.message)
+
+Function source (with line numbers):
+
+ 146:     def format_message(self) -> str:
+ 147:         if self.param_hint is not None:
+ 148:             param_hint = self.param_hint
+ 149:         elif self.param is not None:
+ 150:             param_hint = self.param.get_error_hint(self.ctx)
+ 151:         else:
+ 152:             return _("Invalid value: {message}").format(message=self.message)
+ 153: 
+ 154:         return _("Invalid value for {param_hint}: {message}").format(
+ 155:             param_hint=_join_param_hints(param_hint), message=self.message
+ 156:         )
+
+=== RESPONSE ===
+```python
+from click.exceptions import BadParameter
+
+def test_format_message_with_param_hint():
+    param_hint = "test_param"
+    exception = BadParameter(message="test_message", param_hint=param_hint)
+    message = exception.format_message()
+    assert message == "Invalid value for test_param: test_message"
+
+def test_format_message_without_param_hint():
+    exception = BadParameter(message="test_message")
+    message = exception.format_message()
+    assert message == "Invalid value: test_message"
+```
+=== PYTEST ===
+============================= test session starts ==============================
+platform darwin -- Python 3.14.3, pytest-9.2.0, pluggy-1.7.0 -- /Users/srujansai/Desktop/AirG.A.P/harness/w6/venv/bin/python
+rootdir: /Users/srujansai/Desktop/AirG.A.P/harness/w6/sandbox/click
+configfile: pyproject.toml
+collecting ... collected 2 items
+
+test_r3_format_message.py::test_format_message_with_param_hint PASSED    [ 50%]
+test_r3_format_message.py::test_format_message_without_param_hint PASSED [100%]
+
+============================== 2 passed in 0.01s ===============================

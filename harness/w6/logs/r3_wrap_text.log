@@ -1,0 +1,825 @@
+=== BASELINE MISSING IN FUNCTION RANGE ===
+line 80:             return
+
+=== ATTEMPT 1 ===
+{
+ "tok_s": 38.4,
+ "wall_s": 5.44,
+ "peak_rss_mb": 4784.4,
+ "pass": 0,
+ "fail": 1,
+ "error": 0,
+ "target_hit": "no",
+ "executed": [],
+ "not_executed": [
+  80
+ ]
+}
+=== PROMPT ===
+You are a test-generation engineer. Write pytest unit tests whose ONLY goal is to execute the specific uncovered lines listed below.
+
+Hard rules:
+1. Output ONLY one python code block (```python ... ```).
+2. Tests must be deterministic. No network access, no secrets, no sleeps.
+3. Import EXACTLY as shown in the 'Correct import' block. Do not guess another module.
+4. The test must PASS. Avoid assertions on values you are not sure about unless the target line requires it.
+5. Every line in the TARGET LINES list must actually be executed by your test.
+
+Correct import for the function under test:
+from click.formatting import wrap_text
+
+
+Module imports available in the file under test:
+from __future__ import annotations
+import collections.abc as cabc
+from contextlib import contextmanager
+from gettext import gettext as _
+from ._compat import term_len
+from .parser import _split_opt
+
+Existing test style example:
+def test_wrap_text_visible_width(body, width, initial_indent):
+    """``wrap_text`` of styled input produces the same line layout as
+    ``wrap_text`` of the ANSI-stripped input.
+
+    ANSI escape bytes must not count toward the width budget, regardless
+    of whether they appear in the body, in ``initial_indent``, or when a
+    styled token has to be broken in the middle.
+    """
+    styled = click.formatting.wrap_text(
+        body, width=width, initial_indent=initial_indent
+    )
+    plain = click.formatting.wrap_text(
+        strip_ansi(body), width=width, initial_indent=strip_ansi(initial_indent)
+    )
+
+    styled_visible = [strip_ansi(line) for line in styled.splitlines()]
+    assert styled_visible == plain.splitlines()
+
+TARGET LINES currently NOT executed (your test MUST execute all of these):
+line 80:             return
+
+Function source (with line numbers):
+
+  31: def wrap_text(
+  32:     text: str,
+  33:     width: int = 78,
+  34:     initial_indent: str = "",
+  35:     subsequent_indent: str = "",
+  36:     preserve_paragraphs: bool = False,
+  37: ) -> str:
+  38:     """A helper function that intelligently wraps text.  By default, it
+  39:     assumes that it operates on a single paragraph of text but if the
+  40:     `preserve_paragraphs` parameter is provided it will intelligently
+  41:     handle paragraphs (defined by two empty lines).
+  42: 
+  43:     If paragraphs are handled, a paragraph can be prefixed with an empty
+  44:     line containing the ``\\b`` character (``\\x08``) to indicate that
+  45:     no rewrapping should happen in that block.
+  46: 
+  47:     :param text: the text that should be rewrapped.
+  48:     :param width: the maximum width for the text.
+  49:     :param initial_indent: the initial indent that should be placed on the
+  50:                            first line as a string.
+  51:     :param subsequent_indent: the indent string that should be placed on
+  52:                               each consecutive line.
+  53:     :param preserve_paragraphs: if this flag is set then the wrapping will
+  54:                                 intelligently handle paragraphs.
+  55: 
+  56:     .. versionchanged:: 8.4.0
+  57:         Width is measured in visible characters. ANSI escape sequences in
+  58:         ``text``, ``initial_indent``, or ``subsequent_indent`` no longer
+  59:         count toward the width budget, so styled input wraps based on what
+  60:         the user sees instead of raw byte length.
+  61:     """
+  62:     from ._textwrap import TextWrapper
+  63: 
+  64:     text = text.expandtabs()
+  65:     wrapper = TextWrapper(
+  66:         width,
+  67:         initial_indent=initial_indent,
+  68:         subsequent_indent=subsequent_indent,
+  69:         replace_whitespace=False,
+  70:     )
+  71:     if not preserve_paragraphs:
+  72:         return wrapper.fill(text)
+  73: 
+  74:     p: list[tuple[int, bool, str]] = []
+  75:     buf: list[str] = []
+  76:     indent = None
+  77: 
+  78:     def _flush_par() -> None:
+  79:         if not buf:
+  80:             return
+  81:         if buf[0].strip() == "\b":
+  82:             p.append((indent or 0, True, "\n".join(buf[1:])))
+  83:         else:
+  84:             p.append((indent or 0, False, " ".join(buf)))
+  85:         del buf[:]
+  86: 
+  87:     for line in text.splitlines():
+  88:         if not line:
+  89:             _flush_par()
+  90:             indent = None
+  91:         else:
+  92:             if indent is None:
+  93:                 orig_len = term_len(line)
+  94:                 line = line.lstrip()
+  95:                 indent = orig_len - term_len(line)
+  96:             buf.append(line)
+  97:     _flush_par()
+  98: 
+  99:     rv = []
+ 100:     for indent, raw, text in p:
+ 101:         with wrapper.extra_indent(" " * indent):
+ 102:             if raw:
+ 103:                 rv.append(wrapper.indent_only(text))
+ 104:             else:
+ 105:                 rv.append(wrapper.fill(text))
+ 106: 
+ 107:     return "\n\n".join(rv)
+
+=== RESPONSE ===
+```python
+from click.formatting import wrap_text
+
+def test_wrap_text_flush_par():
+    """Test the _flush_par function to ensure it executes the return statement."""
+    from click._textwrap import TextWrapper
+
+    wrapper = TextWrapper(width=78)
+    p = []
+    buf = ["line1", "line2"]
+    _flush_par = wrap_text._flush_par
+
+    _flush_par()
+    assert not p
+    assert not buf
+```
+=== PYTEST ===
+============================= test session starts ==============================
+platform darwin -- Python 3.14.3, pytest-9.2.0, pluggy-1.7.0 -- /Users/srujansai/Desktop/AirG.A.P/harness/w6/venv/bin/python
+rootdir: /Users/srujansai/Desktop/AirG.A.P/harness/w6/sandbox/click
+configfile: pyproject.toml
+collecting ... collected 1 item
+
+test_r3_wrap_text.py::test_wrap_text_flush_par FAILED                    [100%]
+
+=================================== FAILURES ===================================
+___________________________ test_wrap_text_flush_par ___________________________
+
+    def test_wrap_text_flush_par():
+        """Test the _flush_par function to ensure it executes the return statement."""
+        from click._textwrap import TextWrapper
+    
+        wrapper = TextWrapper(width=78)
+        p = []
+        buf = ["line1", "line2"]
+>       _flush_par = wrap_text._flush_par
+                     ^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: 'function' object has no attribute '_flush_par'
+
+test_r3_wrap_text.py:10: AttributeError
+=========================== short test summary info ============================
+FAILED test_r3_wrap_text.py::test_wrap_text_flush_par - AttributeError: 'func...
+============================== 1 failed in 0.05s ===============================
+
+=== ATTEMPT 2 ===
+{
+ "tok_s": 38.9,
+ "wall_s": 5.55,
+ "peak_rss_mb": 4805.4,
+ "pass": 0,
+ "fail": 1,
+ "error": 0,
+ "target_hit": "no",
+ "executed": [],
+ "not_executed": [
+  80
+ ]
+}
+=== PROMPT ===
+You are a test-generation engineer. Write pytest unit tests whose ONLY goal is to execute the specific uncovered lines listed below.
+
+Hard rules:
+1. Output ONLY one python code block (```python ... ```).
+2. Tests must be deterministic. No network access, no secrets, no sleeps.
+3. Import EXACTLY as shown in the 'Correct import' block. Do not guess another module.
+4. The test must PASS. Avoid assertions on values you are not sure about unless the target line requires it.
+5. Every line in the TARGET LINES list must actually be executed by your test.
+
+Correct import for the function under test:
+from click.formatting import wrap_text
+
+
+Module imports available in the file under test:
+from __future__ import annotations
+import collections.abc as cabc
+from contextlib import contextmanager
+from gettext import gettext as _
+from ._compat import term_len
+from .parser import _split_opt
+
+Existing test style example:
+def test_wrap_text_visible_width(body, width, initial_indent):
+    """``wrap_text`` of styled input produces the same line layout as
+    ``wrap_text`` of the ANSI-stripped input.
+
+    ANSI escape bytes must not count toward the width budget, regardless
+    of whether they appear in the body, in ``initial_indent``, or when a
+    styled token has to be broken in the middle.
+    """
+    styled = click.formatting.wrap_text(
+        body, width=width, initial_indent=initial_indent
+    )
+    plain = click.formatting.wrap_text(
+        strip_ansi(body), width=width, initial_indent=strip_ansi(initial_indent)
+    )
+
+    styled_visible = [strip_ansi(line) for line in styled.splitlines()]
+    assert styled_visible == plain.splitlines()
+
+TARGET LINES currently NOT executed (your test MUST execute all of these):
+line 80:             return
+
+=== FEEDBACK FROM THE PREVIOUS ATTEMPT ===
+The previous test file did not pass. Pytest output:
+============================= test session starts ==============================
+platform darwin -- Python 3.14.3, pytest-9.2.0, pluggy-1.7.0 -- /Users/srujansai/Desktop/AirG.A.P/harness/w6/venv/bin/python
+rootdir: /Users/srujansai/Desktop/AirG.A.P/harness/w6/sandbox/click
+configfile: pyproject.toml
+collecting ... collected 1 item
+
+test_r3_wrap_text.py::test_wrap_text_flush_par FAILED                    [100%]
+
+=================================== FAILURES ===================================
+___________________________ test_wrap_text_flush_par ___________________________
+
+    def test_wrap_text_flush_par():
+        """Test the _flush_par function to ensure it executes the return statement."""
+        from click._textwrap import TextWrapper
+    
+        wrapper = TextWrapper(width=78)
+        p = []
+        buf = ["line1", "line2"]
+>       _flush_par = wrap_text._flush_par
+                     ^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: 'function' object has no attribute '_flush_par'
+
+test_r3_wrap_text.py:10: AttributeError
+=========================== short test summary info ============================
+FAILED test_r3_wrap_text.py::test_wrap_text_flush_par - AttributeError: 'func...
+============================== 1 failed in 0.05s ===============================
+
+
+Target lines still not executed: 80.
+
+Function source (with line numbers):
+
+  31: def wrap_text(
+  32:     text: str,
+  33:     width: int = 78,
+  34:     initial_indent: str = "",
+  35:     subsequent_indent: str = "",
+  36:     preserve_paragraphs: bool = False,
+  37: ) -> str:
+  38:     """A helper function that intelligently wraps text.  By default, it
+  39:     assumes that it operates on a single paragraph of text but if the
+  40:     `preserve_paragraphs` parameter is provided it will intelligently
+  41:     handle paragraphs (defined by two empty lines).
+  42: 
+  43:     If paragraphs are handled, a paragraph can be prefixed with an empty
+  44:     line containing the ``\\b`` character (``\\x08``) to indicate that
+  45:     no rewrapping should happen in that block.
+  46: 
+  47:     :param text: the text that should be rewrapped.
+  48:     :param width: the maximum width for the text.
+  49:     :param initial_indent: the initial indent that should be placed on the
+  50:                            first line as a string.
+  51:     :param subsequent_indent: the indent string that should be placed on
+  52:                               each consecutive line.
+  53:     :param preserve_paragraphs: if this flag is set then the wrapping will
+  54:                                 intelligently handle paragraphs.
+  55: 
+  56:     .. versionchanged:: 8.4.0
+  57:         Width is measured in visible characters. ANSI escape sequences in
+  58:         ``text``, ``initial_indent``, or ``subsequent_indent`` no longer
+  59:         count toward the width budget, so styled input wraps based on what
+  60:         the user sees instead of raw byte length.
+  61:     """
+  62:     from ._textwrap import TextWrapper
+  63: 
+  64:     text = text.expandtabs()
+  65:     wrapper = TextWrapper(
+  66:         width,
+  67:         initial_indent=initial_indent,
+  68:         subsequent_indent=subsequent_indent,
+  69:         replace_whitespace=False,
+  70:     )
+  71:     if not preserve_paragraphs:
+  72:         return wrapper.fill(text)
+  73: 
+  74:     p: list[tuple[int, bool, str]] = []
+  75:     buf: list[str] = []
+  76:     indent = None
+  77: 
+  78:     def _flush_par() -> None:
+  79:         if not buf:
+  80:             return
+  81:         if buf[0].strip() == "\b":
+  82:             p.append((indent or 0, True, "\n".join(buf[1:])))
+  83:         else:
+  84:             p.append((indent or 0, False, " ".join(buf)))
+  85:         del buf[:]
+  86: 
+  87:     for line in text.splitlines():
+  88:         if not line:
+  89:             _flush_par()
+  90:             indent = None
+  91:         else:
+  92:             if indent is None:
+  93:                 orig_len = term_len(line)
+  94:                 line = line.lstrip()
+  95:                 indent = orig_len - term_len(line)
+  96:             buf.append(line)
+  97:     _flush_par()
+  98: 
+  99:     rv = []
+ 100:     for indent, raw, text in p:
+ 101:         with wrapper.extra_indent(" " * indent):
+ 102:             if raw:
+ 103:                 rv.append(wrapper.indent_only(text))
+ 104:             else:
+ 105:                 rv.append(wrapper.fill(text))
+ 106: 
+ 107:     return "\n\n".join(rv)
+
+=== RESPONSE ===
+```python
+from click.formatting import wrap_text
+
+def test_wrap_text_flush_par():
+    """Test the _flush_par function to ensure it executes the return statement."""
+    from click._textwrap import TextWrapper
+
+    wrapper = TextWrapper(width=78)
+    p = []
+    buf = ["line1", "line2"]
+    _flush_par = wrap_text._flush_par
+
+    # Call the function to execute the return statement
+    _flush_par()
+```
+=== PYTEST ===
+============================= test session starts ==============================
+platform darwin -- Python 3.14.3, pytest-9.2.0, pluggy-1.7.0 -- /Users/srujansai/Desktop/AirG.A.P/harness/w6/venv/bin/python
+rootdir: /Users/srujansai/Desktop/AirG.A.P/harness/w6/sandbox/click
+configfile: pyproject.toml
+collecting ... collected 1 item
+
+test_r3_wrap_text.py::test_wrap_text_flush_par FAILED                    [100%]
+
+=================================== FAILURES ===================================
+___________________________ test_wrap_text_flush_par ___________________________
+
+    def test_wrap_text_flush_par():
+        """Test the _flush_par function to ensure it executes the return statement."""
+        from click._textwrap import TextWrapper
+    
+        wrapper = TextWrapper(width=78)
+        p = []
+        buf = ["line1", "line2"]
+>       _flush_par = wrap_text._flush_par
+                     ^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: 'function' object has no attribute '_flush_par'
+
+test_r3_wrap_text.py:10: AttributeError
+=========================== short test summary info ============================
+FAILED test_r3_wrap_text.py::test_wrap_text_flush_par - AttributeError: 'func...
+============================== 1 failed in 0.02s ===============================
+
+=== ATTEMPT 3 ===
+{
+ "tok_s": 37.5,
+ "wall_s": 5.09,
+ "peak_rss_mb": 4801.5,
+ "pass": 0,
+ "fail": 1,
+ "error": 0,
+ "target_hit": "no",
+ "executed": [],
+ "not_executed": [
+  80
+ ]
+}
+=== PROMPT ===
+You are a test-generation engineer. Write pytest unit tests whose ONLY goal is to execute the specific uncovered lines listed below.
+
+Hard rules:
+1. Output ONLY one python code block (```python ... ```).
+2. Tests must be deterministic. No network access, no secrets, no sleeps.
+3. Import EXACTLY as shown in the 'Correct import' block. Do not guess another module.
+4. The test must PASS. Avoid assertions on values you are not sure about unless the target line requires it.
+5. Every line in the TARGET LINES list must actually be executed by your test.
+
+Correct import for the function under test:
+from click.formatting import wrap_text
+
+
+Module imports available in the file under test:
+from __future__ import annotations
+import collections.abc as cabc
+from contextlib import contextmanager
+from gettext import gettext as _
+from ._compat import term_len
+from .parser import _split_opt
+
+Existing test style example:
+def test_wrap_text_visible_width(body, width, initial_indent):
+    """``wrap_text`` of styled input produces the same line layout as
+    ``wrap_text`` of the ANSI-stripped input.
+
+    ANSI escape bytes must not count toward the width budget, regardless
+    of whether they appear in the body, in ``initial_indent``, or when a
+    styled token has to be broken in the middle.
+    """
+    styled = click.formatting.wrap_text(
+        body, width=width, initial_indent=initial_indent
+    )
+    plain = click.formatting.wrap_text(
+        strip_ansi(body), width=width, initial_indent=strip_ansi(initial_indent)
+    )
+
+    styled_visible = [strip_ansi(line) for line in styled.splitlines()]
+    assert styled_visible == plain.splitlines()
+
+TARGET LINES currently NOT executed (your test MUST execute all of these):
+line 80:             return
+
+=== FEEDBACK FROM THE PREVIOUS ATTEMPT ===
+The previous test file did not pass. Pytest output:
+============================= test session starts ==============================
+platform darwin -- Python 3.14.3, pytest-9.2.0, pluggy-1.7.0 -- /Users/srujansai/Desktop/AirG.A.P/harness/w6/venv/bin/python
+rootdir: /Users/srujansai/Desktop/AirG.A.P/harness/w6/sandbox/click
+configfile: pyproject.toml
+collecting ... collected 1 item
+
+test_r3_wrap_text.py::test_wrap_text_flush_par FAILED                    [100%]
+
+=================================== FAILURES ===================================
+___________________________ test_wrap_text_flush_par ___________________________
+
+    def test_wrap_text_flush_par():
+        """Test the _flush_par function to ensure it executes the return statement."""
+        from click._textwrap import TextWrapper
+    
+        wrapper = TextWrapper(width=78)
+        p = []
+        buf = ["line1", "line2"]
+>       _flush_par = wrap_text._flush_par
+                     ^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: 'function' object has no attribute '_flush_par'
+
+test_r3_wrap_text.py:10: AttributeError
+=========================== short test summary info ============================
+FAILED test_r3_wrap_text.py::test_wrap_text_flush_par - AttributeError: 'func...
+============================== 1 failed in 0.02s ===============================
+
+
+Target lines still not executed: 80.
+
+Function source (with line numbers):
+
+  31: def wrap_text(
+  32:     text: str,
+  33:     width: int = 78,
+  34:     initial_indent: str = "",
+  35:     subsequent_indent: str = "",
+  36:     preserve_paragraphs: bool = False,
+  37: ) -> str:
+  38:     """A helper function that intelligently wraps text.  By default, it
+  39:     assumes that it operates on a single paragraph of text but if the
+  40:     `preserve_paragraphs` parameter is provided it will intelligently
+  41:     handle paragraphs (defined by two empty lines).
+  42: 
+  43:     If paragraphs are handled, a paragraph can be prefixed with an empty
+  44:     line containing the ``\\b`` character (``\\x08``) to indicate that
+  45:     no rewrapping should happen in that block.
+  46: 
+  47:     :param text: the text that should be rewrapped.
+  48:     :param width: the maximum width for the text.
+  49:     :param initial_indent: the initial indent that should be placed on the
+  50:                            first line as a string.
+  51:     :param subsequent_indent: the indent string that should be placed on
+  52:                               each consecutive line.
+  53:     :param preserve_paragraphs: if this flag is set then the wrapping will
+  54:                                 intelligently handle paragraphs.
+  55: 
+  56:     .. versionchanged:: 8.4.0
+  57:         Width is measured in visible characters. ANSI escape sequences in
+  58:         ``text``, ``initial_indent``, or ``subsequent_indent`` no longer
+  59:         count toward the width budget, so styled input wraps based on what
+  60:         the user sees instead of raw byte length.
+  61:     """
+  62:     from ._textwrap import TextWrapper
+  63: 
+  64:     text = text.expandtabs()
+  65:     wrapper = TextWrapper(
+  66:         width,
+  67:         initial_indent=initial_indent,
+  68:         subsequent_indent=subsequent_indent,
+  69:         replace_whitespace=False,
+  70:     )
+  71:     if not preserve_paragraphs:
+  72:         return wrapper.fill(text)
+  73: 
+  74:     p: list[tuple[int, bool, str]] = []
+  75:     buf: list[str] = []
+  76:     indent = None
+  77: 
+  78:     def _flush_par() -> None:
+  79:         if not buf:
+  80:             return
+  81:         if buf[0].strip() == "\b":
+  82:             p.append((indent or 0, True, "\n".join(buf[1:])))
+  83:         else:
+  84:             p.append((indent or 0, False, " ".join(buf)))
+  85:         del buf[:]
+  86: 
+  87:     for line in text.splitlines():
+  88:         if not line:
+  89:             _flush_par()
+  90:             indent = None
+  91:         else:
+  92:             if indent is None:
+  93:                 orig_len = term_len(line)
+  94:                 line = line.lstrip()
+  95:                 indent = orig_len - term_len(line)
+  96:             buf.append(line)
+  97:     _flush_par()
+  98: 
+  99:     rv = []
+ 100:     for indent, raw, text in p:
+ 101:         with wrapper.extra_indent(" " * indent):
+ 102:             if raw:
+ 103:                 rv.append(wrapper.indent_only(text))
+ 104:             else:
+ 105:                 rv.append(wrapper.fill(text))
+ 106: 
+ 107:     return "\n\n".join(rv)
+
+=== RESPONSE ===
+```python
+from click.formatting import wrap_text
+
+def test_wrap_text_flush_par():
+    """Test the _flush_par function to ensure it executes the return statement."""
+    from click._textwrap import TextWrapper
+
+    wrapper = TextWrapper(width=78)
+    p = []
+    buf = ["line1", "line2"]
+    _flush_par = wrap_text._flush_par
+
+    # Call the function to execute line 80
+    _flush_par()
+```
+=== PYTEST ===
+============================= test session starts ==============================
+platform darwin -- Python 3.14.3, pytest-9.2.0, pluggy-1.7.0 -- /Users/srujansai/Desktop/AirG.A.P/harness/w6/venv/bin/python
+rootdir: /Users/srujansai/Desktop/AirG.A.P/harness/w6/sandbox/click
+configfile: pyproject.toml
+collecting ... collected 1 item
+
+test_r3_wrap_text.py::test_wrap_text_flush_par FAILED                    [100%]
+
+=================================== FAILURES ===================================
+___________________________ test_wrap_text_flush_par ___________________________
+
+    def test_wrap_text_flush_par():
+        """Test the _flush_par function to ensure it executes the return statement."""
+        from click._textwrap import TextWrapper
+    
+        wrapper = TextWrapper(width=78)
+        p = []
+        buf = ["line1", "line2"]
+>       _flush_par = wrap_text._flush_par
+                     ^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: 'function' object has no attribute '_flush_par'
+
+test_r3_wrap_text.py:10: AttributeError
+=========================== short test summary info ============================
+FAILED test_r3_wrap_text.py::test_wrap_text_flush_par - AttributeError: 'func...
+============================== 1 failed in 0.02s ===============================
+
+=== ATTEMPT 4 ===
+{
+ "tok_s": 37.2,
+ "wall_s": 2.4,
+ "peak_rss_mb": 4699.9,
+ "pass": 0,
+ "fail": 1,
+ "error": 0,
+ "target_hit": "no",
+ "executed": [],
+ "not_executed": [
+  80
+ ]
+}
+=== PROMPT ===
+You are a test-generation engineer. Write pytest unit tests whose ONLY goal is to execute the specific uncovered lines listed below.
+
+Hard rules:
+1. Output ONLY one python code block (```python ... ```).
+2. Tests must be deterministic. No network access, no secrets, no sleeps.
+3. Import EXACTLY as shown in the 'Correct import' block. Do not guess another module.
+4. The test must PASS. Avoid assertions on values you are not sure about unless the target line requires it.
+5. Every line in the TARGET LINES list must actually be executed by your test.
+
+Correct import for the function under test:
+from click.formatting import wrap_text
+
+
+Module imports available in the file under test:
+from __future__ import annotations
+import collections.abc as cabc
+from contextlib import contextmanager
+from gettext import gettext as _
+from ._compat import term_len
+from .parser import _split_opt
+
+Existing test style example:
+def test_wrap_text_visible_width(body, width, initial_indent):
+    """``wrap_text`` of styled input produces the same line layout as
+    ``wrap_text`` of the ANSI-stripped input.
+
+    ANSI escape bytes must not count toward the width budget, regardless
+    of whether they appear in the body, in ``initial_indent``, or when a
+    styled token has to be broken in the middle.
+    """
+    styled = click.formatting.wrap_text(
+        body, width=width, initial_indent=initial_indent
+    )
+    plain = click.formatting.wrap_text(
+        strip_ansi(body), width=width, initial_indent=strip_ansi(initial_indent)
+    )
+
+    styled_visible = [strip_ansi(line) for line in styled.splitlines()]
+    assert styled_visible == plain.splitlines()
+
+TARGET LINES currently NOT executed (your test MUST execute all of these):
+line 80:             return
+
+=== FEEDBACK FROM THE PREVIOUS ATTEMPT ===
+The previous test file did not pass. Pytest output:
+============================= test session starts ==============================
+platform darwin -- Python 3.14.3, pytest-9.2.0, pluggy-1.7.0 -- /Users/srujansai/Desktop/AirG.A.P/harness/w6/venv/bin/python
+rootdir: /Users/srujansai/Desktop/AirG.A.P/harness/w6/sandbox/click
+configfile: pyproject.toml
+collecting ... collected 1 item
+
+test_r3_wrap_text.py::test_wrap_text_flush_par FAILED                    [100%]
+
+=================================== FAILURES ===================================
+___________________________ test_wrap_text_flush_par ___________________________
+
+    def test_wrap_text_flush_par():
+        """Test the _flush_par function to ensure it executes the return statement."""
+        from click._textwrap import TextWrapper
+    
+        wrapper = TextWrapper(width=78)
+        p = []
+        buf = ["line1", "line2"]
+>       _flush_par = wrap_text._flush_par
+                     ^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: 'function' object has no attribute '_flush_par'
+
+test_r3_wrap_text.py:10: AttributeError
+=========================== short test summary info ============================
+FAILED test_r3_wrap_text.py::test_wrap_text_flush_par - AttributeError: 'func...
+============================== 1 failed in 0.02s ===============================
+
+
+Target lines still not executed: 80.
+
+Function source (with line numbers):
+
+  31: def wrap_text(
+  32:     text: str,
+  33:     width: int = 78,
+  34:     initial_indent: str = "",
+  35:     subsequent_indent: str = "",
+  36:     preserve_paragraphs: bool = False,
+  37: ) -> str:
+  38:     """A helper function that intelligently wraps text.  By default, it
+  39:     assumes that it operates on a single paragraph of text but if the
+  40:     `preserve_paragraphs` parameter is provided it will intelligently
+  41:     handle paragraphs (defined by two empty lines).
+  42: 
+  43:     If paragraphs are handled, a paragraph can be prefixed with an empty
+  44:     line containing the ``\\b`` character (``\\x08``) to indicate that
+  45:     no rewrapping should happen in that block.
+  46: 
+  47:     :param text: the text that should be rewrapped.
+  48:     :param width: the maximum width for the text.
+  49:     :param initial_indent: the initial indent that should be placed on the
+  50:                            first line as a string.
+  51:     :param subsequent_indent: the indent string that should be placed on
+  52:                               each consecutive line.
+  53:     :param preserve_paragraphs: if this flag is set then the wrapping will
+  54:                                 intelligently handle paragraphs.
+  55: 
+  56:     .. versionchanged:: 8.4.0
+  57:         Width is measured in visible characters. ANSI escape sequences in
+  58:         ``text``, ``initial_indent``, or ``subsequent_indent`` no longer
+  59:         count toward the width budget, so styled input wraps based on what
+  60:         the user sees instead of raw byte length.
+  61:     """
+  62:     from ._textwrap import TextWrapper
+  63: 
+  64:     text = text.expandtabs()
+  65:     wrapper = TextWrapper(
+  66:         width,
+  67:         initial_indent=initial_indent,
+  68:         subsequent_indent=subsequent_indent,
+  69:         replace_whitespace=False,
+  70:     )
+  71:     if not preserve_paragraphs:
+  72:         return wrapper.fill(text)
+  73: 
+  74:     p: list[tuple[int, bool, str]] = []
+  75:     buf: list[str] = []
+  76:     indent = None
+  77: 
+  78:     def _flush_par() -> None:
+  79:         if not buf:
+  80:             return
+  81:         if buf[0].strip() == "\b":
+  82:             p.append((indent or 0, True, "\n".join(buf[1:])))
+  83:         else:
+  84:             p.append((indent or 0, False, " ".join(buf)))
+  85:         del buf[:]
+  86: 
+  87:     for line in text.splitlines():
+  88:         if not line:
+  89:             _flush_par()
+  90:             indent = None
+  91:         else:
+  92:             if indent is None:
+  93:                 orig_len = term_len(line)
+  94:                 line = line.lstrip()
+  95:                 indent = orig_len - term_len(line)
+  96:             buf.append(line)
+  97:     _flush_par()
+  98: 
+  99:     rv = []
+ 100:     for indent, raw, text in p:
+ 101:         with wrapper.extra_indent(" " * indent):
+ 102:             if raw:
+ 103:                 rv.append(wrapper.indent_only(text))
+ 104:             else:
+ 105:                 rv.append(wrapper.fill(text))
+ 106: 
+ 107:     return "\n\n".join(rv)
+
+=== RESPONSE ===
+```python
+def test_wrap_text_flush_par():
+    """Test the _flush_par function to ensure it executes the return statement."""
+    from click._textwrap import TextWrapper
+
+    wrapper = TextWrapper(width=78)
+    p = []
+    buf = ["line1", "line2"]
+    _flush_par = wrap_text._flush_par
+
+    _flush_par()
+    assert not buf
+```
+=== PYTEST ===
+============================= test session starts ==============================
+platform darwin -- Python 3.14.3, pytest-9.2.0, pluggy-1.7.0 -- /Users/srujansai/Desktop/AirG.A.P/harness/w6/venv/bin/python
+rootdir: /Users/srujansai/Desktop/AirG.A.P/harness/w6/sandbox/click
+configfile: pyproject.toml
+collecting ... collected 1 item
+
+test_r3_wrap_text.py::test_wrap_text_flush_par FAILED                    [100%]
+
+=================================== FAILURES ===================================
+___________________________ test_wrap_text_flush_par ___________________________
+
+    def test_wrap_text_flush_par():
+        """Test the _flush_par function to ensure it executes the return statement."""
+        from click._textwrap import TextWrapper
+    
+        wrapper = TextWrapper(width=78)
+        p = []
+        buf = ["line1", "line2"]
+>       _flush_par = wrap_text._flush_par
+                     ^^^^^^^^^
+E       NameError: name 'wrap_text' is not defined
+
+test_r3_wrap_text.py:8: NameError
+=========================== short test summary info ============================
+FAILED test_r3_wrap_text.py::test_wrap_text_flush_par - NameError: name 'wrap...
+============================== 1 failed in 0.13s ===============================

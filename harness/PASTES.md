@@ -278,3 +278,21 @@ End REGISTER.md with "Five most important unknowns", ranked.
 FINISH: harness/w3/REPORT.md section "Wave 3" (claim count by grade, contested claims). STATUS line. Final line: "W3 done gates=PASS|FAIL blocked=…".
 TASK-ID: WAVE3-LEDGER
 ```
+
+## ACTIVE — W6 round 4 (paste after W6 prints its round-3 done line)
+```
+Read /Users/srujansai/Desktop/AirG.A.P/harness/COMMON.md first and obey it. A skill does not permit training, a download, a Sarvam call, or a delete. You are W6. This text is the only task: round 4.
+
+WHY: Round 3 showed coverage guidance works (4/10 functions hit target lines, every kept test moved coverage, +5.47 total) and that 4 of 5 misses were scaffolding errors (missing `import pytest`, missing stdlib import, dropped target import, wrong decorator path). Our design says the control plane, not the model, owns scaffolding. Test that.
+
+FIRST: fix one line in harness/w6/FEASIBILITY_R3.md — totals say "4 fail"; results_r3.json gives 5 fail (_make_default_short_help). Note the fix.
+
+DO:
+1. Same model, same 10 functions (9 with targets), same sandbox, max 4 attempts. No downloads.
+2. Deterministic scaffold, written by the driver, never by the model: `import pytest`, the stdlib modules the function's module imports, the exact verified import of the target (resolve it by actually importing it before the run; for confirmation_option use the real public path), and for methods a constructed-instance fixture. The model returns ONLY test function bodies; the driver strips any import lines the model emits and prepends the scaffold.
+3. Keep the round-3 coverage-guided feedback loop unchanged so the only variable is scaffolding.
+4. Same per-function columns as round 3, plus: "scaffold-caused errors" count (NameError/ImportError) per function — target 0.
+5. Write harness/w6/driver_r4.py, results_r4.json, FEASIBILITY_R4.md (R1→R4 table). Add "Round 4" to harness/w6/REPORT.md with Gate B verdict and: kept tests per 10 attempts, and median human review time you'd estimate per kept test (label it D-grade estimate).
+
+TASK-ID: WAVE2-FEASIBILITY-R4
+```
