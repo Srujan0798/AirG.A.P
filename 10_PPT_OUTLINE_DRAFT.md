@@ -1,7 +1,7 @@
-# 10 — Campus IDE Pitch: PPT Outline (Draft)
+# 10 — Campus IDE Pitch: PPT Outline
 
-**Status:** Draft from `01`, `06`, `09`, and Wave-1 windows W2/W3/W4 (W1 pending — will add one competitor-landscape slide/stat once it lands).
-**Framing:** Big vision up front, narrow validated first step as the proof — this resolves the W4 "full workbench vs. narrow pivot" tension without picking a side prematurely: ambition stays, but what we claim to have *proven* stays honest.
+**Status:** All four Wave 1 windows done and reviewed — see `harness/synthesis/WAVE1_SYNTHESIS.md`. Complete except two founder calls (Slide 6 segment choice, slide-count trim).
+**Framing:** Big vision up front, narrow validated first step as the proof, sharpened by W1 into a specific positioning claim (the control-plane layer, not another agent) rather than a generic "agentic workbench."
 
 ---
 
@@ -20,8 +20,9 @@ One line: Bringing frontier AI inside the walls that can never connect to the in
 - **Caveat we say out loud:** zero customer interviews completed yet (per `09`) — this is a validated-opportunity pitch, not a validated-demand pitch. (Credibility move, not a weakness — see Slide 7.)
 
 ## Slide 4 — What we're building (the vision)
-- A secure, offline, agentic engineering workbench: understand, test, modernize, and propose changes to code — without the code ever leaving the customer's boundary.
+- Not "another agentic coding tool" — a **governed control plane** that sits around a replaceable local agent: deterministic policy, provenance-checked intake, immutable approval ledger, in-boundary updates, accreditation evidence.
 - Offline-by-construction, human-approval-gated, fully auditable (`01` §7 architecture principles).
+- Why this framing, not "agentic workbench": W1's competitor survey found every layer underneath (inference, clusters, SBOM tooling, local coding agents) already has credible occupants — none of them publish an identity model, audit ledger, or standardized offline-update path. That ungoverned gap is the product, not a better agent.
 
 ## Slide 5 — Day-1 proof point (the narrow, validated wedge)
 - Per independent red-team review (W4) and workflow analysis (W3): start with **one workflow** — read-only codebase understanding + sandboxed test-generation — not the full agent swarm.
@@ -37,7 +38,10 @@ One line: Bringing frontier AI inside the walls that can never connect to the in
 - We know the five strongest reasons NOT to build this (W4) and we're showing up anyway, with a narrower first step than our own ambition — that's the discipline a jury should want to fund.
 
 ## Slide 8 — Competitive landscape
-*[PENDING W1 — will list: who already covers infrastructure/model-serving (NVIDIA NIM, vLLM, llama.cpp), who covers local coding assistants, and the specific gap none of them close: the full offline lifecycle + audit/approval layer, not just local inference.]*
+- Surveyed ~38 solutions across 6 layers (inference, disconnected clusters, SBOM/supply-chain, local coding agents, RAG/knowledge, appliance vendors) — evidence-graded, sources in `harness/w1/COMPETITOR_MATRIX.md`.
+- **Zero direct competitors found.** Two close-but-different: Legion Centurion (accredited national-security platform, no engineering workflow) and Element 31-style appliance chassis (displaces the software category entirely rather than competing with it).
+- **The pattern:** every layer is occupied by a credible product — inference (NVIDIA NIM, vLLM, llama.cpp), clusters (OpenShift, RKE2), SBOM (Anchore, Sonatype), local coding agents (Cline, Continue — 5 surveyed, all free, zero with published governance). We don't compete on any of these layers.
+- **The gap:** seven vendors each hand-rolled their own disconnected-update mechanism; nobody has standardized identity/audit/provenance for this kind of system. That's what we build.
 
 ## Slide 9 — What we need next (the ask)
 - A mentor/design-partner introduction into one of the two candidate segments.
@@ -52,6 +56,6 @@ One line: Bringing frontier AI inside the walls that can never connect to the in
 ---
 
 **Open items before this is final:**
-1. W1 competitor stats for Slide 8.
-2. Founder call: does Slide 6 name one segment, or keep both candidates honestly open as written above?
-3. Trim to fit whatever slide-count/time limit the jury actually gave (chat log never specified one).
+1. Founder call: does Slide 6 name one segment, or keep both candidates honestly open as written above?
+2. Trim to fit whatever slide-count/time limit the jury actually gave (chat log never specified one).
+3. Note (W1 review flag): don't quote an exact "N competitors surveyed" number — W1's own summary counts are internally inconsistent (27 vs. 33 vs. the actual 38 table rows). Say "~38 surveyed" or point to the matrix file rather than a precise figure.
