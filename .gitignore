@@ -4,3 +4,9 @@ graphify-out/*.tmp
 
 # OS junk
 .DS_Store
+
+# worker sandboxes, venvs and model weights (never commit)
+harness/*/sandbox/
+.venv/
+*.gguf
+*.safetensors
