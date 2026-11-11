@@ -188,3 +188,23 @@ DO:
 
 TASK-ID: WAVE2-GTM
 ```
+
+## ACTIVE — W6 round 2 (the real test of our design)
+
+```text
+Read /Users/srujansai/Desktop/AirG.A.P/harness/COMMON.md first and obey it. You are W6. This text is the only task: round 2 of WAVE2-FEASIBILITY.
+
+WHY: Round 1 (harness/w6/REPORT.md) used a general model, no repo context and one shot: 10 pass / 16 fail / 4 collection errors, coverage delta 0. Our real design runs tests in a sandbox and feeds failures back. Test that.
+
+SAFETY: Run `df -h /` first; if under 12 GB free, print "W6 blocked: disk". Pull at most one new model of 5 GB or less.
+
+DO:
+1. Use a coding-specialised open-weight model of 5 GB or less with a commercial-use licence (for example qwen2.5-coder:7b in Ollama). Record name, digest and licence URL.
+2. Re-pick 10 functions in harness/w6/sandbox/click that each have uncovered lines according to coverage.py; list them with their uncovered line counts.
+3. For each function give the model: the function source, the module's imports, and one existing test from the repo as a style example.
+4. Repair loop: run pytest in the sandbox; if tests fail or do not collect, send the error back to the model; at most 3 attempts. Keep only tests that pass on the final attempt.
+5. Per function record: attempts used, final pass/fail, tests kept, coverage before/after, tokens per second, wall time. Also run round 1's one-shot setup on the same 10 functions with the new model, for comparison.
+6. Write harness/w6/FEASIBILITY_R2.md (table + every command). Add a "Round 2" section to harness/w6/REPORT.md comparing both rounds, with a verdict (useful / marginal / not useful). Keep round 1 intact.
+
+TASK-ID: WAVE2-FEASIBILITY-R2
+```
