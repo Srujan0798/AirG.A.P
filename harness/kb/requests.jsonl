@@ -2,3 +2,7 @@
 {"ts":"2026-11-11 14:17","window":"W2","task":"WAVE1-CUSTOMER","desc":"Customer discovery and vertical selection","output":"harness/w2/REPORT.md"}
 {"ts":"2026-11-11 14:17","window":"W3","task":"WAVE1-WORKFLOW","desc":"Workflow and product wedge analyst","output":"harness/w3/REPORT.md"}
 {"ts":"2026-11-11 14:17","window":"W4","task":"WAVE1-ADVERSARIAL","desc":"Adversarial investment committee","output":"harness/w4/REPORT.md"}
+{"ts":"2026-11-11 17:02","window":"W5 WAVE2-DISCOVERY harness/w5/REPORT.md","task":"","output":""}
+{"ts":"2026-11-11 17:02","window":"W6 WAVE2-FEASIBILITY harness/w6/REPORT.md","task":"","output":""}
+{"ts":"2026-11-11 17:02","window":"W7 WAVE2-MOAT harness/w7/REPORT.md","task":"","output":""}
+{"ts":"2026-11-11 17:02","window":"W8 WAVE2-GTM harness/w8/REPORT.md","task":"","output":""}
