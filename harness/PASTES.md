@@ -208,3 +208,20 @@ DO:
 
 TASK-ID: WAVE2-FEASIBILITY-R2
 ```
+
+## ACTIVE — W6 round 3 (paste only after W6 prints its round-2 done line)
+
+```text
+Read /Users/srujansai/Desktop/AirG.A.P/harness/COMMON.md first and obey it. You are W6. This text is the only task: round 3 of WAVE2-FEASIBILITY.
+
+WHY: Round 2 proved the repair loop works (same model: one-shot 0 passing tests, repair loop 14 passing, 5 of 10 functions), but coverage barely moved (+0.9 on one function) because nothing told the model which lines to hit. Our product's evaluator checks coverage; test that.
+
+DO:
+1. Same model (qwen2.5-coder:7b), same 10 functions, same sandbox. No new downloads.
+2. Coverage-guided loop: give the model the function source, imports, one style example AND the exact uncovered line numbers with their code text. After each attempt run the tests under coverage.py; if they pass but the target lines are still not executed, send that back ("lines X-Y still not executed") and retry. At most 4 attempts.
+3. Fix round 2's two systematic errors in the prompt: give the correct import path for each function, and say when it is a method that needs an instance.
+4. Per function record: attempts, pass/fail/error, target lines hit (yes / partial / no), coverage before/after, tokens per second, wall time.
+5. Write harness/w6/FEASIBILITY_R3.md (table + every command). Add a "Round 3" section to harness/w6/REPORT.md with the final Gate B verdict across all three rounds: is offline test generation on a laptop-class CPU useful enough to be our Day-1 workflow?
+
+TASK-ID: WAVE2-FEASIBILITY-R3
+```
