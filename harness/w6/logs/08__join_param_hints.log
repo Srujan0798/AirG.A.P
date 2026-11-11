@@ -1,0 +1,49 @@
+=== PROMPT ===
+You are a test-generation engineer. Write pytest unit tests for the single Python function below. Output ONLY one python code block (```python ... ```). Tests must be deterministic, use no network, no secrets, and avoid platform-specific assertions where possible. Import what you need from click. Function source:
+
+def _join_param_hints(param_hint: cabc.Sequence[str] | str | None) -> str | None:
+    if param_hint is not None and not isinstance(param_hint, str):
+        return " / ".join(repr(x) for x in param_hint)
+
+    return param_hint
+
+
+=== MODEL RESPONSE ===
+```python
+import click
+import pytest
+from typing import Sequence
+
+def _join_param_hints(param_hint: Sequence[str] | str | None) -> str | None:
+    if param_hint is not None and not isinstance(param_hint, str):
+        return " / ".join(repr(x) for x in param_hint)
+
+    return param_hint
+
+def test_join_param_hints_none():
+    assert _join_param_hints(None) is None
+
+def test_join_param_hints_str():
+    assert _join_param_hints("test") == "test"
+
+def test_join_param_hints_sequence():
+    assert _join_param_hints(["a", "b", "c"]) == "'a' / 'b' / 'c'"
+
+def test_join_param_hints_empty_sequence():
+    assert _join_param_hints([]) is None
+
+def test_join_param_hints_single_element_sequence():
+    assert _join_param_hints(["single"]) == "'single'"
+```
+```
+
+=== METRICS ===
+{
+ "eval_count": 200,
+ "eval_duration_s": 4.873,
+ "tokens_per_sec": 41.0,
+ "total_duration_s": 4.995,
+ "wall_s": 5.11,
+ "load_duration_s": 0.003
+}
+peak_rss_mb=382.7

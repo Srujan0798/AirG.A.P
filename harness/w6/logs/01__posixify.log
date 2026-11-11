@@ -1,0 +1,36 @@
+=== PROMPT ===
+You are a test-generation engineer. Write pytest unit tests for the single Python function below. Output ONLY one python code block (```python ... ```). Tests must be deterministic, use no network, no secrets, and avoid platform-specific assertions where possible. Import what you need from click. Function source:
+
+def _posixify(name: str) -> str:
+    return "-".join(name.split()).lower()
+
+
+=== MODEL RESPONSE ===
+```python
+import click
+
+def _posixify(name: str) -> str:
+    return "-".join(name.split()).lower()
+
+def test_posixify():
+    assert _posixify("Hello World") == "hello-world"
+    assert _posixify("  This   is a Test  ") == "this-is-a-test"
+    assert _posixify("NoSpaces") == "nospaces"
+    assert _posixify("") == ""
+    assert _posixify("Already-posix") == "already-posix"
+
+if __name__ == "__main__":
+    import pytest
+    pytest.main([__file__])
+```
+
+=== METRICS ===
+{
+ "eval_count": 128,
+ "eval_duration_s": 3.176,
+ "tokens_per_sec": 40.3,
+ "total_duration_s": 3.303,
+ "wall_s": 3.35,
+ "load_duration_s": 0.003
+}
+peak_rss_mb=344.2

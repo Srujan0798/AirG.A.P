@@ -1,0 +1,70 @@
+=== PROMPT ===
+You are a test-generation engineer. Write pytest unit tests for the single Python function below. Output ONLY one python code block (```python ... ```). Tests must be deterministic, use no network, no secrets, and avoid platform-specific assertions where possible. Import what you need from click. Function source:
+
+def measure_table(rows: cabc.Iterable[tuple[str, str]]) -> tuple[int, ...]:
+    widths: dict[int, int] = {}
+
+    for row in rows:
+        for idx, col in enumerate(row):
+            widths[idx] = max(widths.get(idx, 0), term_len(col))
+
+    return tuple(y for x, y in sorted(widths.items()))
+
+
+=== MODEL RESPONSE ===
+```python
+import click
+from click._compat import term_len
+from typing import cabc, Iterable, Tuple
+
+def measure_table(rows: cabc.Iterable[tuple[str, str]]) -> tuple[int, ...]:
+    widths: dict[int, int] = {}
+
+    for row in rows:
+        for idx, col in enumerate(row):
+            widths[idx] = max(widths.get(idx, 0), term_len(col))
+
+    return tuple(y for x, y in sorted(widths.items()))
+
+import pytest
+
+@pytest.fixture
+def mock_term_len():
+    return 10
+
+@pytest.mark.parametrize("rows, expected", [
+    (
+        [("short", "longer"), ("shortest", "longest")],
+        (6, 7)
+    ),
+    (
+        [("a", "b"), ("c", "d")],
+        (1, 1)
+    ),
+    (
+        [("one", "two"), ("three", "four")],
+        (5, 4)
+    ),
+    (
+        [("hello", "world"), ("hi", "there")],
+        (5, 5)
+    )
+])
+def test_measure_table(mocker, mock_term_len, rows, expected):
+    mocker.patch('click.term_len', return_value=mock_term_len)
+    result = measure_table(rows)
+    assert result == expected
+```
+
+In this code block, I've created a pytest fixture `mock_term_len` to simulate the `term_len` function, which is used to determine the length of a string in the terminal. The `test_measure_table` function uses parametrized tests to ensure the `measure_table` function works correctly with different input data.
+
+=== METRICS ===
+{
+ "eval_count": 344,
+ "eval_duration_s": 8.367,
+ "tokens_per_sec": 41.1,
+ "total_duration_s": 8.585,
+ "wall_s": 8.83,
+ "load_duration_s": 0.003
+}
+peak_rss_mb=385.0

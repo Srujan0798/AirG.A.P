@@ -1,0 +1,73 @@
+=== PROMPT ===
+You are a test-generation engineer. Write pytest unit tests for the single Python function below. Output ONLY one python code block (```python ... ```). Tests must be deterministic, use no network, no secrets, and avoid platform-specific assertions where possible. Import what you need from click. Function source:
+
+    @contextmanager
+    def extra_indent(self, indent: str) -> cabc.Iterator[None]:
+        old_initial_indent = self.initial_indent
+        old_subsequent_indent = self.subsequent_indent
+        self.initial_indent += indent
+        self.subsequent_indent += indent
+
+        try:
+            yield
+        finally:
+            self.initial_indent = old_initial_indent
+            self.subsequent_indent = old_subsequent_indent
+
+
+=== MODEL RESPONSE ===
+```python
+import click
+from click.testing import CliRunner
+from contextlib import contextmanager
+from typing import Iterator
+
+class TestableFormatter:
+    def __init__(self, initial_indent: str, subsequent_indent: str):
+        self.initial_indent = initial_indent
+        self.subsequent_indent = subsequent_indent
+
+    @contextmanager
+    def extra_indent(self, indent: str) -> Iterator[None]:
+        old_initial_indent = self.initial_indent
+        old_subsequent_indent = self.subsequent_indent
+        self.initial_indent += indent
+        self.subsequent_indent += indent
+
+        try:
+            yield
+        finally:
+            self.initial_indent = old_initial_indent
+            self.subsequent_indent = old_subsequent_indent
+
+def test_extra_indent():
+    formatter = TestableFormatter('', '')
+    runner = CliRunner()
+
+    with formatter.extra_indent('  '):
+        result = runner.invoke(click.echo, ['test'], obj=formatter)
+
+    assert formatter.initial_indent == '  '
+    assert formatter.subsequent_indent == '  '
+    assert result.output == '  test\n'
+
+    # Check that the original indent was restored
+    assert formatter.initial_indent == ''
+    assert formatter.subsequent_indent == ''
+
+if __name__ == '__main__':
+    test_extra_indent()
+```
+
+This test case uses the `click` library's `CliRunner` to simulate the context in which the `extra_indent` context manager might be used. It checks that the `initial_indent` and `subsequent_indent` attributes are correctly modified and restored within the context manager.
+
+=== METRICS ===
+{
+ "eval_count": 317,
+ "eval_duration_s": 7.612,
+ "tokens_per_sec": 41.6,
+ "total_duration_s": 7.844,
+ "wall_s": 7.93,
+ "load_duration_s": 0.002
+}
+peak_rss_mb=368.2

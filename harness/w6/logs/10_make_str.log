@@ -1,0 +1,64 @@
+=== PROMPT ===
+You are a test-generation engineer. Write pytest unit tests for the single Python function below. Output ONLY one python code block (```python ... ```). Tests must be deterministic, use no network, no secrets, and avoid platform-specific assertions where possible. Import what you need from click. Function source:
+
+def make_str(value: t.Any) -> str:
+    """Converts a value into a valid string."""
+    if isinstance(value, bytes):
+        try:
+            return value.decode(sys.getfilesystemencoding())
+        except UnicodeError:
+            return value.decode("utf-8", "replace")
+    return str(value)
+
+
+=== MODEL RESPONSE ===
+```python
+import pytest
+from typing import Any
+import sys
+
+def make_str(value: Any) -> str:
+    """Converts a value into a valid string."""
+    if isinstance(value, bytes):
+        try:
+            return value.decode(sys.getfilesystemencoding())
+        except UnicodeError:
+            return value.decode("utf-8", "replace")
+    return str(value)
+
+def test_make_str_with_bytes():
+    input_bytes = b"test"
+    result = make_str(input_bytes)
+    assert result == "test", "Failed to decode bytes with default encoding"
+
+def test_make_str_with_non_ascii_bytes():
+    input_bytes = b"\xff\xfe\xfd"
+    result = make_str(input_bytes)
+    assert result == "�.�.�.", "Failed to decode non-ASCII bytes with 'utf-8' and 'replace'"
+
+def test_make_str_with_non_bytes():
+    input_value = 123
+    result = make_str(input_value)
+    assert result == "123", "Failed to convert non-bytes to string"
+
+def test_make_str_with_empty_bytes():
+    input_bytes = b""
+    result = make_str(input_bytes)
+    assert result == "", "Failed to handle empty bytes"
+
+def test_make_str_with_none():
+    input_value = None
+    result = make_str(input_value)
+    assert result == "None", "Failed to handle None value"
+```
+
+=== METRICS ===
+{
+ "eval_count": 287,
+ "eval_duration_s": 7.031,
+ "tokens_per_sec": 40.8,
+ "total_duration_s": 7.185,
+ "wall_s": 7.27,
+ "load_duration_s": 0.003
+}
+peak_rss_mb=384.7

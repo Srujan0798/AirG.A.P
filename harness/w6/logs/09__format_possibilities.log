@@ -1,0 +1,57 @@
+=== PROMPT ===
+You are a test-generation engineer. Write pytest unit tests for the single Python function below. Output ONLY one python code block (```python ... ```). Tests must be deterministic, use no network, no secrets, and avoid platform-specific assertions where possible. Import what you need from click. Function source:
+
+def _format_possibilities(possibilities: list[str]) -> str:
+    possibility_str = ", ".join(repr(p) for p in sorted(possibilities))
+    return ngettext(
+        "Did you mean {possibility}?",
+        "(Did you mean one of: {possibilities}?)",
+        len(possibilities),
+    ).format(possibility=possibility_str, possibilities=possibility_str)
+
+
+=== MODEL RESPONSE ===
+```python
+import click
+from unittest.mock import patch
+
+def test_format_possibilities_single():
+    result = _format_possibilities(["hello"])
+    assert result == "Did you mean 'hello'?"
+
+def test_format_possibilities_multiple():
+    result = _format_possibilities(["hello", "world"])
+    assert result == "(Did you mean one of: 'hello', 'world')?"
+
+def test_format_possibilities_empty():
+    result = _format_possibilities([])
+    assert result == "(Did you mean one of: '?)"
+
+def test_format_possibilities_with_ngettext():
+    with patch('click._format_possibilities.ngettext') as mock_ngettext:
+        mock_ngettext.return_value = "mocked message"
+        result = _format_possibilities(["hello", "world"])
+        assert result == "mocked message"
+        mock_ngettext.assert_called_once_with(
+            "Did you mean {possibility}?",
+            "(Did you mean one of: {possibilities}?)",
+            2
+        )
+
+def test_format_possibilities_with_format():
+    result = _format_possibilities(["hello", "world"])
+    assert result == "(Did you mean one of: 'hello', 'world')?"
+```
+
+This code block contains four test cases for the `_format_possibilities` function, covering scenarios with a single possibility, multiple possibilities, an empty list, and the use of `ngettext` and `format`. The `ngettext` function is mocked to ensure the test is deterministic and does not rely on external behavior.
+
+=== METRICS ===
+{
+ "eval_count": 324,
+ "eval_duration_s": 8.192,
+ "tokens_per_sec": 39.5,
+ "total_duration_s": 8.38,
+ "wall_s": 8.54,
+ "load_duration_s": 0.001
+}
+peak_rss_mb=373.6

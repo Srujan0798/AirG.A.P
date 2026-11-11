@@ -1,0 +1,81 @@
+=== PROMPT ===
+You are a test-generation engineer. Write pytest unit tests for the single Python function below. Output ONLY one python code block (```python ... ```). Tests must be deterministic, use no network, no secrets, and avoid platform-specific assertions where possible. Import what you need from click. Function source:
+
+def _truncate_visible(text: str, n: int) -> str:
+    """Return the longest prefix of ``text`` containing at most ``n`` visible
+    characters.
+
+    ANSI escape sequences inside the prefix are kept intact and do not count
+    toward the visible width. A cut is never placed inside an escape sequence.
+    """
+    if n <= 0:
+        return ""
+
+    visible = 0
+    i = 0
+    cut = 0
+    end = len(text)
+    while i < end:
+        m = _ansi_re.match(text, i)
+        if m is not None:
+            i = m.end()
+            continue
+        visible += 1
+        i += 1
+        cut = i
+        if visible >= n:
+            break
+    return text[:cut]
+
+
+=== MODEL RESPONSE ===
+```python
+import re
+import click.testing
+
+# Mock the _ansi_re attribute from the function
+_ansi_re = re.compile(r'\x1b\[[0-9;]+m')
+
+def test_truncate_visible_empty():
+    assert _truncate_visible("", 5) == ""
+
+def test_truncate_visible_short():
+    assert _truncate_visible("abc", 2) == "ab"
+
+def test_truncate_visible_long():
+    assert _truncate_visible("abcdefg", 5) == "abcde"
+
+def test_truncate_visible_with_ansi():
+    assert _truncate_visible("\x1b[1mabc\x1b[0mdef", 5) == "\x1b[1mabc\x1b[0m"
+
+def test_truncate_visible_at_ansi():
+    assert _truncate_visible("\x1b[1mabc\x1b[0mdef", 7) == "\x1b[1mabc\x1b[0mdef"
+
+def test_truncate_visible_at_limit():
+    assert _truncate_visible("abcdefgh", 5) == "abcde"
+
+def test_truncate_visible_zero():
+    assert _truncate_visible("abc", 0) == ""
+
+def test_truncate_visible_negative():
+    assert _truncate_visible("abc", -1) == ""
+
+runner = click.testing.CliRunner()
+
+# Example of using the CliRunner to test the function in a more complex scenario
+def test_truncate_visible_complex():
+    result = runner.invoke(_truncate_visible, ["abcdefgh", 5])
+    assert result.output == "abcde"
+    assert result.exit_code == 0
+```
+
+=== METRICS ===
+{
+ "eval_count": 335,
+ "eval_duration_s": 8.179,
+ "tokens_per_sec": 41.0,
+ "total_duration_s": 8.45,
+ "wall_s": 8.63,
+ "load_duration_s": 0.003
+}
+peak_rss_mb=420.9

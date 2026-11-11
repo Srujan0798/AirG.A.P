@@ -1,0 +1,121 @@
+=== PROMPT ===
+You are a test-generation engineer. Write pytest unit tests for the single Python function below. Output ONLY one python code block (```python ... ```). Tests must be deterministic, use no network, no secrets, and avoid platform-specific assertions where possible. Import what you need from click. Function source:
+
+def get_app_dir(app_name: str, roaming: bool = True, force_posix: bool = False) -> str:
+    r"""Returns the config folder for the application.  The default behavior
+    is to return whatever is most appropriate for the operating system.
+
+    To give you an idea, for an app called ``"Foo Bar"``, something like
+    the following folders could be returned:
+
+    Mac OS X:
+      ``~/Library/Application Support/Foo Bar``
+    Mac OS X (POSIX):
+      ``~/.foo-bar``
+    Unix:
+      ``~/.config/foo-bar``
+    Unix (POSIX):
+      ``~/.foo-bar``
+    Windows (roaming):
+      ``C:\Users\<user>\AppData\Roaming\Foo Bar``
+    Windows (not roaming):
+      ``C:\Users\<user>\AppData\Local\Foo Bar``
+
+    .. versionadded:: 2.0
+
+    :param app_name: the application name.  This should be properly capitalized
+                     and can contain whitespace.
+    :param roaming: controls if the folder should be roaming or not on Windows.
+                    Has no effect otherwise.
+    :param force_posix: if this is set to `True` then on any POSIX system the
+                        folder will be stored in the home folder with a leading
+                        dot instead of the XDG config home or darwin's
+                        application support folder.
+    """
+    if WIN:
+        key = "APPDATA" if roaming else "LOCALAPPDATA"
+        folder = os.environ.get(key)
+        if folder is None:
+            folder = os.path.expanduser("~")
+        return os.path.join(folder, app_name)
+    if force_posix:
+        return os.path.join(os.path.expanduser(f"~/.{_posixify(app_name)}"))
+    if sys.platform == "darwin":
+        return os.path.join(
+            os.path.expanduser("~/Library/Application Support"), app_name
+        )
+    return os.path.join(
+        os.environ.get("XDG_CONFIG_HOME", os.path.expanduser("~/.config")),
+        _posixify(app_name),
+    )
+
+
+=== MODEL RESPONSE ===
+```python
+import os
+import sys
+from pathlib import Path
+from unittest.mock import patch
+
+import pytest
+
+from your_module import get_app_dir, _posixify  # Adjust the import according to your actual module structure
+
+@pytest.fixture
+def home_dir(tmp_path):
+    return tmp_path / 'home'
+
+@pytest.fixture
+def app_name():
+    return "Foo Bar"
+
+def test_get_app_dir_windows_roaming(home_dir):
+    with patch.dict(os.environ, {"APPDATA": str(home_dir)}):
+        result = get_app_dir("Foo Bar", roaming=True, force_posix=False)
+        assert result == str(home_dir / "Foo Bar")
+
+def test_get_app_dir_windows_not_roaming(home_dir):
+    with patch.dict(os.environ, {"LOCALAPPDATA": str(home_dir)}):
+        result = get_app_dir("Foo Bar", roaming=False, force_posix=False)
+        assert result == str(home_dir / "Local\Foo Bar")
+
+def test_get_app_dir_posix_force_posix(home_dir):
+    with patch.dict(os.environ, {"HOME": str(home_dir)}):
+        result = get_app_dir("Foo Bar", roaming=False, force_posix=True)
+        assert result == str(home_dir / ".foo-bar")
+
+def test_get_app_dir_darwin(home_dir):
+    with patch("sys.platform", "darwin"), patch.dict(os.environ, {"HOME": str(home_dir)}):
+        result = get_app_dir("Foo Bar", roaming=False, force_posix=False)
+        assert result == str(home_dir / "Library/Application Support/Foo Bar")
+
+def test_get_app_dir_unix(home_dir):
+    with patch("sys.platform", "linux"), patch.dict(os.environ, {"HOME": str(home_dir)}):
+        result = get_app_dir("Foo Bar", roaming=False, force_posix=False)
+        assert result == str(home_dir / ".config/foo-bar")
+
+def test_get_app_dir_unix_force_posix(home_dir):
+    with patch("sys.platform", "linux"), patch.dict(os.environ, {"HOME": str(home_dir)}):
+        result = get_app_dir("Foo Bar", roaming=False, force_posix=True)
+        assert result == str(home_dir / ".foo-bar")
+
+def _posixify(app_name: str) -> str:
+    return app_name.replace(" ", "-")
+
+# Assuming your_module is the module where get_app_dir is defined
+if __name__ == "__main__":
+    pytest.main([__file__])
+```
+
+This code block contains several pytest unit tests that cover different
+
+=== METRICS ===
+{
+ "eval_count": 512,
+ "eval_duration_s": 12.621,
+ "tokens_per_sec": 40.6,
+ "total_duration_s": 12.982,
+ "wall_s": 13.16,
+ "load_duration_s": 0.003
+}
+peak_rss_mb=371.9

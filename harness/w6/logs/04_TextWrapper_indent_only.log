@@ -1,0 +1,60 @@
+=== PROMPT ===
+You are a test-generation engineer. Write pytest unit tests for the single Python function below. Output ONLY one python code block (```python ... ```). Tests must be deterministic, use no network, no secrets, and avoid platform-specific assertions where possible. Import what you need from click. Function source:
+
+    def indent_only(self, text: str) -> str:
+        rv = []
+
+        for idx, line in enumerate(text.splitlines()):
+            indent = self.initial_indent
+
+            if idx > 0:
+                indent = self.subsequent_indent
+
+            rv.append(f"{indent}{line}")
+
+        return "\n".join(rv)
+
+
+=== MODEL RESPONSE ===
+```python
+import click
+
+def test_indent_only():
+    class MockContext:
+        def __init__(self, initial_indent, subsequent_indent):
+            self.initial_indent = initial_indent
+            self.subsequent_indent = subsequent_indent
+
+    ctx = MockContext(initial_indent="    ", subsequent_indent="    ")
+    assert indent_only(ctx, "line1\nline2") == "    line1\n    line2"
+
+    ctx = MockContext(initial_indent="    ", subsequent_indent="        ")
+    assert indent_only(ctx, "line1\nline2") == "    line1\n        line2"
+
+    ctx = MockContext(initial_indent="", subsequent_indent="    ")
+    assert indent_only(ctx, "line1\nline2") == "line1\n    line2"
+
+def indent_only(ctx, text: str) -> str:
+    rv = []
+
+    for idx, line in enumerate(text.splitlines()):
+        indent = ctx.initial_indent
+
+        if idx > 0:
+            indent = ctx.subsequent_indent
+
+        rv.append(f"{indent}{line}")
+
+    return "\n".join(rv)
+```
+
+=== METRICS ===
+{
+ "eval_count": 225,
+ "eval_duration_s": 5.464,
+ "tokens_per_sec": 41.2,
+ "total_duration_s": 5.624,
+ "wall_s": 5.78,
+ "load_duration_s": 0.01
+}
+peak_rss_mb=382.3
