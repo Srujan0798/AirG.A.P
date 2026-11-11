@@ -1,0 +1,18 @@
+{
+  "v": 4,
+  "createdOnFiles": {"v": 1, "at": "2026-11-11T16:45:00Z"},
+  "lists": "css",
+  "title": "AirG.A.P — IITGN IDE Pitch",
+  "order": ["pitch-cover", "pitch-problem", "pitch-gap", "pitch-solution", "pitch-edge", "pitch-plan"],
+  "sections": {
+    "s1": {"description": "The problem and why it is still unsolved", "start": "pitch-cover"},
+    "s2": {"description": "Our solution and why it stands out", "start": "pitch-solution"},
+    "s3": {"description": "Plan and ask", "start": "pitch-plan"}
+  },
+  "faces": {
+    "space-grotesk": {"family": "Space Grotesk", "href": "https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400..700&display=swap"},
+    "inter": {"family": "Inter", "href": "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap"},
+    "jetbrains-mono": {"family": "JetBrains Mono", "href": "https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&display=swap"}
+  },
+  "designSystems": []
+}
